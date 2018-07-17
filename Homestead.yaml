@@ -5,13 +5,9 @@ provider: virtualbox
 authorize: ~/.ssh/id_rsa.pub
 keys:
     - ~/.ssh/id_rsa
-#folders:
-#    -
-#        map: C:\projects\netinvdev
-#        to: /home/vagrant/code
 sites:
     -
-        map: netinvdev.kiewitplaza.com
+        map: netinvdev.local
         to: /vagrant/public
 databases:
     - homestead

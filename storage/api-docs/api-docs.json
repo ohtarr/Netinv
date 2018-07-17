@@ -33,7 +33,12 @@
                     "200": {
                         "description": "successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -92,7 +97,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             }
         },
         "/api/assets/{id}": {
@@ -125,7 +135,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -191,7 +206,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -248,7 +268,12 @@
                     "200": {
                         "description": "successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -300,7 +325,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             }
         },
         "/api/parts/{id}": {
@@ -333,7 +363,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -392,7 +427,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -449,7 +489,12 @@
                     "200": {
                         "description": "successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -501,7 +546,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             }
         },
         "/api/partners/{id}": {
@@ -534,7 +584,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -572,7 +627,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -629,7 +689,12 @@
                     "200": {
                         "description": "successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -688,7 +753,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             }
         },
         "/api/contacts/{id}": {
@@ -721,7 +791,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -787,7 +862,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -844,7 +924,12 @@
                     "200": {
                         "description": "successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -889,7 +974,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             }
         },
         "/api/contracts/{id}": {
@@ -922,7 +1012,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -974,7 +1069,12 @@
                     "401": {
                         "description": "Unauthorized user"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
