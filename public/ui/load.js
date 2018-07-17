@@ -1,5 +1,8 @@
 // This actually loads the app, called after the enterpriseauth generated preload.js preloads the app
 
+
+document.write('<script src="https://code.jquery.com/jquery-1.12.4.js"   integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="   crossorigin="anonymous"></script>');
+
 var loadScripts = [
     // Dependancies
 	'bower_components/bootstrap/dist/js/bootstrap.min.js',
@@ -22,3 +25,5 @@ var loadScripts = [
 for (var i in loadScripts) {
     document.write('<script src="' + loadScripts[i] + '" type="text/javascript"></script>');
 }
+
+
