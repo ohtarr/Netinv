@@ -46,7 +46,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *     @SWG\Response(
 *         response=200,
 *         description="successful operation",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -73,6 +76,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -127,6 +133,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -187,7 +196,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *     @SWG\Response(
 *         response="401",
 *         description="Unauthorized user",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 */
 /**
@@ -232,7 +244,10 @@ Route::apiResource('assets', 'AssetController');
 *     @SWG\Response(
 *         response=200,
 *         description="successful operation",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -259,6 +274,9 @@ Route::apiResource('assets', 'AssetController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -306,6 +324,9 @@ Route::apiResource('assets', 'AssetController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -359,7 +380,10 @@ Route::apiResource('assets', 'AssetController');
 *     @SWG\Response(
 *         response="401",
 *         description="Unauthorized user",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 */
 /**
@@ -404,7 +428,10 @@ Route::apiResource('parts', 'PartController');
 *     @SWG\Response(
 *         response=200,
 *         description="successful operation",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -431,6 +458,9 @@ Route::apiResource('parts', 'PartController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -478,6 +508,9 @@ Route::apiResource('parts', 'PartController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -510,7 +543,10 @@ Route::apiResource('parts', 'PartController');
 *     @SWG\Response(
 *         response="401",
 *         description="Unauthorized user",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 */
 /**
@@ -555,7 +591,10 @@ Route::apiResource('partners', 'PartnerController');
 *     @SWG\Response(
 *         response=200,
 *         description="successful operation",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -582,6 +621,9 @@ Route::apiResource('partners', 'PartnerController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -636,6 +678,9 @@ Route::apiResource('partners', 'PartnerController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -696,7 +741,10 @@ Route::apiResource('partners', 'PartnerController');
 *     @SWG\Response(
 *         response="401",
 *         description="Unauthorized user",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 */
 /**
@@ -741,7 +789,10 @@ Route::apiResource('contacts', 'ContactController');
 *     @SWG\Response(
 *         response=200,
 *         description="successful operation",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -768,6 +819,9 @@ Route::apiResource('contacts', 'ContactController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -808,6 +862,9 @@ Route::apiResource('contacts', 'ContactController');
 *         response="401",
 *         description="Unauthorized user",
 *     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 **/
 /**
@@ -854,7 +911,10 @@ Route::apiResource('contacts', 'ContactController');
 *     @SWG\Response(
 *         response="401",
 *         description="Unauthorized user",
-*     )
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
 * )
 */
 /**

@@ -11,7 +11,7 @@ keys:
 #        to: /home/vagrant/code
 sites:
     -
-        map: netinvdev.local
+        map: netinvdev.kiewitplaza.com
         to: /vagrant/public
 databases:
     - homestead
