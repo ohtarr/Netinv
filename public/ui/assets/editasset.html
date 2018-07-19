@@ -1,0 +1,162 @@
+<!-- Include Navbar -->
+<ng-include src="'app-content/navbar.html'"></ng-include>
+
+
+<div style="margin:10px"></div>
+
+<div class="container">
+<div class="well">
+<div style="margin:50px"></div>
+
+	<div class="row">
+		<div class="col-md-10 col-sm-10 col-lg-10 col-md-offset-1">
+			<script type="text/ng-template" id="error-messages">
+							<div ng-message='required'> This Field is required </div>
+							<div ng-message='minlength'> Too short </div>
+							<div ng-message='maxlength'> Too long </div>
+			</script>
+				<legend><h2><i class="fa fa-pencil fa-fw"></i> Edit Inventory Asset
+					<div class="btn-group pull-right">
+						<button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+						<a href="#/infrastructure"><button class="btn btn-default btn-sm pull-right"><i class="glyphicon glyphicon-chevron-left"></i>Back to Inventory</button> </a>
+					</div></h2>
+					</legend>
+
+					<form class="form" role="form" id="addAssetForm" ng-submit='addAssetForm.$valid && vm.update(vm.assetForm)' novalidate name="addAssetForm">
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addAssetForm.serial.$touched && addAssetForm.serial.$invalid, 'has-success': addAssetForm.name.$touched && addAssetForm.name.$valid }">
+									<label for="serial" class="control-label">Serial Number</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-building-o"></i></span>
+											<input type="text" ng-model='vm.assetForm.serial' required class="form-control"  name="serial" placeholder="Serial Number">
+										</div>
+										<div ng-messages="addAssetForm.serial.$dirty && addAssetForm.serial.$error">
+												<div ng-message='required'> Serial Number is required </div>
+												<div ng-message='minlength'>Please enter a Serial Number at least 2 chars long</div>
+												<div ng-message='maxlength'>Serial Number entered cannot be longer than 32 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addAssetForm.part_id.$touched && addAssetForm.part_id.$invalid, 'has-success': addAssetForm.name.$touched && addAssetForm.name.$valid }">
+									<label for="part_id" class="control-label">Part ID</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.assetForm.part_id' required class="form-control"  name="part_id" placeholder="CISCO2951/K9, GLC-T, NBE-5AC-19-GEN2">
+										</div>
+										<div ng-messages="addAssetForm.part_id.$dirty && addAssetForm.part_id.$error">
+												<div ng-message='required'> Part ID is required </div>
+												<div ng-message='minlength'>Please enter a Part ID at least 4 chars long</div>
+												<div ng-message='maxlength'>Part ID entered cannot be longer than 32 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addAssetForm.vendor_id.$touched && addAssetForm.vendor_id.$invalid, 'has-success': addAssetForm.name.$touched && addAssetForm.name.$valid }">
+									<label for="vendor_id" class="control-label">Vendor ID</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.assetForm.vendor_id' required class="form-control"  name="vendor_id" placeholder="2">
+										</div>
+										<div ng-messages="addAssetForm.vendor_id.$dirty && addAssetForm.vendor_id.$error">
+												<div ng-message='required'> Vendor ID is required </div>
+												<div ng-message='minlength'>Please enter a Vendor ID at least 1 chars long</div>
+												<div ng-message='maxlength'>Vendor ID entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addAssetForm.warranty_id.$touched && addAssetForm.warranty_id.$invalid, 'has-success': addAssetForm.name.$touched && addAssetForm.name.$valid }">
+									<label for="warranty_id" class="control-label">Warranty ID</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.assetForm.warranty_id' required class="form-control"  name="warranty_id" placeholder="5">
+										</div>
+										<div ng-messages="addAssetForm.warranty_id.$dirty && addAssetForm.warranty_id.$error">
+												<div ng-message='required'> Warranty ID is required </div>
+												<div ng-message='minlength'>Please enter a Warranty ID at least 1 chars long</div>
+												<div ng-message='maxlength'>Warranty ID entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addAssetForm.location_id.$touched && addAssetForm.location_id.$invalid, 'has-success': addAssetForm.name.$touched && addAssetForm.name.$valid }">
+									<label for="location_id" class="control-label">Location ID</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.assetForm.location_id' required class="form-control"  name="location_id" placeholder="5">
+										</div>
+										<div ng-messages="addAssetForm.location_id.$dirty && addAssetForm.location_id.$error">
+												<div ng-message='required'> Location ID is required </div>
+												<div ng-message='minlength'>Please enter a Location ID at least 1 chars long</div>
+												<div ng-message='maxlength'>Location ID entered cannot be longer than 9 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addAssetForm.comment.$touched && addAssetForm.comment.$invalid, 'has-success': addAssetForm.comment.$touched && addAssetForm.comment.$valid }">
+									<label for="comment" class="control-label">Description</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+											<textarea ng-model='vm.assetForm.comment' class="form-control" name="comment" placeholder="Comment"></textarea>
+										</div>
+										<div ng-messages="addAssetForm.comment.$dirty && addAssetForm.comment.$error">
+												<div ng-messages-include="error-messages"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<hr>
+
+
+
+						<!-- Print Form JSON-->
+						<!--
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+								{{vm.assetForm}}
+
+							</div>
+						</div>
+
+						-->
+
+						<hr />
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group">
+									<button  type="submit" ng-disabled="addAssetForm.$invalid" class="btn btn-primary">Submit</button>
+									<!--<button type="reset" class="btn btn-primary">Reset</button>-->
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div style="margin:25px"></div>
+	</div>
+</div>
+</div>

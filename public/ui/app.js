@@ -18,6 +18,24 @@
                 controller: 'Home.IndexController',
                 controllerAs: 'vm'
             })
+            .state('assets', {
+                url: '/assets',
+                templateUrl: 'assets/assets.html',
+                controller: 'Assets.Controller',
+                controllerAs: 'vm'
+            })
+            .state('createasset', {
+                url: '/assets/create',
+                templateUrl: 'assets/createasset.html',
+                controller: 'Assets.Controller',
+                controllerAs: 'vm'
+            })
+            .state('editasset', {
+                url: '/assets/edit/{id}',
+                templateUrl: 'assets/editasset.html',
+                controller: 'Assets.Controller',
+                controllerAs: 'vm'
+            })
             .state('parts', {
                 url: '/parts',
                 templateUrl: 'parts/parts.html',

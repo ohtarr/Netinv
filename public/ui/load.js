@@ -13,17 +13,15 @@ var loadScripts = [
     // The single page application
     'app.js',
     'app-services/parts.service.js',
-    //'app-services/assets.service.js',
+    'app-services/assets.service.js',
     //'app-services/partners.service.js',
     'home/index.controller.js',
-	'parts/parts.controller.js',
-	//'assets/assets.controller.js',
-	//'partners/partners.controller.js',
+		'parts/parts.controller.js',
+		'assets/assets.controller.js',
+		//'partners/partners.controller.js',
 ];
 
 // load up all the scripts
 for (var i in loadScripts) {
     document.write('<script src="' + loadScripts[i] + '" type="text/javascript"></script>');
 }
-
-
