@@ -29,6 +29,43 @@
                 "produces": [
                     "application/json"
                 ],
+                "parameters": [
+                    {
+                        "name": "filter[serial]",
+                        "in": "query",
+                        "description": "serial of asset",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter[part_id]",
+                        "in": "query",
+                        "description": "part_id of asset",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter[vendor_id]",
+                        "in": "query",
+                        "description": "vendor_id of asset",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter[warranty_id]",
+                        "in": "query",
+                        "description": "warranty_id of asset",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter[location_id]",
+                        "in": "query",
+                        "description": "location_id of asset",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation"

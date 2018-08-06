@@ -53,6 +53,24 @@
                 templateUrl: 'parts/editpart.html',
                 controller: 'Parts.Controller',
                 controllerAs: 'vm'
+            })
+            .state('partners', {
+                url: '/partners',
+                templateUrl: 'partners/partners.html',
+                controller: 'Partners.Controller',
+                controllerAs: 'vm'
+            })
+            .state('createpartner', {
+                url: '/partners/create',
+                templateUrl: 'partners/createpartner.html',
+                controller: 'Partners.Controller',
+                controllerAs: 'vm'
+            })
+            .state('editpartner', {
+                url: '/partners/edit/{id}',
+                templateUrl: 'partners/editpartner.html',
+                controller: 'Partners.Controller',
+                controllerAs: 'vm'
             });
     }
 

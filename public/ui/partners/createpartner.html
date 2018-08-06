@@ -1,0 +1,274 @@
+<!-- Include Navbar -->
+<ng-include src="'app-content/navbar.html'"></ng-include>
+
+
+<div style="margin:10px"></div>
+
+<div class="container">
+<div class="well">
+<div style="margin:50px"></div>
+
+	<div class="row">
+		<div class="col-md-10 col-sm-10 col-lg-10 col-md-offset-1">
+			<script type="text/ng-template" id="error-messages">
+							<div ng-message='required'> This Field is required </div>
+							<div ng-message='minlength'> Too short </div>
+							<div ng-message='maxlength'> Too long </div>
+			</script>
+				<legend><h2><i class="fa fa-pencil fa-fw"></i> Create New Partner</h2></legend>
+
+					<form class="form" role="form" id="addPartnerForm" ng-submit='addPartnerForm.$valid && vm.submitPartner(vm.partnerForm)' novalidate name="addPartnerForm">
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.name.$touched && addPartnerForm.name.$invalid, 'has-success': addPartnerForm.name.$touched && addPartnerForm.name.$valid }">
+									<label for="name" class="control-label">Name</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-building-o"></i></span>
+											<input type="text" ng-model='vm.partnerForm.name' required class="form-control"  name="name" placeholder="Name">
+										</div>
+										<div ng-messages="addPartnerForm.name.$dirty && addPartnerForm.name.$error">
+												<div ng-message='required'> Name is required </div>
+												<div ng-message='minlength'>Please enter a Name at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+<!-- 							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+							<div class="form-group" ng-class="{'has-error': addPartnerForm.function.$touched && addPartnerForm.function.$invalid, 'has-success': addPartnerForm.name.$touched && addPartnerForm.name.$valid }">
+								<label for="function" class="control-label">Function</label>
+								<div class="inputGroupContainer">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-server"></i></span>
+										<input type="text" ng-model='vm.partnerForm.function' required class="form-control"  name="function" placeholder="PBX, Voicemail, Contact Center, SBC, Gateway">
+									</div>
+									<div ng-messages="addPartnerForm.function.$dirty && addPartnerForm.function.$error">
+											<div ng-message='required'> function is required </div>
+											<div ng-message='minlength'>Please enter a function at least 8 chars long</div>
+											<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+									</div>
+								</div>
+							</div>
+							</div> -->
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.role.$touched && addPartnerForm.role.$invalid, 'has-success': addPartnerForm.name.$touched && addPartnerForm.name.$valid }">
+									<label for="role" class="control-label">Role</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.role' required class="form-control"  name="role" placeholder="Publisher, Subscriber, Primary, Secondary">
+										</div>
+										<div ng-messages="addPartnerForm.role.$dirty && addPartnerForm.role.$error">
+												<div ng-message='required'> role is required </div>
+												<div ng-message='minlength'>Please enter a role at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+									<div class="form-group"  ng-class="{'has-error': addDidblockForm.monitor.$touched && addDidblockForm.monitor.$invalid, 'has-success': addDidblockForm.monitor.$touched && addDidblockForm.monitor.$valid }">
+										<label for="monitor" class="control-label">Monitoring & Alerting</label>
+										<br>
+										<input type="checkbox"  ng-model='vm.partnerForm.monitor' name="monitor" >
+
+										<div ng-messages="addDidblockForm.monitor.$dirty && addDidblockForm.monitor.$error">
+											<div ng-messages-include="error-messages"></div>
+										</div>
+									</div>
+							</div> -->
+						
+						</div>
+						
+						
+						
+						<div class="row">	
+							
+							<!--
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.carrier.$touched && addPartnerForm.carrier.$invalid, 'has-success': addPartnerForm.carrier.$touched && addPartnerForm.carrier.$valid }">
+									<label for="carrier" class="control-label">Carrier</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+											<input type="text" ng-model='vm.partnerForm.carrier' class="form-control"  name="carrier" placeholder="Carrier" ng-minlength='1' ng-maxlength='50'>
+										</div>
+										<div ng-messages="addPartnerForm.carrier.$dirty && addPartnerForm.carrier.$error">
+										</div>
+									</div>
+								</div>
+							</div>
+							-->
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.comment.$touched && addPartnerForm.comment.$invalid, 'has-success': addPartnerForm.comment.$touched && addPartnerForm.comment.$valid }">
+									<label for="comment" class="control-label">Description</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+											<textarea ng-model='vm.partnerForm.comment' class="form-control" name="comment" placeholder="Comment"></textarea>
+										</div>
+										<div ng-messages="addPartnerForm.comment.$dirty && addPartnerForm.comment.$error">
+												<div ng-messages-include="error-messages"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.countrycode.$touched && addPartnerForm.countrycode.$invalid, 'has-success': addPartnerForm.countrycode.$touched && addPartnerForm.countrycode.$valid }">
+									<label for="countrycode" required class=" control-label">Country Code</label>
+									<input type="text" required ng-pattern='/[0-9]+/' ng-model='vm.partnerForm.country_code' class="form-control" name="countrycode" placeholder="1">
+									<div ng-messages="addPartnerForm.countrycode.$dirty && addPartnerForm.countrycode.$error">
+										<div ng-message="pattern">Please enter a valid country code</div>
+										<div ng-messages-include="error-messages"></div>
+									</div>
+								</div>
+							</div>
+							-->
+						</div>
+						<hr>
+						<div class="row">
+						
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.ip_address.$touched && addPartnerForm.ip_address.$invalid, 'has-success': addPartnerForm.ip_address.$touched && addPartnerForm.ip_address.$valid }">
+									<label for="ip_address" class=" control-label">IP Address</label>
+									<input type="textarea" ng-pattern='/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/' ng-model='vm.partnerForm.ip_address' class="form-control" name="ip_address" placeholder="10.0.0.1" ng-minlength='6'>
+									<div ng-messages="addPartnerForm.ip_address.$dirty && addPartnerForm.ip_address.$error">
+										<div ng-message="pattern">Please enter the ip_address in IP Address Format</div>
+										<div ng-message='minlength'>Please enter the ip_address in IP Address Format</div>
+										<div ng-messages-include="error-messages"></div>
+									</div>
+								</div>
+							</div> -->
+
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.mgmt_url.$touched && addPartnerForm.mgmt_url.$invalid, 'has-success': addPartnerForm.mgmt_url.$touched && addPartnerForm.mgmt_url.$valid }">
+									<label for="mgmt_url" class="control-label">URL</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.mgmt_url' required class="form-control"  name="mgmt_url" placeholder="https://server">
+										</div>
+										<div ng-messages="addPartnerForm.mgmt_url.$dirty && addPartnerForm.mgmt_url.$error">
+												<div ng-message='required'> mgmt_url is required </div>
+												<div ng-message='minlength'>Please enter a mgmt_url at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.manufacturer.$touched && addPartnerForm.manufacturer.$invalid, 'has-success': addPartnerForm.manufacturer.$touched && addPartnerForm.manufacturer.$valid }">
+									<label for="manufacturer" class="control-label">Manufacturer</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.manufacturer' required class="form-control"  name="manufacturer" placeholder="Cisco">
+										</div>
+										<div ng-messages="addPartnerForm.manufacturer.$dirty && addPartnerForm.manufacturer.$error">
+												<div ng-message='required'> manufacturer is required </div>
+												<div ng-message='minlength'>Please enter a manufacturer at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.application.$touched && addPartnerForm.application.$invalid, 'has-success': addPartnerForm.application.$touched && addPartnerForm.application.$valid }">
+									<label for="application" class="control-label">Application</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.application' required class="form-control"  name="application" placeholder="Unified Communications Manager">
+										</div>
+										<div ng-messages="addPartnerForm.application.$dirty && addPartnerForm.application.$error">
+												<div ng-message='required'> application is required </div>
+												<div ng-message='minlength'>Please enter a application at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.software_version.$touched && addPartnerForm.software_version.$invalid, 'has-success': addPartnerForm.software_version.$touched && addPartnerForm.software_version.$valid }">
+									<label for="software_version" class="control-label">Software Version</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.software_version' required class="form-control"  name="software_version" placeholder="10.5.2">
+										</div>
+										<div ng-messages="addPartnerForm.software_version.$dirty && addPartnerForm.software_version.$error">
+												<div ng-message='required'> software_version is required </div>
+												<div ng-message='minlength'>Please enter a software_version at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.os.$touched && addPartnerForm.os.$invalid, 'has-success': addPartnerForm.os.$touched && addPartnerForm.os.$valid }">
+									<label for="os" class="control-label">Operating System</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.os' required class="form-control"  name="os" placeholder="Linux, Windows">
+										</div>
+										<div ng-messages="addPartnerForm.os.$dirty && addPartnerForm.os.$error">
+												<div ng-message='required'> os is required </div>
+												<div ng-message='minlength'>Please enter a os at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group" ng-class="{'has-error': addPartnerForm.discount.$touched && addPartnerForm.discount.$invalid, 'has-success': addPartnerForm.name.$touched && addPartnerForm.name.$valid }">
+									<label for="discount" class="control-label">Discount</label>
+									<div class="inputGroupContainer">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-server"></i></span>
+											<input type="text" ng-model='vm.partnerForm.discount' required class="form-control"  name="discount" placeholder="50">
+										</div>
+										<div ng-messages="addPartnerForm.discount.$dirty && addPartnerForm.discount.$error">
+												<div ng-message='required'> discount is required </div>
+												<div ng-message='minlength'>Please enter a discount at least 8 chars long</div>
+												<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						
+						<!-- Print Form JSON-->
+						<!--
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+								{{vm.partnerForm}}
+								
+							</div>
+						</div>
+						
+						-->
+						
+						<hr />
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12 col-lg-6">
+								<div class="form-group">
+									<button  type="submit" ng-disabled="addPartnerForm.$invalid" class="btn btn-primary">Submit</button>
+									<button type="reset" class="btn btn-primary">Reset</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div style="margin:25px"></div>
+	</div>
+</div>
+</div>

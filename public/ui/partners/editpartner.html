@@ -1,0 +1,139 @@
+<!-- Include Navbar -->
+<ng-include src="'app-content/navbar.html'"></ng-include>
+
+
+<div style="margin:10px"></div>
+
+<div class="container">
+	<div class="well">
+		<div style="margin:50px"></div>
+
+		<div class="row">
+			<!-- <div class="col"> -->
+			<script type="text/ng-template" id="error-messages">
+				<div ng-message='required'> This Field is required </div>
+				<div ng-message='minlength'> Too short </div>
+				<div ng-message='maxlength'> Too long </div>
+			</script>
+			<legend>
+				<h2>
+					<i class="fa fa-pencil fa-fw"></i> Edit Partner
+					<div class="btn-group pull-right">
+						<button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
+							<i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+						<a href="#/infrastructure">
+							<button class="btn btn-default btn-sm pull-right">
+								<i class="glyphicon glyphicon-chevron-left"></i>Back to Inventory</button>
+						</a>
+					</div>
+				</h2>
+			</legend>
+		</div>
+
+		<form class="form" role="form" id="addPartnerForm" ng-submit='addPartnerForm.$valid && vm.update(vm.partnerForm)' novalidate
+		    name="addPartnerForm">
+			<!-- <div class="row"> -->
+			<div class="row">
+				<div class="form-group" ng-class="{'has-error': addPartnerForm.name.$touched && addPartnerForm.name.$invalid, 'has-success': addPartnerForm.name.$touched && addPartnerForm.name.$valid }">
+					<label for="name" class="control-label">Name</label>
+					<div class="inputGroupContainer">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fa fa-building-o"></i>
+							</span>
+							<input type="text" ng-model='vm.partnerForm.name' required class="form-control" name="name" placeholder="Name">
+						</div>
+						<div ng-messages="addPartnerForm.name.$dirty && addPartnerForm.name.$error">
+							<div ng-message='required'> Name is required </div>
+							<div ng-message='minlength'>Please enter a name at least 8 chars long</div>
+							<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<!-- <div class="col-md-6 col-sm-6 col-xs-12 col-lg-6"> -->
+				<div class="form-group" ng-class="{'has-error': addPartnerForm.comment.$touched && addPartnerForm.comment.$invalid, 'has-success': addPartnerForm.comment.$touched && addPartnerForm.comment.$valid }">
+					<label for="comment" class="control-label">Description</label>
+					<div class="inputGroupContainer">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-list"></i>
+							</span>
+							<textarea ng-model='vm.partnerForm.comment' class="form-control" name="comment" placeholder="Comment"></textarea>
+						</div>
+						<div ng-messages="addPartnerForm.comment.$dirty && addPartnerForm.comment.$error">
+							<div ng-messages-include="error-messages"></div>
+						</div>
+					</div>
+				</div>
+				<!-- </div> -->
+			</div>
+			<div class="row">
+				<div class="form-group" ng-class="{'has-error': addPartnerForm.manufacturer.$touched && addPartnerForm.manufacturer.$invalid, 'has-success': addPartnerForm.manufacturer.$touched && addPartnerForm.manufacturer.$valid }">
+					<label for="manufacturer" class="control-label">Manufacturer</label>
+					<div class="inputGroupContainer">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fa fa-server"></i>
+							</span>
+							<input type="text" ng-model='vm.partnerForm.manufacturer' required class="form-control" name="manufacturer" placeholder="Cisco">
+						</div>
+						<div ng-messages="addPartnerForm.manufacturer.$dirty && addPartnerForm.manufacturer.$error">
+							<div ng-message='required'> manufacturer is required </div>
+							<div ng-message='minlength'>Please enter a manufacturer at least 8 chars long</div>
+							<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group" ng-class="{'has-error': addPartnerForm.mgmt_url.$touched && addPartnerForm.mgmt_url.$invalid, 'has-success': addPartnerForm.mgmt_url.$touched && addPartnerForm.mgmt_url.$valid }">
+					<label for="mgmt_url" class="control-label">URL</label>
+					<div class="inputGroupContainer">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fa fa-server"></i>
+							</span>
+							<input type="text" ng-model='vm.partnerForm.mgmt_url' required class="form-control" name="mgmt_url" placeholder="https://server">
+						</div>
+						<div ng-messages="addPartnerForm.mgmt_url.$dirty && addPartnerForm.mgmt_url.$error">
+							<div ng-message='required'> mgmt_url is required </div>
+							<div ng-message='minlength'>Please enter a mgmt_url at least 8 chars long</div>
+							<div ng-message='maxlength'>Name entered cannot be longer than 8 chars</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Print Form JSON-->
+			<!--
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+								{{vm.partnerForm}}
+								
+							</div>
+						</div>
+						
+						-->
+
+			<hr />
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<button type="submit" ng-disabled="addPartnerForm.$invalid" class="btn btn-primary">Submit</button>
+						<!--<button type="reset" class="btn btn-primary">Reset</button>-->
+					</div>
+				</div>
+			</div>
+			<!-- </div> -->
+		</form>
+		<!-- </div> -->
+
+	</div>
+</div>
+<div class="row">
+	<div style="margin:25px"></div>
+</div>
+<!-- </div> -->
+<!-- </div> -->
