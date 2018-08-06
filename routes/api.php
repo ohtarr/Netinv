@@ -43,6 +43,41 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *     operationId="",
 *     consumes={"application/json"},
 *     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="filter[serial]",
+*         in="query",
+*         description="serial of asset",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[part_id]",
+*         in="query",
+*         description="part_id of asset",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[vendor_id]",
+*         in="query",
+*         description="vendor_id of asset",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[warranty_id]",
+*         in="query",
+*         description="warranty_id of asset",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[location_id]",
+*         in="query",
+*         description="location_id of asset",
+*         required=false,
+*         type="string"
+*     ),
 *     @SWG\Response(
 *         response=200,
 *         description="successful operation",

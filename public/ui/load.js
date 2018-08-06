@@ -14,11 +14,11 @@ var loadScripts = [
     'app.js',
     'app-services/parts.service.js',
     'app-services/assets.service.js',
-    //'app-services/partners.service.js',
+    'app-services/partners.service.js',
     'home/index.controller.js',
 		'parts/parts.controller.js',
 		'assets/assets.controller.js',
-		//'partners/partners.controller.js',
+		'partners/partners.controller.js',
 ];
 
 // load up all the scripts
