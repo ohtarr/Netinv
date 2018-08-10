@@ -6,183 +6,256 @@
 
 <div style="margin-left:5%; margin-right:5%;">
 
-	<div class="well form-horizontal" style="margin-top:10px;" >
-	
-	<div style="margin:50px"></div>
-	
-	<legend>Partners<button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button><br> <div style="margin:10px"></div></legend>
-		
-		
-		<div class="input-group col-md-3 ">
-			<input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }" placeholder="Search" name="srch-term" id="srch-term">
-			<div class="input-group-btn">
-				<button class="btn btn-default btn-disabled" ng-click="vm.search = undefined"><i class="glyphicon glyphicon-search"></i>
-			</div>
-		</div>
-		
-		
-		<div style="margin:25px"></div>
-		
-		<a href="#/partners/create" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i> Add</a>
-		
-		<div style="margin:25px"></div>
-		
+    <div class="well form-horizontal" style="margin-top:10px;">
 
-		<!-- Loading -->
-		<div ng-if="vm.loading && !vm.message" class="well">
-			<div class="row">
-				<div class="container loader"></div>
-			</div>
-			<div style="margin:25px"></div>
-		</div>
+        <div style="margin:50px"></div>
 
-		<div ng-if="vm.message;" class="well">
-			<div class="row">
-				<h4>{{vm.message}}</h4>
-			</div>
-			<div style="margin:65px"></div>
-		</div>
-		
-		<!-- {{vm.partners}} -->
-		<div ng-if="vm.partners.length > 0">
-		
-			<h4>Found {{vm.partners.length}} Partners</h4>
-			<div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
-			<div class="table-responsive">    
-				<table class="table table-striped table-condensed table-bordered table-hover">
-					<thead>
-						<tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf)">
-							<th>
-								<a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
-									ID
-										<span ng-show="sortType == 'id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>
-							
-							<th>
-								<a href="" ng-click="sortType = 'manufacturer_id'; sortReverse = !sortReverse" style="color:black">
-									Name
-										<span ng-show="sortType == 'manufacturer_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'manufacturer_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>
-							<th>
-								<a href="" ng-click="sortType = 'part_number'; sortReverse = !sortReverse" style="color:black">
-									Description
-										<span ng-show="sortType == 'part_number' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'part_number' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>
-							<th>
-								<a href="" ng-click="sortType = 'list_price'; sortReverse = !sortReverse" style="color:black">
-									URL
-										<span ng-show="sortType == 'list_price' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'list_price' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>
-							
-							<th>
-								<a href="" ng-click="sortType = 'weight'; sortReverse = !sortReverse" style="color:black">
-									Discount
-										<span ng-show="sortType == 'weight' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'weight' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>
+        <legend>Partners
+            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
+                <i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+            <br>
+            <div style="margin:10px"></div>
+        </legend>
 
-							<th>
-								<a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse" style="color:black">
-									Created At
-										<span ng-show="sortType == 'created_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'created_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>
-							
-							
-							
-							<th>
-								<a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse" style="color:black">
-									Updated At
-										<span ng-show="sortType == 'updated_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-										<span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-								</a>
-							</th>	
-							
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody style="font-size: 12px;">
+        <h4>Total Partners: {{ vm.partners.data.count() }} </h4>
 
-					<!-- Allow you to edit and delete Blocks with new buttons -->
-					<!--<tr ng-repeat="partner in vm.partners | orderBy:sortType:sortReverse | filter:vm.search: strict">-->
+        <div class="input-group col-md-3 ">
+            <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }" placeholder="Search" name="srch-term"
+                id="srch-term">
+            <div class="input-group-btn">
+                <button class="btn btn-default btn-disabled" ng-click="vm.search = undefined">
+                    <i class="glyphicon glyphicon-search"></i>
+            </div>
+        </div>
 
-					<!-- {{ vm.partners}} -->
 
-					<tr ng-repeat="partner in vm.partners | orderBy:sortType:sortReverse | filter:vm.search: strict">
-					
-						<!--List View-->
-						<td>{{ partner.id}}</td>
-				
-						<td   ng-show="!vm.edit[partner.id]">{{ partner.name}}</td>
-						<td   ng-show="!vm.edit[partner.id]">{{ partner.description}}</td>
-						<td   ng-show="!vm.edit[partner.id]">{{ partner.url}}</td>
-						<td   ng-show="!vm.edit[partner.id]">{{ partner.discount}}</td>
-						<td   ng-show="!vm.edit[partner.id]">{{ partner.created_at}}</td>
-						<td   ng-show="!vm.edit[partner.id]">{{ partner.updated_at}}</td>
-						
-						<td   ng-show="!vm.edit[partner.id]">
-							<!--<button class="btn btn-primary btn-xs "  ng-click="vm.edit[partner.id] = !vm.edit[partner.id]"> Edit </button>-->
-							<a href="#/partners/edit/{{partner.id}}" ><button class="btn btn-primary btn-xs"><i class="glyphicon glyphicon glyphicon-pencil"></i> Edit</button> </a>
-							
-							<!-- Function moved ot modal...
-							<button class="btn btn-danger btn-xs " ng-click="vm.delete(partner)"> Delete </button>-->
-							
-							<button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{partner.id}}-modal"> Delete </button>
-						
-							<!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
-							<div class="modal fade" id="{{partner.id}}-modal" role="dialog">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h4>Are you sure? <h4>
-										</div>
-										<div class="modal-body">
-											<p>You are about to delete partner: {{ partner.name}}</p>
-											<table class="table table-striped table-condensed table-bordered table-hover">
-												<tr>
-													<th>ID</th>
-													<th>Name</th>
+        <div style="margin:25px"></div>
 
-												</tr>
-												<tr>
-													<td>{{ partner.id}}</td>
-													<td>{{ partner.name}}</td>
-												</tr>
-											</table>
-											<p>All provisioned information will be lost. Are you sure you want to proceed?</p>
-										</div>
-										<div class="modal-footer">
+        <button class="btn btn-primary btn-sm" ng-click="vm.addtoggle()"><i class="glyphicon glyphicon-plus"></i> Add</button>
 
-										<!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
-										<a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(partner)">Delete</a>
-										<a class="btn btn-primary" data-dismiss="modal">Cancel</a>
-										</div>
-									</div>
-								</div>
-							</div> <!-- npa of Modal -->
-						</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-			</div> <!--npa of Panel
-			
-			<a href="#/partner/create" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i> Add</a>
-			-->
+        <div style="margin:25px"></div>
+        <div>
+            <div ng-show="vm.showaddrow" class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+            <div class="table-responsive">    
+            <table class="table table-striped table-condensed table-bordered table-hover">
+                    <thead>
+                            <tr class="info">
+                                    <th>Name</th>
+                                    <th>Url</th>
+                                    <th>Discount</th>
+                                    <th>Description</th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                    </thead>
+                    <tbody>
+                    <!-- Allow you to edit and delete Blocks with new buttons -->
+                    <tr>
+            
+                            <td   ng-show="vm.showaddrow"><input type="text" class="form-control form-control-sm" ng-model="newpartner.name"></td>
+                            <td   ng-show="vm.showaddrow"><input type="text" class="form-control form-control-sm" ng-model="newpartner.url"></td>
+                            <td   ng-show="vm.showaddrow"><input type="text" class="form-control form-control-sm" ng-model="newpartner.discount"></td>
+                            <td   ng-show="vm.showaddrow"><input type="text" class="form-control form-control-sm" ng-model="newpartner.description"></td>
+                            
+                            <td  ng-show="vm.showaddrow">
+                                    <!--<button class="btn btn-xs btn-primary"  ng-click="vm.createphone(phone);vm.edit[phone.id] = !vm.edit[phone.id]"> Save </button>-->
+                                    <button class="btn btn-xs btn-primary"  ng-click="vm.submitPartner(newpartner);vm.refresh();vm.addtoggle(vm.showaddrow)"> Save </button>
+                                    <button class="btn btn-xs btn-default"  ng-click="vm.addtoggle(vm.showaddrow)"> Undo </button>
+                            </td>
+                    </tr>
+                    </tbody>
+            </table>
+            </div>
+            </div>
+            </div>
 
-			<div style="margin:100px"></div>
-		</div>
-	</div>
+        <!-- Loading -->
+        <div ng-if="vm.loading && !vm.message" class="well">
+            <div class="row">
+                <div class="container loader"></div>
+            </div>
+            <div style="margin:25px"></div>
+        </div>
+
+        <div ng-if="vm.message;" class="well">
+            <div class="row">
+                <h4>{{vm.message}}</h4>
+            </div>
+            <div style="margin:65px"></div>
+        </div>
+
+        <div ng-if="vm.partners.length > 0">
+
+            <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+                <div class="table-responsive">
+                    <table class="table table-striped table-condensed table-bordered table-hover">
+                        <thead>
+                            <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf)">
+
+                                <th></th>
+                                <th>
+                                    <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
+                                        ID
+                                        <span ng-show="sortType == 'id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse" style="color:black">
+                                        Name
+                                        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="" ng-click="sortType = 'carrier'; sortReverse = !sortReverse" style="color:black">
+                                        Url
+                                        <span ng-show="sortType == 'carrier' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'carrier' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="" ng-click="sortType = 'country_code'; sortReverse = !sortReverse" style="color:black">
+                                        Discount
+                                        <span ng-show="sortType == 'country_code' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'country_code' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="" ng-click="sortType = 'start'; sortReverse = !sortReverse" style="color:black">
+                                        Description
+                                        <span ng-show="sortType == 'start' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'start' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse" style="color:black">
+                                        Created At
+                                        <span ng-show="sortType == 'created_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'created_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse" style="color:black">
+                                        Updated At
+                                        <span ng-show="sortType == 'updated_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                        <span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                    </a>
+                                </th>
+                                <th>Actions</th>
+                                <!--                                 <th ng-if="vm.permissions.update.Didblock || vm.permissions.delete.Didblock">Actions</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            <!-- Allow you to edit and delete Blocks with new buttons -->
+                            <!--<tr ng-repeat="partner in vm.partners | orderBy:sortType:sortReverse | filter:vm.search: strict">-->
+                            <tr ng-repeat="partner in vm.partners| orderBy:sortType:sortReverse | filter:vm.search: strict">
+
+                                <!--List View
+                                            <td><a ui-sref="getpartner({id: partner.id})"><button class="btn btn-xs btn-default btn-block">{{ partner.id}}</button></a></td>-->
+                                <!--<td><a ui-sref="getpartner({id: partner.id})"><button style="color: white; background-color:#555a5e;" class="btn btn-xs btn-block"><b>View</b></button></a></td>-->
+                                <td>
+                                    <a href="#/partners/edit/{{ partner.id}}">
+                                        <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
+                                            <b>View</b>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td>{{ partner.id}}</td>
+                                <td ng-show="!vm.edit[partner.id]">
+                                    <a href="#/partner/{{ partner.id}}" target="_blank">
+                                        <b>{{ partner.name}}</b>
+                                    </a>
+                                </td>
+                                <td ng-show="!vm.edit[partner.id]">{{ partner.url}}</a>
+                                </td>
+                                <td ng-show="!vm.edit[partner.id]">{{ partner.discount}}</td>
+                                <td ng-show="!vm.edit[partner.id]">{{ partner.description}}</td>
+                                <td ng-show="!vm.edit[partner.id]">{{ partner.created_at}} {{partner.created_by}}</td>
+                                <td ng-show="!vm.edit[partner.id]">{{ partner.updated_at}} {{partner.updated_by}}</td>
+                                <td ng-show="!vm.edit[partner.id]">
+                                    <!--                                 <td ng-if="vm.permissions.update.Didblock || vm.permissions.delete.Didblock" ng-show="!vm.edit[partner.id]"> -->
+                                    <button class="btn btn-primary btn-xs " ng-click="vm.edit[partner.id] = !vm.edit[partner.id]" ng-show="!vm.edit[partner.id]">
+                                        <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit </button>
+
+                                    <!-- Function moved ot modal...
+                                                            <button class="btn btn-danger btn-xs " ng-click="vm.delete(partner)"> Delete </button>-->
+
+                                    <!--                                    <button class="btn btn-danger btn-xs " ng-if="vm.permissions.delete.Didblock" data-toggle="modal" data-target="#{{partner.id}}-modal">
+                                    Delete </button> -->
+                                    <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{partner.id}}-modal" ng-show="!vm.edit[partner.id]">
+                                        Delete </button>
+                                    <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
+                                    <div class="modal fade" id="{{partner.id}}-modal" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4>Are you sure?
+                                                        <h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>You are about to delete Partner ID: {{ partner.id}}</p>
+                                                    <table class="table table-striped table-condensed table-bordered table-hover">
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Description</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{ partner.name}}</td>
+                                                            <td>{{ partner.description}}</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p>All provisioned information will be lost. Are you sure you want to proceed?</p>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                    <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
+                                                    <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(partner)">Delete</a>
+                                                    <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End of Modal -->
+
+                                </td>
+                                <!--Edit View-->
+                                <td ng-show="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.name">
+                                </td>
+                                <td ng-show="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.url">
+                                </td>
+                                <td ng-show="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.discount">
+                                </td>
+                                <td ng-show="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.description">
+                                </td>
+                                <td ng-show="vm.edit[partner.id]">{{ partner.created_at}} {{partner.created_by}}</td>
+                                <td ng-show="vm.edit[partner.id]">{{ partner.updated_at}} {{partner.updated_by}}</td>
+
+                                <td ng-show="vm.edit[partner.id]">
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.update(partner);vm.edit[partner.id] = !vm.edit[partner.id]"> Save </button>
+                                    <button class="btn btn-xs btn-warning" ng-click="vm.edit[partner.id] = !vm.edit[partner.id]"> Undo </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--End of Panel-->
+
+        </div>
+    </div>
 </div>
-
-	
