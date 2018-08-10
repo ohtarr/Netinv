@@ -16,7 +16,7 @@ class Partner extends Model
         'deleted_at',
     ];
 	
-	protected $fillable = ['name','discount_percent'];
+	protected $fillable = ['name','description','url','discount'];
 	
     public function assets()
     {
