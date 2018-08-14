@@ -128,7 +128,7 @@ angular
 			
 			PartnersService.createPartner(angular.copy(form)).then(function(data) {
 				//alert("Partner Added Succesfully" + data);
-				$state.go('partners');
+				$state.reload();
 			}, function(error) {
 				console.log(error)
 				console.log(error.data.message)

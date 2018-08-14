@@ -7,7 +7,7 @@ angular
 		// Get Assets
 		self.getAssets = function() {
 			var defer = $q.defer();
-			return $http.get(globalUrl + '/api/assets')
+			return $http.get(globalUrl + '/api/assets?include=part,vendor,warranty')
 				.then(function successCallback(response) {
 					//console.log(response)
 					defer.resolve(response);
