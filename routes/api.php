@@ -44,6 +44,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *     consumes={"application/json"},
 *     produces={"application/json"},
 *     @SWG\Parameter(
+*         name="include",
+*         in="query",
+*         description="relationships to include (Comma seperated)",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
 *         name="filter[serial]",
 *         in="query",
 *         description="serial of asset",

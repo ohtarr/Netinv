@@ -9,6 +9,7 @@ use App\Http\Resources\AssetCollection;
 use App\Http\Requests\StoreAsset;
 use Validator;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Filter;
 
 class AssetController extends Controller
 {
@@ -31,7 +32,7 @@ class AssetController extends Controller
 		}
 
 		$assets = QueryBuilder::for(Asset::class)
-			->allowedFilters('serial','part_id','vendor_id','warranty_id','location_id')
+			->allowedFilters(Filter::exact('id'),Filter::exact('serial'),Filter::exact('part_id'),Filter::exact('vendor_id'),Filter::exact('warranty_id'),Filter::exact('location_id'))
 			->allowedIncludes('part','vendor','warranty')
 			->paginate(1000);
 			
