@@ -5,9 +5,11 @@ angular
 		var self = {};
 
 		// Get Assets
-		self.getAssets = function() {
+		self.getAssets = function(httpParams) {
+/* 			console.log("HTTP PARAMS:");
+			console.log(httpParams); */
 			var defer = $q.defer();
-			return $http.get(globalUrl + '/api/assets?include=part,vendor,warranty')
+			return $http.get(globalUrl + '/api/assets',{params: httpParams})
 				.then(function successCallback(response) {
 					//console.log(response)
 					defer.resolve(response);

@@ -12,6 +12,27 @@ angular
 
 		vm.assetsForm = {};
 
+
+		vm.httpParams = {
+			include: "part,vendor,warranty",
+		};
+		
+		vm.httpParams["filter[id]"] = $location.search().id
+		vm.httpParams["filter[serial]"] = $location.search().serial
+		vm.httpParams["filter[part_id]"] = $location.search().part_id
+		vm.httpParams["filter[vendor_id]"] = $location.search().vendor_id
+		vm.httpParams["filter[warranty_id]"] = $location.search().warranty_id
+		vm.httpParams["filter[location_id]"] = $location.search().location_id
+		
+		vm.clearFilter = function(){
+			vm.httpParams["filter[id]"] = ""
+			vm.httpParams["filter[serial]"] = ""
+			vm.httpParams["filter[part_id]"] = ""
+			vm.httpParams["filter[vendor_id]"] = ""
+			vm.httpParams["filter[warranty_id]"] = ""
+			vm.httpParams["filter[location_id]"] = ""
+		}
+
 		vm.addtoggle = function(){
 			if(vm.showaddrow == true){
 				vm.showaddrow = false;
@@ -29,6 +50,7 @@ angular
 					$('body').removeClass("modal-open");
 					$('body').removeAttr( 'style' );
 				// End of Hack */
+			//console.log(vm.httpParams);
 			$state.reload();
 		};
 
@@ -60,8 +82,10 @@ angular
 			return result;
 		}
 
-		function getAssets() {
-			AssetsService.getAssets()
+		vm.getAssets = function() {
+/* 			console.log("PRE-PARAMS:");
+			console.log(vm.httpParams); */
+			AssetsService.getAssets(vm.httpParams)
 
 				.then(function(res){
 
@@ -82,8 +106,8 @@ angular
 					}else{
 
 						vm.assets = res.data.data;
-						console.log("ASSETS:");
-						console.log(vm.assets);
+/* 						console.log("ASSETS:");
+						console.log(vm.assets); */
 
 						vm.loading = false;
 
@@ -161,10 +185,11 @@ angular
 					alert(err);
 				});
 		}
-		getAssets();
+		
+		vm.getAssets();
 		getParts();
 		getPartners();
-		var pullassets		= $interval(getAssets,30000);
+		var pullassets		= $interval(vm.getAssets,30000);
 
 		$scope.$on('$destroy', function() {
 			//console.log($scope);
@@ -205,7 +230,7 @@ angular
 
 			AssetsService.updateAsset(asset.id, asset).then(function(data) {
 			  //alert('Asset Updated Successfully!')
-			  $state.reload();
+			  /* $state.reload(); */
 			  //$location.path('/assets');
 			}, function(error) {
 				alert('An error occurred while updating the site')
