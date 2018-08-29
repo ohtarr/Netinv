@@ -1,6 +1,6 @@
 angular
 	.module('app')
-	.controller('Assets.Controller', ['AssetsService','PartsService','PartnersService', '$location', '$state', '$scope', '$interval','$stateParams', function(AssetsService, PartsService, PartnersService, $location, $state, $scope, $interval, $stateParams) {
+	.controller('Assets.Controller', ['AssetsService','PartsService','PartnersService','LocsService', '$location', '$state', '$scope', '$interval','$stateParams', function(AssetsService, PartsService, PartnersService, LocsService, $location, $state, $scope, $interval, $stateParams) {
 		console.log("Inside Assets Controller");
 		var vm = this;
 
@@ -11,12 +11,14 @@ angular
 		//initController();
 
 		vm.assetsForm = {};
+		vm.combined = [];
+		vm.model = {};
+		vm.model.assets = {};
+		vm.model.parts = {};
+		vm.model.partners = {};
+		vm.model.locations = {};
 
-
-		vm.httpParams = {
-			include: "part,vendor,warranty",
-		};
-		
+		vm.httpParams = {};
 		vm.httpParams["filter[id]"] = $location.search().id
 		vm.httpParams["filter[serial]"] = $location.search().serial
 		vm.httpParams["filter[part_id]"] = $location.search().part_id
@@ -56,7 +58,12 @@ angular
 
 		vm.messages = 'Loading stuff and things...';
 
-		vm.loading = true;
+		vm.loading = {};
+		vm.loading.assets = true;
+		vm.loading.parts = true;
+		vm.loading.partners = true;
+		vm.loading.locations = true;
+
 
 
 		// Page Request
@@ -69,127 +76,174 @@ angular
 
 		function isInArrayNgForeach(field, arr) {
 			var result = false;
-			//console.log("HERRE")
-			//console.log(field);
-			//console.log(arr);
-
 			angular.forEach(arr, function(value, key) {
-				//console.log(value);
 				if(field == value)
 					result = true;
 			});
-
 			return result;
 		}
 
-		vm.getAssets = function() {
-/* 			console.log("PRE-PARAMS:");
-			console.log(vm.httpParams); */
+		function getAssets() {
+		// vm.getAssets = function() {
 			AssetsService.getAssets(vm.httpParams)
-
 				.then(function(res){
-
-					//console.log(res)
 					// Check for errors and if token has expired.
 					if(res.data.message){
-						//console.log(res);
 						vm.message = res.data.message;
-						//console.log(vm.message);
-
 						if(vm.message == "Token has expired"){
 							// Send user to login page if token expired.
 							//alert("Token has expired, Please relogin");
 							$state.go('logout');
 						}
-
 						return vm.message;
 					}else{
-
-						vm.assets = res.data.data;
-/* 						console.log("ASSETS:");
-						console.log(vm.assets); */
-
-						vm.loading = false;
-
+						assets = res.data.data;
+						renderAssets(assets);
 					}
-
 				}, function(err){
-					//console.log(err)
 					alert(err);
 				});
 		}
 
 		function getParts() {
+		//vm.getParts = function() {
 			PartsService.getParts()
-
 				.then(function(res){
-
-					//console.log(res)
 					// Check for errors and if token has expired.
 					if(res.data.message){
-						//console.log(res);
 						vm.message = res.data.message;
-						//console.log(vm.message);
-
 						if(vm.message == "Token has expired"){
 							// Send user to login page if token expired.
 							//alert("Token has expired, Please relogin");
 							$state.go('logout');
 						}
-
 						return vm.message;
 					}else{
-
-						vm.parts = res.data.data;
-						//console.log(vm.parts);
-
-						vm.loading = false;
-
+						parts = res.data.data;
+						renderParts(parts);
 					}
-
 				}, function(err){
-					//console.log(err)
 					alert(err);
 				});
 		}
+
 		function getPartners() {
+		//vm.getPartners = function() {
 			PartnersService.getPartners()
-			
 				.then(function(res){
-					
-					//console.log(res)
 					// Check for errors and if token has expired. 
 					if(res.data.message){
-						//console.log(res);
 						vm.message = res.data.message;
-						//console.log(vm.message);
-						
 						if(vm.message == "Token has expired"){
 							// Send user to login page if token expired. 
 							//alert("Token has expired, Please relogin");
 							$state.go('logout');
 						}
-
 						return vm.message;
 					}else{
-						
-						vm.partners = res.data.data;
-						//console.log(vm.partners);
-						
-						vm.loading = false;
-						
+						partners = res.data.data;
+						renderPartners(partners);
 					}
-					
 				}, function(err){
-					//console.log(err)
 					alert(err);
 				});
 		}
-		
-		vm.getAssets();
+
+		function getLocations() {
+		//vm.getLocations = function() {
+			LocsService.getLocations()
+				.then(function(res){
+					// Check for errors and if token has expired. 
+					if(res.data.message){
+						vm.message = res.data.message;
+						if(vm.message == "Token has expired"){
+							// Send user to login page if token expired. 
+							//alert("Token has expired, Please relogin");
+							$state.go('logout');
+						}
+						return vm.message;
+					}else{
+						locations = res.data.data;
+						renderLocations(locations);
+					}
+				}, function(err){
+					alert(err);
+				});
+		}
+
+		function renderAssets(assets)
+		{
+			//var vm.model = [];
+			angular.forEach(assets, function(value, key) {
+				//console.log(value);
+				vm.model.assets[value.id] = value;
+
+				//vm.model[vm.asset[id]][part] = vm.getPart(vm.asset[id].part_id);
+				//vm.model[vm.asset[id]][partner] = vm.getPartner(vm.asset[id].partner_id);
+				//vm.model[vm.asset[id]][location] = vm.getLocation(vm.asset[id].location_id);
+			});
+			vm.loading.assets = false;
+			console.log(vm.model.assets);
+		}
+
+		function renderParts(parts)
+		{
+			angular.forEach(parts, function(value, key) {
+				vm.model.parts[value.id] = value;
+			});
+			vm.loading.parts = false;
+			console.log(vm.model.parts);
+		}
+
+		function renderPartners(partners)
+		{
+			angular.forEach(partners, function(value, key) {
+				vm.model.partners[value.id] = value;
+			});
+			vm.loading.partners = false;
+			console.log(vm.model.partners);
+		}
+
+		function renderLocations(locations)
+		{
+			angular.forEach(locations, function(value, key) {
+				vm.model.locations[value.sys_id] = value;
+			});
+			vm.loading.locations = false;
+			console.log(vm.model.locations);
+		}
+
+/* 		function refreshCombined() {
+		//vm.refreshCombined = function() {
+			getAssets().then(function(result){
+				vm.assets = result;
+				console.log(vm.assets);
+			});
+			vm.parts = getParts();
+			vm.partners = getPartners();
+			vm.locations = getLocations();
+		}
+ */
+/* 		function renderAssets(){
+			combined = [];
+			console.log(vm.assets);
+			angular.forEach(vm.assets, function(value, key) {
+				console.log(value);
+				combined[vm.asset[id]] = value;
+				combined[vm.asset[id]][part] = vm.getPart(vm.asset[id].part_id);
+				combined[vm.asset[id]][partner] = vm.getPartner(vm.asset[id].partner_id);
+				combined[vm.asset[id]][location] = vm.getLocation(vm.asset[id].location_id);
+			});
+			console.log(combined);
+			return combined;
+		} */
+
+		//vm.combined = vm.refreshCombined();
+		getAssets();
 		getParts();
 		getPartners();
-		var pullassets		= $interval(vm.getAssets,30000);
+		getLocations();
+		//var pullassets		= $interval(vm.getAssets,30000);
 
 		$scope.$on('$destroy', function() {
 			//console.log($scope);
@@ -232,6 +286,8 @@ angular
 			  //alert('Asset Updated Successfully!')
 			  /* $state.reload(); */
 			  //$location.path('/assets');
+			  console.log(vm.assets);
+			  console.log(asset);
 			}, function(error) {
 				alert('An error occurred while updating the site')
 			});

@@ -15,6 +15,7 @@ var loadScripts = [
     'app-services/parts.service.js',
     'app-services/assets.service.js',
     'app-services/partners.service.js',
+    'app-services/locations.service.js',
     'home/index.controller.js',
 	'parts/parts.controller.js',
 	'assets/assets.controller.js',

@@ -60,7 +60,8 @@ class setPermissions extends Command
             App\Part::class,
 			App\Partner::class,
 			App\Contact::class,
-			App\Contract::class,
+            App\Contract::class,
+            App\ServiceNowLocation::class,
             //END-OF-PERMISSION-TYPES
         ];
 

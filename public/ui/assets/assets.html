@@ -10,6 +10,8 @@
         <legend>Assets
             <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
                 <i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click='vm.consoleLog(vm.assets)'>
+                <i class="glyphicon glyphicon-refresh"></i> Test</button>
             <br>
             <div style="margin:5px"></div>
         </legend>
@@ -70,7 +72,7 @@
 
 
         <!-- Loading -->
-        <div ng-if="vm.loading && !vm.message" class="well">
+        <div ng-if="vm.loading.assets && !vm.message" class="well">
             <div class="row">
                 <div class="container loader"></div>
             </div>
@@ -134,7 +136,7 @@
                         </th>
                         <th>
                             <a href="" ng-click="sortType = 'start'; sortReverse = !sortReverse" style="color:black">
-                                Location_ID
+                                Location
                                 <span ng-show="sortType == 'start' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                 <span ng-show="sortType == 'start' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
@@ -157,39 +159,10 @@
                         <th>Actions</th>
                         <!--                                 <th ng-if="vm.permissions.update.Didblock || vm.permissions.delete.Didblock">Actions</th> -->
                     </tr>
-                    <!--                     <tr>
-                        <th>
-                            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.getAssets()">
-                                <i class="glyphicon glyphicon-refresh"></i> Filter</button>
-                        </th>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[id]"]' ng-enter="vm.getAssets()">
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[serial]"]'>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[part_id]"]'>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[vendor_id]"]'>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[warranty_id]"]'>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[location_id]"]'>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.clearFilter();vm.getAssets()">Clear</a>
-                        </td>
-                    </tr> -->
                 </thead>
-                <div ng-if="vm.assets.length > 0">
-
-                    <tr ng-repeat="asset in vm.assets| orderBy:sortType:sortReverse | filter:vm.search: strict">
+                <div ng-if="vm.model.assets.length > 0">
+                    <!--                     <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
+                    <tr ng-repeat="asset in vm.model.assets track by $index">
                         <td>
                             <a href="#/assets/edit/{{ asset.id }}">
                                 <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
@@ -204,10 +177,11 @@
                                 <b>{{ asset.serial }}</b>
                             </a>
                         </td>
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.part.part_number }}</td>
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.vendor.name }}</td>
+                        <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ vm.model.parts[asset.part_id].part_number }}</td>
+                        <td ng-show="!vm.edit[asset.id]">{{ vm.model.partners[asset.vendor_id].name }}</td>
                         <td ng-show="!vm.edit[asset.id]">{{ asset.warranty_id }}</td>
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.location_id }}</td>
+                        <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ vm.model.locations[asset.location_id].name }}</td>
+                        <!--                         <td ng-show="!vm.edit[asset.id] && !vm.locations">{{ asset.location_id }}</td> -->
                         <td ng-show="!vm.edit[asset.id]">{{ asset.created_at }}</td>
                         <td ng-show="!vm.edit[asset.id]">{{ asset.updated_at }}</td>
                         <td ng-show="!vm.edit[asset.id]">
@@ -253,36 +227,43 @@
                             <!-- End of Modal -->
                         </td>
                         <!--Edit View-->
-                        <td ng-show="vm.edit[asset.id]">
+                        <td ng-if="vm.edit[asset.id]">
                             <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
                         </td>
-                        <td ng-show="vm.edit[asset.id]">
+                        <td ng-if="vm.edit[asset.id]">
                             <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
-                            <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.parts | orderBy:"part_number"'
+                            <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
+                            <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts'
                                 data-width="100%" name="partid">
                             </select>
                         </td>
-                        <td ng-show="vm.edit[asset.id]">
+                        <td ng-if="vm.edit[asset.id]">
                             <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
-                            <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name+" ["+vendor.id+"]" for vendor in vm.partners | orderBy:"name"'
+                            <!--                             <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name+" ["+vendor.id+"]" for vendor in vm.model.partners | orderBy:"name"' -->
+                            <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name+" ["+vendor.id+"]" for vendor in vm.model.partners'
                                 data-width="100%" name="vendorid">
                             </select>
                         </td>
-                        <td ng-show="vm.edit[asset.id]">
+                        <td ng-if="vm.edit[asset.id]">
                             <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
                         </td>
-                        <td ng-show="vm.edit[asset.id]">
+                        <!--                         <td ng-show="vm.edit[asset.id]">
                             <input type="text" class="form-control form-control-sm" ng-model="asset.location_id">
+                        </td> -->
+                        <td ng-if="vm.edit[asset.id]">
+                            <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
+                            <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations'
+                                data-width="100%" name="vendorid">
+                            </select>
                         </td>
-                        <td ng-show="vm.edit[asset.id]">{{ asset.created_at }}</td>
-                        <td ng-show="vm.edit[asset.id]">{{ asset.updated_at }}</td>
+                        <td ng-if="vm.edit[asset.id]">{{ asset.created_at }}</td>
+                        <td ng-if="vm.edit[asset.id]">{{ asset.updated_at }}</td>
 
-                        <td ng-show="vm.edit[asset.id]">
+                        <td ng-if="vm.edit[asset.id]">
                             <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]"> Save </button>
                             <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]"> Undo </button>
                         </td>
                     </tr>
-
                 </div>
             </table>
             <!-- </div> -->
