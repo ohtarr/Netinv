@@ -92,7 +92,7 @@
             <!-- <div class="table-responsive"> -->
             <table class="table table-striped table-condensed table-bordered table-hover">
                 <thead>
-                    <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf)">
+                    <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
 
                         <th></th>
                         <th>
@@ -162,7 +162,7 @@
                 </thead>
                 <div ng-if="vm.model.assets.length > 0">
                     <!--                     <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
-                    <tr ng-repeat="asset in vm.model.assets track by $index">
+                    <tr style="height:45px" !important; ng-repeat="asset in vm.model.assets track by $index">
                         <td>
                             <a href="#/assets/edit/{{ asset.id }}">
                                 <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
@@ -233,14 +233,13 @@
                         <td ng-if="vm.edit[asset.id]">
                             <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
                             <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
-                            <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts'
+                            <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number for part in vm.model.parts | orderBy:"part_number"'
                                 data-width="100%" name="partid">
                             </select>
                         </td>
                         <td ng-if="vm.edit[asset.id]">
                             <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
-                            <!--                             <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name+" ["+vendor.id+"]" for vendor in vm.model.partners | orderBy:"name"' -->
-                            <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name+" ["+vendor.id+"]" for vendor in vm.model.partners'
+                            <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
                                 data-width="100%" name="vendorid">
                             </select>
                         </td>
@@ -252,7 +251,7 @@
                         </td> -->
                         <td ng-if="vm.edit[asset.id]">
                             <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
-                            <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations'
+                            <select style="width:100px";class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations'
                                 data-width="100%" name="vendorid">
                             </select>
                         </td>

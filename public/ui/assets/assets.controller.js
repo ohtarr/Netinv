@@ -11,7 +11,6 @@ angular
 		//initController();
 
 		vm.assetsForm = {};
-		vm.combined = [];
 		vm.model = {};
 		vm.model.assets = {};
 		vm.model.parts = {};
@@ -63,16 +62,6 @@ angular
 		vm.loading.parts = true;
 		vm.loading.partners = true;
 		vm.loading.locations = true;
-
-
-
-		// Page Request
-		//vm.getpage = PageService.getpage('infrastructure')
-
-		/*if(!vm.permissions.read.Site){
-			$location.path('/accessdenied');
-		}*/
-
 
 		function isInArrayNgForeach(field, arr) {
 			var result = false;
@@ -212,31 +201,6 @@ angular
 			vm.loading.locations = false;
 			console.log(vm.model.locations);
 		}
-
-/* 		function refreshCombined() {
-		//vm.refreshCombined = function() {
-			getAssets().then(function(result){
-				vm.assets = result;
-				console.log(vm.assets);
-			});
-			vm.parts = getParts();
-			vm.partners = getPartners();
-			vm.locations = getLocations();
-		}
- */
-/* 		function renderAssets(){
-			combined = [];
-			console.log(vm.assets);
-			angular.forEach(vm.assets, function(value, key) {
-				console.log(value);
-				combined[vm.asset[id]] = value;
-				combined[vm.asset[id]][part] = vm.getPart(vm.asset[id].part_id);
-				combined[vm.asset[id]][partner] = vm.getPartner(vm.asset[id].partner_id);
-				combined[vm.asset[id]][location] = vm.getLocation(vm.asset[id].location_id);
-			});
-			console.log(combined);
-			return combined;
-		} */
 
 		//vm.combined = vm.refreshCombined();
 		getAssets();
