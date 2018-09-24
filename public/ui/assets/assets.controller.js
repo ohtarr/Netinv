@@ -74,7 +74,15 @@ angular
 			for (var i = 0; i < array.length; i++) {
 				if (array[i][key] === value) {
 					return array[i];
-					console.log(array[i]);
+				}
+			}
+			return null;
+		}
+
+		function findObjectIndexByKey(array, key, value) {
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][key] === value) {
+					return i;
 				}
 			}
 			return null;
@@ -88,7 +96,7 @@ angular
 			});
 			return result;
 		}
-
+/* 
 		function getAssets() {
 		// vm.getAssets = function() {
 			AssetsService.getAssets(vm.httpParams)
@@ -103,11 +111,7 @@ angular
 						}
 						return vm.message;
 					}else{
-						assets = res.data.data;
-						renderAssets(assets);
-						getParts();
-						getPartners();
-						getLocations();
+						renderAssets(res.data.data);
 					}
 				}, function(err){
 					alert(err);
@@ -128,8 +132,7 @@ angular
 						}
 						return vm.message;
 					}else{
-						parts = res.data.data;
-						renderParts(parts);
+						renderParts(res.data.data);
 					}
 				}, function(err){
 					alert(err);
@@ -150,8 +153,7 @@ angular
 						}
 						return vm.message;
 					}else{
-						partners = res.data.data;
-						renderPartners(partners);
+						renderPartners(res.data.data);
 					}
 				}, function(err){
 					alert(err);
@@ -172,14 +174,13 @@ angular
 						}
 						return vm.message;
 					}else{
-						locations = res.data.data;
-						renderLocations(locations);
+						renderLocations(res.data.data);
 					}
 				}, function(err){
 					alert(err);
 				});
 		}
-
+ */
 		function renderAssets(assets)
 		{
 			//var vm.model = [];
@@ -204,6 +205,36 @@ angular
 			vm.model.parts = sortByKey(vm.model.parts, 'part_number');
 			vm.loading.parts = false;
 			console.log(vm.model.parts);
+
+			angular.forEach(vm.model.assets, function(value, key) {
+				part = findObjectByKey(vm.model.parts, "id", value.part_id);
+				console.log(part);
+				vm.model.assets[key].part = part;
+				//value.part = value;
+
+			});
+
+		}
+
+		function renderAssetAll(index){
+			renderAssetPart(index);
+			renderAssetPartner(index);
+			renderAssetLocation(index);
+		}
+
+		function renderAssetPart(index){
+			part = findObjectByKey(vm.model.parts, "id", vm.model.assets[index].part_id);
+			vm.model.assets[index].part = part;
+		}
+
+		function renderAssetPartner(index){
+			partner = findObjectByKey(vm.model.partners, "id", vm.model.assets[index].vendor_id);
+			vm.model.assets[index].partner = partner;
+		}
+
+		function renderAssetLocation(index){
+			loc = findObjectByKey(vm.model.locations, "sys_id", vm.model.assets[index].location_id);
+			vm.model.assets[index].location = loc;
 		}
 
 		function renderPartners(partners)
@@ -214,6 +245,12 @@ angular
 			vm.model.partners = sortByKey(vm.model.partners, 'name');
 			vm.loading.partners = false;
 			console.log(vm.model.partners);
+
+			angular.forEach(vm.model.assets, function(value, key) {
+				partner = findObjectByKey(vm.model.partners, "id", value.vendor_id);
+				console.log(partner);
+				vm.model.assets[key].partner = partner;
+			});
 		}
 
 		function renderLocations(locations)
@@ -224,29 +261,73 @@ angular
 			vm.model.locations = sortByKey(vm.model.locations, 'name');
 			vm.loading.locations = false;
 			console.log(vm.model.locations);
+
+ 			angular.forEach(vm.model.assets, function(value, key) {
+				loc = findObjectByKey(vm.model.locations, "sys_id", value.location_id);
+				console.log(loc);
+				vm.model.assets[key].location = loc;
+			});
 		}
 
-		let promise1 = new Promise( (resolve, reject) => {
-			setTimeout( ()=>{
-				resolve("DATA1");
-			},5000);
-		})
-		let promise2 = new Promise( (resolve, reject) => {
-			setTimeout( ()=>{
-				resolve("DATA2");
-			},5000);
-		})
+		function refreshAssetModel(id){
+			assetIndex = findObjectIndexByKey(vm.model.assets, "id", id);
 
-		promise1
-		.then( (message) => {
-			console.log(message); 
-		})
-		.catch( (message) => {
-			console.log(message);
-		})
+		}
 
-		getAssets();
-		//var pullassets		= $interval(vm.getAssets,30000);
+		function getAll()
+		{
+			AssetsService.getAssets(vm.httpParams)
+			.then(function(res){
+				// Check for errors and if token has expired.
+				if(res.data.message){
+					vm.message = res.data.message;
+					return vm.message;
+				}else{
+					renderAssets(res.data.data);
+					PartsService.getParts()
+					.then(function(res){
+						// Check for errors and if token has expired.
+						if(res.data.message){
+							vm.message = res.data.message;
+							return vm.message;
+						}else{
+							renderParts(res.data.data);
+						}
+					}, function(err){
+						alert(err);
+					});
+					PartnersService.getPartners()
+					.then(function(res){
+						// Check for errors and if token has expired. 
+						if(res.data.message){
+							vm.message = res.data.message;
+							return vm.message;
+						}else{
+							renderPartners(res.data.data);
+						}
+					}, function(err){
+						alert(err);
+					});
+					LocsService.getLocations()
+					.then(function(res){
+						// Check for errors and if token has expired. 
+						if(res.data.message){
+							vm.message = res.data.message;
+							return vm.message;
+						}else{
+							renderLocations(res.data.data);
+						}
+					}, function(err){
+						alert(err);
+					});
+				}
+			}, function(err){
+				alert(err);
+			});
+
+		}
+
+		getAll();
 
 		$scope.$on('$destroy', function() {
 			//console.log($scope);
@@ -291,6 +372,8 @@ angular
 			  //$location.path('/assets');
 			  console.log(vm.assets);
 			  console.log(asset);
+			  assetIndex = findObjectIndexByKey(vm.model.assets, "id", asset.id);
+			  renderAssetAll(assetIndex);
 			}, function(error) {
 				alert('An error occurred while updating the site')
 			});

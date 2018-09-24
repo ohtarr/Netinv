@@ -187,10 +187,10 @@
                                 <b>{{ asset.serial }}</b>
                             </a>
                         </td>
-                        <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ vm.findObjectByKey(vm.model.parts,id,asset.part_id).part_number }}</td>
-                        <td ng-show="!vm.edit[asset.id]">{{ vm.model.partners[asset.vendor_id].name }}</td>
+                        <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ asset.part.part_number }}</td>
+                        <td ng-show="!vm.edit[asset.id]">{{ asset.partner.name }}</td>
                         <td ng-show="!vm.edit[asset.id]">{{ asset.warranty_id }}</td>
-                        <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ vm.model.locations[asset.location_id].name }}</td>
+                        <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ asset.location.name }}</td>
                         <!--                         <td ng-show="!vm.edit[asset.id] && !vm.locations">{{ asset.location_id }}</td> -->
                         <td ng-show="!vm.edit[asset.id]">{{ asset.created_at }}</td>
                         <td ng-show="!vm.edit[asset.id]">{{ asset.updated_at }}</td>
