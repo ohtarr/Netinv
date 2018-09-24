@@ -10,7 +10,7 @@
         <legend>Assets
             <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
                 <i class="glyphicon glyphicon-refresh"></i> Refresh</button>
-            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click='vm.consoleLog(vm.assets)'>
+            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click=''>
                 <i class="glyphicon glyphicon-refresh"></i> Test</button>
             <br>
             <div style="margin:5px"></div>
@@ -29,7 +29,7 @@
             <i class="glyphicon glyphicon-plus"></i> Add</button>
         <div style="margin:25px"></div>
         <div ng-show="vm.showaddrow" class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
-            <table class="table table-striped table-condensed table-bordered table-hover">
+            <table class="table table-striped table-condensed table-bordered table-hover table-sm">
                 <thead>
                     <tr class="info">
                         <th>Serial</th>
@@ -91,6 +91,16 @@
         <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
             <!-- <div class="table-responsive"> -->
             <table class="table table-striped table-condensed table-bordered table-hover">
+                <col width="1">
+                <col width="1">
+                <col width="1">
+                <col width="200">
+                <col width="200">
+                <col width="1">
+                <col width="100">
+                <col width="200">
+                <col width="200">
+                <col width="100">
                 <thead>
                     <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
 
@@ -104,41 +114,41 @@
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'serial'; sortReverse = !sortReverse" style="color:black">
                                 Serial
-                                <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'serial' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'serial' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'carrier'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'part_id'; sortReverse = !sortReverse" style="color:black">
                                 Part
-                                <span ng-show="sortType == 'carrier' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'carrier' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'part_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'part_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'country_code'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'vendor_id'; sortReverse = !sortReverse" style="color:black">
                                 Vendor
-                                <span ng-show="sortType == 'country_code' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'country_code' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'vendor_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'vendor_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'start'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'warranty_id'; sortReverse = !sortReverse" style="color:black">
                                 Warranty_id
-                                <span ng-show="sortType == 'start' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'start' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'warranty_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'warranty_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
                         <th>
-                            <a href="" ng-click="sortType = 'start'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'location'; sortReverse = !sortReverse" style="color:black">
                                 Location
-                                <span ng-show="sortType == 'start' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'start' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'location' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
                         <th>
@@ -157,12 +167,11 @@
                             </a>
                         </th>
                         <th>Actions</th>
-                        <!--                                 <th ng-if="vm.permissions.update.Didblock || vm.permissions.delete.Didblock">Actions</th> -->
                     </tr>
                 </thead>
                 <div ng-if="vm.model.assets.length > 0">
-                    <!--                     <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
-                    <tr style="height:45px" !important; ng-repeat="asset in vm.model.assets track by $index">
+                    <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
+                    <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
                         <td>
                             <a href="#/assets/edit/{{ asset.id }}">
                                 <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
@@ -170,14 +179,15 @@
                                 </button>
                             </a>
                         </td>
-                        <td>{{ asset.id }}</td>
-
+                        <td>
+                            {{ asset.id }}
+                        </td>
                         <td ng-show="!vm.edit[asset.id]">
                             <a href="#/asset/{{ asset.id}}" target="_blank">
                                 <b>{{ asset.serial }}</b>
                             </a>
                         </td>
-                        <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ vm.model.parts[asset.part_id].part_number }}</td>
+                        <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ vm.findObjectByKey(vm.model.parts,id,asset.part_id).part_number }}</td>
                         <td ng-show="!vm.edit[asset.id]">{{ vm.model.partners[asset.vendor_id].name }}</td>
                         <td ng-show="!vm.edit[asset.id]">{{ asset.warranty_id }}</td>
                         <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ vm.model.locations[asset.location_id].name }}</td>
@@ -233,13 +243,13 @@
                         <td ng-if="vm.edit[asset.id]">
                             <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
                             <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
-                            <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number for part in vm.model.parts | orderBy:"part_number"'
+                            <select class="form-control form-control-sm" required ng-model='asset.part_id' ng-options='part.id as part.part_number for part in vm.model.parts'
                                 data-width="100%" name="partid">
                             </select>
                         </td>
                         <td ng-if="vm.edit[asset.id]">
                             <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
-                            <select class="form-control" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
+                            <select style="width:100px" class="form-control form-control-sm" required ng-model='asset.vendor_id' ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
                                 data-width="100%" name="vendorid">
                             </select>
                         </td>
@@ -251,8 +261,8 @@
                         </td> -->
                         <td ng-if="vm.edit[asset.id]">
                             <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
-                            <select style="width:100px";class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations'
-                                data-width="100%" name="vendorid">
+                            <select style="width:100px" class="form-control form-control-sm" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations'
+                                data-width="100%" name="locationid">
                             </select>
                         </td>
                         <td ng-if="vm.edit[asset.id]">{{ asset.created_at }}</td>

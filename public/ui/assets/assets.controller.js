@@ -12,10 +12,10 @@ angular
 
 		vm.assetsForm = {};
 		vm.model = {};
-		vm.model.assets = {};
-		vm.model.parts = {};
-		vm.model.partners = {};
-		vm.model.locations = {};
+		vm.model.assets = [];
+		vm.model.parts = [];
+		vm.model.partners = [];
+		vm.model.locations = [];
 
 		vm.httpParams = {};
 		vm.httpParams["filter[id]"] = $location.search().id
@@ -63,6 +63,23 @@ angular
 		vm.loading.partners = true;
 		vm.loading.locations = true;
 
+		function sortByKey(array, key) {
+			return array.sort(function(a, b) {
+				var x = a[key]; var y = b[key];
+				return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+			});
+		}
+
+		function findObjectByKey(array, key, value) {
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][key] === value) {
+					return array[i];
+					console.log(array[i]);
+				}
+			}
+			return null;
+		}
+
 		function isInArrayNgForeach(field, arr) {
 			var result = false;
 			angular.forEach(arr, function(value, key) {
@@ -88,6 +105,9 @@ angular
 					}else{
 						assets = res.data.data;
 						renderAssets(assets);
+						getParts();
+						getPartners();
+						getLocations();
 					}
 				}, function(err){
 					alert(err);
@@ -165,12 +185,13 @@ angular
 			//var vm.model = [];
 			angular.forEach(assets, function(value, key) {
 				//console.log(value);
-				vm.model.assets[value.id] = value;
+				vm.model.assets.push(value);
 
 				//vm.model[vm.asset[id]][part] = vm.getPart(vm.asset[id].part_id);
 				//vm.model[vm.asset[id]][partner] = vm.getPartner(vm.asset[id].partner_id);
 				//vm.model[vm.asset[id]][location] = vm.getLocation(vm.asset[id].location_id);
 			});
+			vm.model.assets = sortByKey(vm.model.assets, 'id');
 			vm.loading.assets = false;
 			console.log(vm.model.assets);
 		}
@@ -178,8 +199,9 @@ angular
 		function renderParts(parts)
 		{
 			angular.forEach(parts, function(value, key) {
-				vm.model.parts[value.id] = value;
+				vm.model.parts.push(value);
 			});
+			vm.model.parts = sortByKey(vm.model.parts, 'part_number');
 			vm.loading.parts = false;
 			console.log(vm.model.parts);
 		}
@@ -187,8 +209,9 @@ angular
 		function renderPartners(partners)
 		{
 			angular.forEach(partners, function(value, key) {
-				vm.model.partners[value.id] = value;
+				vm.model.partners.push(value);
 			});
+			vm.model.partners = sortByKey(vm.model.partners, 'name');
 			vm.loading.partners = false;
 			console.log(vm.model.partners);
 		}
@@ -196,17 +219,33 @@ angular
 		function renderLocations(locations)
 		{
 			angular.forEach(locations, function(value, key) {
-				vm.model.locations[value.sys_id] = value;
+				vm.model.locations.push(value);
 			});
+			vm.model.locations = sortByKey(vm.model.locations, 'name');
 			vm.loading.locations = false;
 			console.log(vm.model.locations);
 		}
 
-		//vm.combined = vm.refreshCombined();
+		let promise1 = new Promise( (resolve, reject) => {
+			setTimeout( ()=>{
+				resolve("DATA1");
+			},5000);
+		})
+		let promise2 = new Promise( (resolve, reject) => {
+			setTimeout( ()=>{
+				resolve("DATA2");
+			},5000);
+		})
+
+		promise1
+		.then( (message) => {
+			console.log(message); 
+		})
+		.catch( (message) => {
+			console.log(message);
+		})
+
 		getAssets();
-		getParts();
-		getPartners();
-		getLocations();
 		//var pullassets		= $interval(vm.getAssets,30000);
 
 		$scope.$on('$destroy', function() {
