@@ -990,3 +990,173 @@ Route::apiResource('contacts', 'ContactController');
 */
 Route::apiResource('contracts', 'ContractController');
 
+/**
+* @SWG\Get(
+*     path="/api/locations",
+*     tags={"Locations"},
+*     summary="Get Locations",
+*     description="",
+*     operationId="",
+*     consumes={"application/json"},
+*     produces={"application/json"},
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+**/
+/**
+* @SWG\Get(
+*     path="/api/locations/{id}",
+*     tags={"Locations"},
+*     summary="Get Location by ID",
+*     description="",
+*     operationId="",
+*     consumes={"application/x-www-form-urlencoded"},
+*     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="id",
+*         in="path",
+*         description="ID of Location",
+*         required=true,
+*         type="string"
+*     ),
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     @SWG\Response(
+*         response="401",
+*         description="Unauthorized user",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+**/
+/**
+* @SWG\Post(
+*     path="/api/locations",
+*     tags={"Locations"},
+*     summary="Create a new Location",
+*     description="Create a new Location",
+*     operationId="",
+*     consumes={"application/x-www-form-urlencoded"},
+*     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="cid",
+*         in="formData",
+*         description="Location ID (from provider)",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="partner_id",
+*         in="formData",
+*         description="Partner ID",
+*         required=true,
+*         type="integer"
+*     ),
+*     @SWG\Parameter(
+*         name="description",
+*         in="formData",
+*         description="Contract Description",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     @SWG\Response(
+*         response="401",
+*         description="Unauthorized user",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+**/
+/**
+* @SWG\Put(
+*     path="/api/locations/{id}",
+*     tags={"Locations"},
+*     summary="Update Contract by ID",
+*     description="",
+*     operationId="",
+*     consumes={"application/x-www-form-urlencoded"},
+*     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="id",
+*         in="path",
+*         description="ID of asset",
+*         required=true,
+*         type="integer"
+*     ),
+*     @SWG\Parameter(
+*         name="cid",
+*         in="formData",
+*         description="Contract ID (from provider)",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="partner_id",
+*         in="formData",
+*         description="Partner ID",
+*         required=false,
+*         type="integer"
+*     ),
+*     @SWG\Parameter(
+*         name="description",
+*         in="formData",
+*         description="Contract Description",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     @SWG\Response(
+*         response="401",
+*         description="Unauthorized user",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+*/
+/**
+* @SWG\Delete(
+*     path="/api/locations/{id}",
+*     tags={"Locations"},
+*     summary="Delete Contract by ID",
+*     description="",
+*     operationId="",
+*     consumes={"application/json"},
+*     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="id",
+*         in="path",
+*         description="ID of Contract",
+*         required=true,
+*         type="integer"
+*     ),
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     @SWG\Response(
+*         response="401",
+*         description="Unauthorized user",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+*/
+Route::apiResource('locations', 'LocationController');
