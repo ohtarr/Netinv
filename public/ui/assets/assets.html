@@ -9,9 +9,11 @@
         <div style="margin:1px"></div>
         <legend>Assets : {{ vm.model.assets.length }}
             <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
-                <i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                <i class="glyphicon glyphicon-refresh"></i> Refresh
+            </button>
             <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click='vm.test()'>
-                <i class="glyphicon glyphicon-refresh"></i> Test</button>
+                <i class="glyphicon glyphicon-refresh"></i> Test
+            </button>
             <div class="input-group col-md-3 pull-right">
                 <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }"
                     placeholder="Search" name="srch-term" id="srch-term">
@@ -23,54 +25,55 @@
             <br>
             <div style="margin:5px"></div>
         </legend>
-        <div style="margin:25px"></div>
-        <!--         <button class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
-            <i class="glyphicon glyphicon-plus"></i> Add</button>
-        <div style="margin:25px"></div> -->
-        <!--         <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
-            <table class="table table-striped table-condensed table-bordered table-hover table-sm">
-                <thead>
-                    <tr class="info">
-                        <th>Serial</th>
-                        <th>Part</th>
-                        <th>Vendor</th>
-                        <th>Warranty_ID</th>
-                        <th>Location_ID</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
-                        </td>
-                        <td>
-                            <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
-                        </td>
-                        <td>
-                            <select class="form-control" required ng-model='vm.newasset.location_id' ng-options="location.sys_id as location.name for location in vm.model.locations"
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add
-                            </button>
-                            <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div> -->
+
+        <!--         <div style="margin:25px"></div>
+                <button class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
+        <i class="glyphicon glyphicon-plus"></i> Add</button>
+    <div style="margin:25px"></div>
+                <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+        <table class="table table-striped table-condensed table-bordered table-hover table-sm">
+            <thead>
+                <tr class="info">
+                    <th>Serial</th>
+                    <th>Part</th>
+                    <th>Vendor</th>
+                    <th>Warranty_ID</th>
+                    <th>Location_ID</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
+                    </td>
+                    <td>
+                        <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
+                            data-width="100%" name="partid">
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
+                            data-width="100%" name="partid">
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
+                    </td>
+                    <td>
+                        <select class="form-control" required ng-model='vm.newasset.location_id' ng-options="location.sys_id as location.name for location in vm.model.locations"
+                            data-width="100%" name="partid">
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add
+                        </button>
+                        <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
 
 
         <!-- Loading -->
@@ -106,7 +109,10 @@
                 <thead>
                     <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
 
-                        <th></th>
+                        <th>
+                            <button class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
+                                <i class="glyphicon glyphicon-plus"></i> Add</button>
+                        </th>
                         <th>
                             <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
                                 ID
@@ -172,194 +178,155 @@
                     </tr>
                 </thead>
                 <div ng-if="vm.model.assets.length > 0">
-                    <tr style="height:30px" !important>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
-                        </td>
-                        <td>
-                            <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
-                        </td>
-                        <td>
-                            <select style="width:140px" class="form-control" required ng-model='vm.newasset.location_id' ng-options="location.sys_id as location.name for location in vm.model.locations"
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
+                    <tbody>
+                        <tr style="height:30px" !important ng-if="vm.showaddrow">
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
+                            </td>
+                            <td>
+                                <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
+                                    data-width="100%" name="partid">
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
+                                    data-width="100%" name="partid">
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
+                            </td>
+                            <td>
+                                <select style="width:140px" class="form-control" required ng-model='vm.newasset.location_id'
+                                    ng-options="location.sys_id as location.name for location in vm.model.locations"
+                                    data-width="100%" name="partid">
+                                </select>
+                            </td>
 
-                        <td ng-show="!vm.edit[asset.id]"></td>
-                        <td ng-show="!vm.edit[asset.id]"></td>
-                        <td>
-                            <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add </button>
-                            <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
-                        </td>
-                        <!--Edit View-->
-                        <td ng-if="vm.edit[asset.id]">
-                            <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">
-                            <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
-                            <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
-                            <select class="form-control form-control-sm" required ng-model='asset.part_id' ng-options='part.id as part.part_number for part in vm.model.parts'
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">
-                            <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
-                            <select style="width:100px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
-                                ng-options='vendor.id as vendor.name for vendor in vm.model.partners' data-width="100%"
-                                name="vendorid">
-                            </select>
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">
-                            <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
-                        </td>
-                        <!--                         <td ng-show="vm.edit[asset.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="asset.location_id">
-                            </td> -->
-                        <td ng-if="vm.edit[asset.id]">
-                            <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
-                            <select style="width:200px" class="form-control form-control-sm" required ng-model='asset.location_id'
-                                ng-options='location.sys_id as location.name for location in vm.model.locations'
-                                data-width="100%" name="locationid">
-                            </select>
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">{{ asset.created_at }}</td>
-                        <td ng-if="vm.edit[asset.id]">{{ asset.updated_at }}</td>
-
-                        <td ng-if="vm.edit[asset.id]">
-                            <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
-                                Save </button>
-                            <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                Undo </button>
-                        </td>
-                    </tr>
-                    <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
-                    <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
-                        <td>
-                            <a href="#/assets/edit/{{ asset.id }}">
-                                <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
-                                    <b>View</b>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add
                                 </button>
-                            </a>
-                        </td>
-                        <td>
-                            {{ asset.id }}
-                        </td>
-                        <td ng-show="!vm.edit[asset.id]">
-                            <a href="#/asset/{{ asset.id}}" target="_blank">
-                                <b>{{ asset.serial }}</b>
-                            </a>
-                        </td>
-                        <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ asset.part.part_number }}</td>
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.partner.name }}</td>
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.warranty_id }}</td>
-                        <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ asset.location.name }}</td>
-                        <!--                         <td ng-show="!vm.edit[asset.id] && !vm.locations">{{ asset.location_id }}</td> -->
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.created_at }}</td>
-                        <td ng-show="!vm.edit[asset.id]">{{ asset.updated_at }}</td>
-                        <td ng-show="!vm.edit[asset.id]">
-                            <button class="btn btn-primary btn-xs " ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{asset.id}}-modal">
-                                Delete
-                            </button>
-                            <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
-                            <div class="modal fade" id="{{asset.id}}-modal" role="dialog">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4>Are you sure?
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>
-                                                You are about to delete Asset ID: {{ asset.id }}
-                                            </p>
-                                            <table class="table table-striped table-condensed table-bordered table-hover">
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Serial</th>
-                                                    <th>Part</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>{{ asset.id }}</td>
-                                                    <td>{{ asset.serial }}</td>
-                                                    <td>{{ asset.part.part_number }}</td>
-                                                </tr>
-                                            </table>
-                                            <p>All provisioned information will be lost. Are you sure you want to
-                                                proceed?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
-                                            <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(asset)">Delete</a>
-                                            <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                                <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
+                            </td>
+                        </tr>
+                        <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
+                        <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
+                            <td>
+                                <a href="#/assets/edit/{{ asset.id }}">
+                                    <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
+                                        <b>View</b>
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                {{ asset.id }}
+                            </td>
+                            <td ng-show="!vm.edit[asset.id]">
+                                <a href="#/asset/{{ asset.id}}" target="_blank">
+                                    <b>{{ asset.serial }}</b>
+                                </a>
+                            </td>
+                            <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ asset.part.part_number }}</td>
+                            <td ng-show="!vm.edit[asset.id]">{{ asset.partner.name }}</td>
+                            <td ng-show="!vm.edit[asset.id]">{{ asset.warranty_id }}</td>
+                            <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ asset.location.name }}</td>
+                            <!--                         <td ng-show="!vm.edit[asset.id] && !vm.locations">{{ asset.location_id }}</td> -->
+                            <td ng-show="!vm.edit[asset.id]">{{ asset.created_at }}</td>
+                            <td ng-show="!vm.edit[asset.id]">{{ asset.updated_at }}</td>
+                            <td ng-show="!vm.edit[asset.id]">
+                                <button class="btn btn-primary btn-xs " ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
+                                    <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
+                                </button>
+                                <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{asset.id}}-modal">
+                                    Delete
+                                </button>
+                                <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
+                                <div class="modal fade" id="{{asset.id}}-modal" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4>Are you sure?
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    You are about to delete Asset ID: {{ asset.id }}
+                                                </p>
+                                                <table class="table table-striped table-condensed table-bordered table-hover">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Serial</th>
+                                                        <th>Part</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{ asset.id }}</td>
+                                                        <td>{{ asset.serial }}</td>
+                                                        <td>{{ asset.part.part_number }}</td>
+                                                    </tr>
+                                                </table>
+                                                <p>All provisioned information will be lost. Are you sure you want to
+                                                    proceed?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
+                                                <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(asset)">Delete</a>
+                                                <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- End of Modal -->
-                        </td>
-                        <!--Edit View-->
-                        <td ng-if="vm.edit[asset.id]">
-                            <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">
-                            <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
-                            <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
-                            <select class="form-control form-control-sm" required ng-model='asset.part_id' ng-options='part.id as part.part_number for part in vm.model.parts'
-                                data-width="100%" name="partid">
-                            </select>
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">
-                            <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
-                            <select style="width:180px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
-                                ng-options='vendor.id as vendor.name for vendor in vm.model.partners' data-width="100%"
-                                name="vendorid">
-                            </select>
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">
-                            <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
-                        </td>
-                        <!--                         <td ng-show="vm.edit[asset.id]">
-                            <input type="text" class="form-control form-control-sm" ng-model="asset.location_id">
-                        </td> -->
-                        <td ng-if="vm.edit[asset.id]">
-                            <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
-                            <select style="width:140px" class="form-control form-control-sm" required ng-model='asset.location_id'
-                                ng-options='location.sys_id as location.name for location in vm.model.locations'
-                                data-width="100%" name="locationid">
-                            </select>
-                        </td>
-                        <td ng-if="vm.edit[asset.id]">{{ asset.created_at }}</td>
-                        <td ng-if="vm.edit[asset.id]">{{ asset.updated_at }}</td>
+                                <!-- End of Modal -->
+                            </td>
+                            <!--Edit View-->
+                            <td ng-if="vm.edit[asset.id]">
+                                <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
+                            </td>
+                            <td ng-if="vm.edit[asset.id]">
+                                <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
+                                <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
+                                <select class="form-control form-control-sm" required ng-model='asset.part_id'
+                                    ng-options='part.id as part.part_number for part in vm.model.parts' data-width="100%"
+                                    name="partid">
+                                </select>
+                            </td>
+                            <td ng-if="vm.edit[asset.id]">
+                                <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
+                                <select style="width:180px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
+                                    ng-options='vendor.id as vendor.name for vendor in vm.model.partners' data-width="100%"
+                                    name="vendorid">
+                                </select>
+                            </td>
+                            <td ng-if="vm.edit[asset.id]">
+                                <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
+                            </td>
+                            <!--                         <td ng-show="vm.edit[asset.id]">
+                        <input type="text" class="form-control form-control-sm" ng-model="asset.location_id">
+                    </td> -->
+                            <td ng-if="vm.edit[asset.id]">
+                                <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
+                                <select style="width:140px" class="form-control form-control-sm" required ng-model='asset.location_id'
+                                    ng-options='location.sys_id as location.name for location in vm.model.locations'
+                                    data-width="100%" name="locationid">
+                                </select>
+                            </td>
+                            <td ng-if="vm.edit[asset.id]">{{ asset.created_at }}</td>
+                            <td ng-if="vm.edit[asset.id]">{{ asset.updated_at }}</td>
 
-                        <td ng-if="vm.edit[asset.id]">
-                            <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
-                                Save </button>
-                            <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                Undo </button>
-                        </td>
-                    </tr>
+                            <td ng-if="vm.edit[asset.id]">
+                                <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
+                                    Save </button>
+                                <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
+                                    Undo </button>
+                            </td>
+                        </tr>
+                    </tbody>
                 </div>
             </table>
-            <!-- </div> -->
         </div>
-        <!--End of Panel-->
-
-
     </div>
 </div>

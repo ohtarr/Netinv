@@ -249,10 +249,10 @@ angular
 
 		getAll();
 
-		$scope.$on('$destroy', function() {
+/* 		$scope.$on('$destroy', function() {
 			//console.log($scope);
             $interval.cancel(pullassets);
-		});
+		}); */
 
 		var id = $stateParams.id;
 		//console.log(id + " printing id here...")
@@ -311,7 +311,12 @@ angular
 					$('body').removeClass("modal-open");
 					$('body').removeAttr( 'style' );
 				// End of Hack */
-
+				console.log(vm.model.assets);
+				assetIndex = findObjectIndexByKey(vm.model.assets, "id", asset.id);
+				console.log(assetIndex);
+				//delete vm.model.assets[assetIndex];
+				vm.model.assets.splice(assetIndex,1);
+				console.log(vm.model.assets);
 				//return $state.reload();
           }, function(error) {
 				alert('An error occurred');
