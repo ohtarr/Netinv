@@ -26,56 +26,6 @@
             <div style="margin:5px"></div>
         </legend>
 
-        <!--         <div style="margin:25px"></div>
-                <button class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
-        <i class="glyphicon glyphicon-plus"></i> Add</button>
-    <div style="margin:25px"></div>
-                <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
-        <table class="table table-striped table-condensed table-bordered table-hover table-sm">
-            <thead>
-                <tr class="info">
-                    <th>Serial</th>
-                    <th>Part</th>
-                    <th>Vendor</th>
-                    <th>Warranty_ID</th>
-                    <th>Location_ID</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
-                    </td>
-                    <td>
-                        <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
-                            data-width="100%" name="partid">
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
-                            data-width="100%" name="partid">
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
-                    </td>
-                    <td>
-                        <select class="form-control" required ng-model='vm.newasset.location_id' ng-options="location.sys_id as location.name for location in vm.model.locations"
-                            data-width="100%" name="partid">
-                        </select>
-                    </td>
-                    <td>
-                        <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add
-                        </button>
-                        <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div> -->
-
-
         <!-- Loading -->
         <div ng-if="vm.loading.assets && !vm.message" class="well">
             <div class="row">
@@ -91,12 +41,9 @@
             <div style="margin:65px"></div>
         </div>
 
-
-
         <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
             <!-- <div class="table-responsive"> -->
             <table class="table table-striped table-condensed table-bordered table-hover">
-                <col width="1">
                 <col width="1">
                 <col width="1">
                 <col width="200">
@@ -108,11 +55,6 @@
                 <col width="130">
                 <thead>
                     <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
-
-                        <th>
-                            <button class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
-                                <i class="glyphicon glyphicon-plus"></i> Add</button>
-                        </th>
                         <th>
                             <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
                                 ID
@@ -174,14 +116,19 @@
                                 <span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>Actions</th>
+                        <th>
+                            <button ng-if="!vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
+                                <i class="glyphicon glyphicon-plus"></i> Add
+                            </button>
+                            <button ng-if="vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
+                                <i class="glyphicon glyphicon-minus"></i> Add
+                            </button>
+                        </th>
                     </tr>
                 </thead>
                 <div ng-if="vm.model.assets.length > 0">
                     <tbody>
-                        <tr style="height:30px" !important ng-if="vm.showaddrow">
-                            <td>
-                            </td>
+                        <tr class="bg-danger" style="height:30px" ng-if="vm.showaddrow">
                             <td>
                             </td>
                             <td>
@@ -217,13 +164,6 @@
                         </tr>
                         <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
                         <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
-                            <td>
-                                <a href="#/assets/edit/{{ asset.id }}">
-                                    <button style="color: white; background-color:#555a5e;" class="btn btn-xs">
-                                        <b>View</b>
-                                    </button>
-                                </a>
-                            </td>
                             <td>
                                 {{ asset.id }}
                             </td>

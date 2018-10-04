@@ -1,16 +1,32 @@
 angular
 	.module('app')
-	.controller('Parts.Controller', ['PartsService', '$location', '$state', '$scope', '$interval','$stateParams', function(PartsService, $location, $state, $scope, $interval, $stateParams) {
-
+	.controller('Parts.Controller', ['PartsService','PartnersService','$location', '$state', '$scope', '$interval','$stateParams', function(PartsService, PartnersService, $location, $state, $scope, $interval, $stateParams) {
+		console.log("Inside Parts Controller");
 		var vm = this;
 
-		// Match the window permission set in login.js and app.js - may want to user a service or just do an api call to get these. will decide later.
-		vm.permissions = window.telecom_mgmt_permissions;
+		vm.newpart = {};
 
-
+		vm.showaddrow = false;
 		//initController();
 
 		vm.partsForm = {};
+		vm.model = {};
+		vm.model.parts = [];
+		vm.model.manufacturers = [];
+		
+		vm.clearAdd = function(){
+			vm.newpart = null;
+		}
+
+		vm.addtoggle = function(){
+			if(vm.showaddrow == true){
+				vm.showaddrow = false;
+			}else{
+				if(vm.showaddrow == false){
+					vm.showaddrow = true;
+				}
+			}
+		}
 
 		vm.refresh = function (){
 			// jQuery Hack to fix body from the Model.
@@ -19,82 +35,121 @@ angular
 					$('body').removeClass("modal-open");
 					$('body').removeAttr( 'style' );
 				// End of Hack */
+			//console.log(vm.httpParams);
 			$state.reload();
 		};
 
 		vm.messages = 'Loading stuff and things...';
 
-		vm.loading = true;
+		vm.loading = {};
+		vm.loading.parts = true;
+		vm.loading.manufacturers = true;
 
+		function sortByKey(array, key) {
+			return array.sort(function(a, b) {
+				var x = a[key]; var y = b[key];
+				return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+			});
+		}
 
-		// Page Request
-		//vm.getpage = PageService.getpage('infrastructure')
+		function findObjectByKey(array, key, value) {
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][key] === value) {
+					return array[i];
+				}
+			}
+			return null;
+		}
 
-		/*if(!vm.permissions.read.Site){
-			$location.path('/accessdenied');
-		}*/
-
+		function findObjectIndexByKey(array, key, value) {
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][key] === value) {
+					return i;
+				}
+			}
+			return null;
+		}
 
 		function isInArrayNgForeach(field, arr) {
 			var result = false;
-			//console.log("HERRE")
-			//console.log(field);
-			//console.log(arr);
-
 			angular.forEach(arr, function(value, key) {
-				//console.log(value);
 				if(field == value)
 					result = true;
 			});
-
 			return result;
 		}
 
-		function getParts() {
-			PartsService.getParts()
-
-				.then(function(res){
-
-					console.log(res)
-					// Check for errors and if token has expired.
-					if(res.data.message){
-						//console.log(res);
-						vm.message = res.data.message;
-						console.log(vm.message);
-
-						if(vm.message == "Token has expired"){
-							// Send user to login page if token expired.
-							//alert("Token has expired, Please relogin");
-							$state.go('logout');
-						}
-
-						return vm.message;
-					}else{
-
-						vm.parts = res.data.data;
-						console.log(vm.parts);
-
-						vm.loading = false;
-
-					}
-
-				}, function(err){
-					console.log(err)
-					alert(err);
-				});
+		function renderParts(parts)
+		{
+			angular.forEach(parts, function(value, key) {
+				vm.model.parts.push(value);
+			});
+			vm.loading.parts = false;
+			console.log(vm.model.parts);
 		}
 
-		getParts();
+		function renderManufacturers(manufacturers)
+		{
+			angular.forEach(manufacturers, function(value, key) {
+				vm.model.manufacturers.push(value);
+			});
+			vm.model.manufacturers = sortByKey(vm.model.manufacturers, 'name');
+			vm.loading.manufacturers = false;
+			console.log(vm.model.manufacturers);
 
-		var pullparts		= $interval(getParts,30000);
+			angular.forEach(vm.model.parts, function(value, key) {
+				manufacturer = findObjectByKey(vm.model.manufacturers, "id", value.manufacturer_id);
+				vm.model.parts[key].manufacturer = manufacturer;
+			});
+		}
 
-		$scope.$on('$destroy', function() {
-			//console.log($scope);
-            $interval.cancel(pullparts);
-		});
+		function renderPartManufacturer(index){
+			manufacturer = findObjectByKey(vm.model.manufacturers, "id", vm.model.parts[index].manufacturer_id);
+			vm.model.parts[index].manufacturer = manufacturer;
+		}
+
+		function renderPartAll(index)
+		{
+			renderPartManufacturer(index)
+		}
+
+/* 		function renderPart(index, part)
+		{
+			console.log(part);
+			vm.model.parts[index] = part;
+		} */
+		
+		function getAll()
+		{
+			PartsService.getParts()
+			.then(function(res){
+				// Check for errors and if token has expired.
+				if(res.data.message){
+					vm.message = res.data.message;
+					return vm.message;
+				}else{
+					renderParts(res.data.data);
+					PartnersService.getPartners()
+					.then(function(res){
+						// Check for errors and if token has expired. 
+						if(res.data.message){
+							vm.message = res.data.message;
+							return vm.message;
+						}else{
+							renderManufacturers(res.data.data);
+						}
+					}, function(err){
+						alert(err);
+					});
+				}
+			}, function(err){
+				alert(err);
+			});
+		}
+
+		getAll();
 
 		var id = $stateParams.id;
-		//console.log(id + " printing id here...")
 
 		if(id != undefined){
 			// Fix undefined site error on site list loading.
@@ -108,16 +163,15 @@ angular
 		}
 
 		vm.submitPart = function(form) {
-
+			console.log(form);
 			PartsService.createPart(angular.copy(form)).then(function(data) {
-				//alert("site Added Succesfully" + data);
-				$state.go('parts');
+				vm.model.parts.push(data.data);
+				vm.clearAdd();
+				partIndex = findObjectIndexByKey(vm.model.parts, "id", data.data.id);
+				renderPartAll(partIndex);
 			}, function(error) {
-				console.log(error)
-				console.log(error.data.message)
 				alert('Error: ' + error.data.message + " | Status: " + error.status);
 			});
-
 		}
 
 		// Edit state for DID block Edit button.
@@ -125,10 +179,11 @@ angular
 
 		// Update DID Block service called by the save button.
 		vm.update = function(part) {
-
+			console.log("SUBMITTED PART:");
+			console.log(part);
 			PartsService.updatePart(part.id, part).then(function(data) {
-			  //alert('Part Updated Successfully!')
-			  $location.path('/parts');
+			  partIndex = findObjectIndexByKey(vm.model.parts, "id", part.id);
+			  renderPartAll(partIndex);
 			}, function(error) {
 				alert('An error occurred while updating the site')
 			});
@@ -146,8 +201,13 @@ angular
 					$('body').removeClass("modal-open");
 					$('body').removeAttr( 'style' );
 				// End of Hack */
-
-				return $state.reload();
+				console.log(vm.model.parts);
+				partIndex = findObjectIndexByKey(vm.model.parts, "id", part.id);
+				console.log(partIndex);
+				//delete vm.model.parts[partIndex];
+				vm.model.parts.splice(partIndex,1);
+				console.log(vm.model.parts);
+				//return $state.reload();
           }, function(error) {
 				alert('An error occurred');
           });
