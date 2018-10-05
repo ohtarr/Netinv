@@ -11,9 +11,6 @@
             <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
                 <i class="glyphicon glyphicon-refresh"></i> Refresh
             </button>
-            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click='vm.test()'>
-                <i class="glyphicon glyphicon-refresh"></i> Test
-            </button>
             <div class="input-group col-md-3 pull-right">
                 <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }"
                     placeholder="Search" name="srch-term" id="srch-term">
@@ -25,15 +22,12 @@
             <br>
             <div style="margin:5px"></div>
         </legend>
-
-        <!-- Loading -->
         <div ng-if="vm.loading.assets && !vm.message" class="well">
             <div class="row">
                 <div class="container loader"></div>
             </div>
             <div style="margin:25px"></div>
         </div>
-
         <div ng-if="vm.message;" class="well">
             <div class="row">
                 <h4>{{vm.message}}</h4>
@@ -41,10 +35,10 @@
             <div style="margin:65px"></div>
         </div>
 
-        <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+        <div ng-if="!vm.loading.assets" class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
             <!-- <div class="table-responsive"> -->
             <table class="table table-striped table-condensed table-bordered table-hover">
-                <col width="1">
+                <!--                 <col width="1">
                 <col width="1">
                 <col width="200">
                 <col width="200">
@@ -52,7 +46,7 @@
                 <col width="40">
                 <col width="180">
                 <col width="180">
-                <col width="130">
+                <col width="130"> -->
                 <thead>
                     <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
                         <th>
@@ -135,7 +129,10 @@
                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
                             </td>
                             <td>
-                                <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
+<!--                                 <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
+                                    data-width="100%" name="partid">
+                                </select> -->
+                                <select class="selectpicker" data-show-subtext="true" data-live-search="true" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
                                     data-width="100%" name="partid">
                                 </select>
                             </td>
@@ -167,101 +164,108 @@
                             <td>
                                 {{ asset.id }}
                             </td>
-                            <td ng-show="!vm.edit[asset.id]">
-                                <a href="#/asset/{{ asset.id}}" target="_blank">
-                                    <b>{{ asset.serial }}</b>
-                                </a>
+                            <td>
+                                <div ng-show="!vm.edit[asset.id]">
+                                    {{ asset.serial }}
+                                </div>
+                                <div ng-if="vm.edit[asset.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
+                                </div>
                             </td>
-                            <td ng-show="!vm.edit[asset.id] && vm.model.parts">{{ asset.part.part_number }}</td>
-                            <td ng-show="!vm.edit[asset.id]">{{ asset.partner.name }}</td>
-                            <td ng-show="!vm.edit[asset.id]">{{ asset.warranty_id }}</td>
-                            <td ng-show="!vm.edit[asset.id] && vm.model.locations">{{ asset.location.name }}</td>
-                            <!--                         <td ng-show="!vm.edit[asset.id] && !vm.locations">{{ asset.location_id }}</td> -->
-                            <td ng-show="!vm.edit[asset.id]">{{ asset.created_at }}</td>
-                            <td ng-show="!vm.edit[asset.id]">{{ asset.updated_at }}</td>
-                            <td ng-show="!vm.edit[asset.id]">
-                                <button class="btn btn-primary btn-xs " ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                    <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
-                                </button>
-                                <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{asset.id}}-modal">
-                                    Delete
-                                </button>
-                                <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
-                                <div class="modal fade" id="{{asset.id}}-modal" role="dialog">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4>Are you sure?
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    You are about to delete Asset ID: {{ asset.id }}
-                                                </p>
-                                                <table class="table table-striped table-condensed table-bordered table-hover">
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>Serial</th>
-                                                        <th>Part</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>{{ asset.id }}</td>
-                                                        <td>{{ asset.serial }}</td>
-                                                        <td>{{ asset.part.part_number }}</td>
-                                                    </tr>
-                                                </table>
-                                                <p>All provisioned information will be lost. Are you sure you want to
-                                                    proceed?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
-                                                <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(asset)">Delete</a>
-                                                <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                            <td>
+                                <div ng-show="!vm.edit[asset.id] && vm.model.parts">
+                                    {{ asset.part.part_number }}
+                                </div>
+                                <div ng-if="vm.edit[asset.id]">
+                                    <select class="form-control form-control-sm" required ng-model='asset.part_id'
+                                        ng-options='part.id as part.part_number for part in vm.model.parts' data-width="100%"
+                                        name="partid">
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[asset.id]">
+                                    {{ asset.partner.name }}
+                                </div>
+                                <div ng-if="vm.edit[asset.id]">
+                                    <select style="width:180px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
+                                        ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
+                                        data-width="100%" name="vendorid">
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[asset.id]">
+                                    {{ asset.warranty_id }}
+                                </div>
+                                <div ng-if="vm.edit[asset.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[asset.id] && vm.model.locations">
+                                    {{ asset.location.name }}
+                                </div>
+                                <div ng-if="vm.edit[asset.id]">
+                                    <select style="width:140px" class="form-control form-control-sm" required ng-model='asset.location_id'
+                                        ng-options='location.sys_id as location.name for location in vm.model.locations'
+                                        data-width="100%" name="locationid">
+                                    </select>
+                                </div>
+                            </td>
+                            <td>{{ asset.created_at }}</td>
+                            <td>{{ asset.updated_at }}</td>
+                            <td>
+                                <div ng-show="!vm.edit[asset.id]">
+                                    <button class="btn btn-primary btn-xs " ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
+                                        <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{asset.id}}-modal">
+                                        Delete
+                                    </button>
+                                    <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
+                                    <div class="modal fade" id="{{asset.id}}-modal" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4>Are you sure?
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>
+                                                        You are about to delete Asset ID: {{ asset.id }}
+                                                    </p>
+                                                    <table class="table table-striped table-condensed table-bordered table-hover">
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Serial</th>
+                                                            <th>Part</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{ asset.id }}</td>
+                                                            <td>{{ asset.serial }}</td>
+                                                            <td>{{ asset.part.part_number }}</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p>All provisioned information will be lost. Are you sure you want
+                                                        to
+                                                        proceed?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
+                                                    <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(asset)">Delete</a>
+                                                    <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- End of Modal -->
                                 </div>
-                                <!-- End of Modal -->
-                            </td>
-                            <!--Edit View-->
-                            <td ng-if="vm.edit[asset.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
-                            </td>
-                            <td ng-if="vm.edit[asset.id]">
-                                <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.part.part_number"> -->
-                                <!--                             <select class="form-control" required ng-model='asset.part_id' ng-options='part.id as part.part_number+" ["+part.id+"]" for part in vm.model.parts | orderBy:"part_number"' -->
-                                <select class="form-control form-control-sm" required ng-model='asset.part_id'
-                                    ng-options='part.id as part.part_number for part in vm.model.parts' data-width="100%"
-                                    name="partid">
-                                </select>
-                            </td>
-                            <td ng-if="vm.edit[asset.id]">
-                                <!-- <input type="text" class="form-control form-control-sm" ng-model="asset.vendor_id"> -->
-                                <select style="width:180px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
-                                    ng-options='vendor.id as vendor.name for vendor in vm.model.partners' data-width="100%"
-                                    name="vendorid">
-                                </select>
-                            </td>
-                            <td ng-if="vm.edit[asset.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
-                            </td>
-                            <!--                         <td ng-show="vm.edit[asset.id]">
-                        <input type="text" class="form-control form-control-sm" ng-model="asset.location_id">
-                    </td> -->
-                            <td ng-if="vm.edit[asset.id]">
-                                <!--                             <select class="form-control" required ng-model='asset.location_id' ng-options='location.sys_id as location.name for location in vm.model.locations | orderBy:"name"' -->
-                                <select style="width:140px" class="form-control form-control-sm" required ng-model='asset.location_id'
-                                    ng-options='location.sys_id as location.name for location in vm.model.locations'
-                                    data-width="100%" name="locationid">
-                                </select>
-                            </td>
-                            <td ng-if="vm.edit[asset.id]">{{ asset.created_at }}</td>
-                            <td ng-if="vm.edit[asset.id]">{{ asset.updated_at }}</td>
-
-                            <td ng-if="vm.edit[asset.id]">
-                                <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
-                                    Save </button>
-                                <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                    Undo </button>
+                                <div ng-if="vm.edit[asset.id]">
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
+                                        Save </button>
+                                    <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
+                                        Undo </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

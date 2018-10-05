@@ -142,9 +142,7 @@
                             </td>
                             <td>
                                 <div ng-show="!vm.edit[part.id]">
-                                    <a href="#/part/{{ part.id}}" target="_blank">
-                                        <b>{{ part.manufacturer.name }}</b>
-                                    </a>
+                                    {{ part.manufacturer.name }}
                                 </div>
                                 <div ng-show="vm.edit[part.id]">
                                     <select class="form-control form-control-sm" required ng-model='part.manufacturer_id'
@@ -235,7 +233,6 @@
                                         Undo
                                     </button>
                                 </div>
-
                                 <!-- End of Modal -->
                             </td>
                         </tr>
