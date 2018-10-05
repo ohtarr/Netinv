@@ -11,9 +11,6 @@
             <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
                 <i class="glyphicon glyphicon-refresh"></i> Refresh
             </button>
-            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click='vm.test()'>
-                <i class="glyphicon glyphicon-refresh"></i> Test
-            </button>
             <div class="input-group col-md-3 pull-right">
                 <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }"
                     placeholder="Search" name="srch-term" id="srch-term">
@@ -55,33 +52,33 @@
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'serial'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'manufacturer.name'; sortReverse = !sortReverse" style="color:black">
                                 Manufacturer
-                                <span ng-show="sortType == 'serial' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'serial' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'manufacturer.name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'manufacturer.name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'part_id'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'part_number'; sortReverse = !sortReverse" style="color:black">
                                 Part_Number
-                                <span ng-show="sortType == 'part_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'part_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'part_number' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'part_number' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'vendor_id'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'list_price/1'; sortReverse = !sortReverse" style="color:black">
                                 List_Price
-                                <span ng-show="sortType == 'vendor_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'vendor_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'list_price/1' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'list_price/1' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
                         <th>
-                            <a href="" ng-click="sortType = 'vendor_id'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'weight'; sortReverse = !sortReverse" style="color:black">
                                 Weight
-                                <span ng-show="sortType == 'vendor_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'vendor_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'weight' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'weight' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
                         <th>
@@ -115,10 +112,10 @@
                             <td>
                             </td>
                             <td>
-<!--                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.manufacturer_id"> -->
+                                <!--                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.manufacturer_id"> -->
                                 <select class="form-control" required ng-model='vm.newpart.manufacturer_id' ng-options="manufacturer.id as manufacturer.name for manufacturer in vm.model.manufacturers"
-                                data-width="100%" name="manufacturer_id">
-                            </select>
+                                    data-width="100%" name="manufacturer_id">
+                                </select>
                             </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.part_number">
@@ -145,14 +142,12 @@
                             </td>
                             <td>
                                 <div ng-show="!vm.edit[part.id]">
-                                    <a href="#/part/{{ part.id}}" target="_blank">
-                                        <b>{{ part.manufacturer.name }}</b>
-                                    </a>
+                                    {{ part.manufacturer.name }}
                                 </div>
                                 <div ng-show="vm.edit[part.id]">
-                                        <select class="form-control form-control-sm" required ng-model='part.manufacturer_id'
-                                        ng-options='manufacturer.id as manufacturer.name for manufacturer in vm.model.manufacturers' data-width="100%"
-                                        name="partid">
+                                    <select class="form-control form-control-sm" required ng-model='part.manufacturer_id'
+                                        ng-options='manufacturer.id as manufacturer.name for manufacturer in vm.model.manufacturers'
+                                        data-width="100%" name="partid">
                                     </select>
                                 </div>
                             </td>
@@ -217,7 +212,8 @@
                                                             <td>{{ part.part_number }}</td>
                                                         </tr>
                                                     </table>
-                                                    <p>All provisioned information will be lost. Are you sure you want to
+                                                    <p>All provisioned information will be lost. Are you sure you want
+                                                        to
                                                         proceed?</p>
                                                 </div>
                                                 <div class="modal-footer">
@@ -237,7 +233,6 @@
                                         Undo
                                     </button>
                                 </div>
-
                                 <!-- End of Modal -->
                             </td>
                         </tr>
