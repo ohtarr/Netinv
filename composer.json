@@ -11,7 +11,8 @@
         "laravel/tinker": "~1.0",
         "metaclassing/php7-laravel5-enterpriseauth": "dev-master",
         "ohtarr/service-now-model": "dev-master",
-        "spatie/laravel-query-builder": "^1.10"
+        "spatie/laravel-query-builder": "^1.10",
+        "zircote/swagger-php": "2.0.*"
     },
     "require-dev": {
         "beyondcode/laravel-er-diagram-generator": "^0.2.2",

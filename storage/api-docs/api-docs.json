@@ -1435,7 +1435,7 @@
             "flow": "implicit",
             "authorizationUrl": "https://login.microsoftonline.com/07420c3d-c141-4c67-b6f3-f448e5adb67b/oauth2/v2.0/authorize",
             "scopes": {
-                "api://6b800e98-c843-40d7-9032-9d7df9fb5a64/access_as_user": "Use client_id: 6b800e98-c843-40d7-9032-9d7df9fb5a64"
+                "api://073e9495-9dfe-4023-965c-3d2407433ffc/access_as_user": "Use client_id: 073e9495-9dfe-4023-965c-3d2407433ffc"
             }
         }
     }
