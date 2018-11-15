@@ -34,7 +34,7 @@ class AssetController extends Controller
 		$assets = QueryBuilder::for(Asset::class)
 			->allowedFilters(Filter::exact('id'),Filter::exact('serial'),Filter::exact('part_id'),Filter::exact('vendor_id'),Filter::exact('warranty_id'),Filter::exact('location_id'))
 			->allowedIncludes('part','vendor','warranty')
-			->paginate(1000);
+			->paginate(env("ASSETS_PAGINATION"));
 			
 		//$assets = Asset::paginate(1000);
 		//return new AssetCollection($assets);
