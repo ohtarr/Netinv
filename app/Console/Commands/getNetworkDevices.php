@@ -25,6 +25,8 @@ class getNetworkDevices extends Command
      */
     protected $description = 'Get Network Devices from Network Management System to add to inventory if missing.';
 
+    public $devicearray = [];
+
     /**
      * Create a new command instance.
      *
@@ -42,87 +44,105 @@ class getNetworkDevices extends Command
      */
     public function handle()
     {
+        $this->importCsv();
         $this->getCiscoDevices();
+        //print_r($this->devicearray);
+        $this->addAssets();
     }
 
     public function getCiscoDevices()
     {
         $manufacturer = Partner::where("name","Cisco")->first();//default to Cisco for Manufacturer.
-        print "MANUFACTURER ID: " . $manufacturer->id . "\n";
         $devices = NetworkDevice::all();
         foreach($devices as $device)
         {
-            print "***********************************************\n";
-            print "DEVICE : " . $device->name . "\n";
+            unset($tmp);
+            $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $serial = self::inventoryToSerial($device->inventory);
-            print "SERIAL : " . $serial . "\n";
-            $sitename = strtoupper(substr($device->name, 0, 8));
-            print "SITENAME : " . $sitename . "\n";
-            $location = ServiceNowLocation::where("name",$sitename)->first();
-            if($location)
-            {
-                print "LOCATION NAME: " . $location->name . "\n";
-            } else {
-                print "NO VALID LOCATION, SKIPPING!!\n";
-                continue;
-            }
+
             if($serial)
             {
-                print "SERIAL FOUND! CONTINUING \n";
-                $asset = Asset::where("serial",$serial)->withTrashed()->first();
-                $part = Part::where("part_number",$device->model)->withTrashed()->first();
-                if(!$part)
+                $sitename = strtoupper(substr($device->name, 0, 8));
+                $tmp['location'] = $sitename;
+                $tmp['part']['part_number'] = $device->model;
+                $this->devicearray[$serial] = $tmp;
+            }
+        }
+    }
+
+    public function importCsv()
+    {
+        $manufacturer = Partner::where("name","Cisco")->first();  //default to Cisco for Manufacturer.
+        //Grab csv file contents and convert to array.
+        $csv = array_map('str_getcsv', file(env("CSV_IMPORT_PATH")));
+        //Grab the title row in the CSV and use it for the associative array keys
+        array_walk($csv, function(&$a) use ($csv) {
+        $a = array_combine($csv[0], $a);
+        });
+        array_shift($csv); //remove column header
+        //Go through each entry in the CSV.  If it has a valid serial, add it to our array of stuff to attempt to add.
+        foreach($csv as $item)
+        {
+            unset($tmp);
+            if($item['serial'])
+            {
+                $tmp['part']['part_number'] = $item['model'];
+                $tmp['part']['manufacturer_id'] = $manufacturer->id;
+                if($item['Site'])
                 {
-                    print "NO EXISTING PART FOUND! CREATING ONE\n";
-                    if($device->model)
-                    {
-                        print "DEVICE MODEL EXISTS!\n";
-                        $newpart = new Part;
-                        $newpart->manufacturer_id  = $manufacturer->id;
-                        $newpart->part_number = $device->model;
-                        $newpart->save();
-                        $part = $newpart;
-                    } else {
-                        print "DEVIC MODEL DOES NOT EXIST, SKIPPING!!\n";
-                        continue;
-                    }
+                    $tmp['location'] = $item['Site'];
                 } else {
-                    print "EXISTING PART FOUND! PART ID: " . $part->id . "\n";
-                    if($part->deleted_at)
-                    {
-                        print "PART FOUND BUT DELETED!  UPDATING IT!!\n";
-                        $part->manufacturer_id  = $manufacturer->id;
-                        $part->save();
-                        $part->restore();
-                    }
+                    $tmp['location'] = env("DEFAULT_LOCATION");  //If there is no SITE, assume it's in the DEPOT.
                 }
+                $this->devicearray[$item['serial']] = $tmp;
+            }
+        }
+    }
 
+    public function addAssets()
+    {
+        foreach($this->devicearray as $serial => $device)
+        {
+            if(!$serial)
+            {
+                continue;
+            }
+            $asset = Asset::where("serial",$serial)->withTrashed()->first();
+            $part = Part::where("part_number",$device['part']['part_number'])->withTrashed()->first();
+            $location = ServiceNowLocation::where("name",$device['location'])->first();
 
-                if(!$asset)
+            if(!$part)
+            {
+                if($device['part']['part_number'])
                 {
-                    print "NO EXISTING ASSET FOUND!\n";
-
-                    print "CREATING NEW ASSET\n";
-                    $newasset = new Asset;
-                    $newasset->serial = $serial;
-                    $newasset->part_id = $part->id;
-                    $newasset->vendor_id = $manufacturer->id;
-                    $newasset->location_id = $location->sys_id;
-                    $newasset->save();
-                } else {
-                    print "EXISTING ASSET FOUND! ASSET ID: " . $asset->id . "\n";
-                    if($asset->deleted_at)
-                    {
-                        print "ASSET FOUND, BUT DELETED!  UPDATING IT!!\n";
-                        $asset->part_id = $part->id;
-                        $asset->vendor_id = $manufacturer->id;
-                        $asset->location_id = $location->sys_id;
-                        $asset->save();
-                        $asset->restore();
-                    }
+                    $part = new Part;
+                    $part->manufacturer_id = $device['part']['manufacturer_id'];
+                    $part->part_number = $device['part']['part_number'];
+                    $part->save();
                 }
             }
-            //break;
+            if($asset)
+            {
+                if($part)
+                {
+                    $asset->part_id = $part->id;
+                }
+                if($location)
+                {
+                    $asset->location_id = $location->sys_id;
+                }
+                $asset->save();
+
+            } else {
+                if($location && $serial && $part)
+                {
+                    $asset = new Asset;
+                    $asset->serial = $serial;
+                    $asset->part_id = $part->id;
+                    $asset->location_id = $location->sys_id;
+                    $asset->save();
+                }
+            }
         }
     }
 
