@@ -56,6 +56,7 @@ class getNetworkDevices extends Command
         $devices = NetworkDevice::all();
         foreach($devices as $device)
         {
+            print "Getting device " . $device-name . "\n";
             unset($tmp);
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $serial = self::inventoryToSerial($device->inventory);
@@ -83,6 +84,7 @@ class getNetworkDevices extends Command
         //Go through each entry in the CSV.  If it has a valid serial, add it to our array of stuff to attempt to add.
         foreach($csv as $item)
         {
+            print "Importing device " . $item['serial'] . "\n";
             unset($tmp);
             if($item['serial'])
             {
