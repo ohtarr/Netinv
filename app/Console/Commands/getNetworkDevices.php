@@ -56,7 +56,7 @@ class getNetworkDevices extends Command
         $devices = NetworkDevice::all();
         foreach($devices as $device)
         {
-            print "Getting device " . $device-name . "\n";
+            print "Getting device " . $device->name . "\n";
             unset($tmp);
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $serial = self::inventoryToSerial($device->inventory);
