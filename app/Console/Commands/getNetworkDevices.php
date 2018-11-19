@@ -103,18 +103,23 @@ class getNetworkDevices extends Command
     {
         foreach($this->devicearray as $serial => $device)
         {
+            print "*****************************\n";
             if(!$serial)
             {
+                print "No Serial found!  Skipping!\n";
                 continue;
             }
+            print "Device Serial : " . $device->serial . "\n";
             $asset = Asset::where("serial",$serial)->withTrashed()->first();
             $part = Part::where("part_number",$device['part']['part_number'])->withTrashed()->first();
             $location = ServiceNowLocation::where("name",$device['location'])->first();
 
             if(!$part)
             {
+                print "No part found\n";
                 if($device['part']['part_number'])
                 {
+                    print "Creating new part : " . $device['part']['part_number'] . "\n";
                     $part = new Part;
                     $part->manufacturer_id = $device['part']['manufacturer_id'];
                     $part->part_number = $device['part']['part_number'];
@@ -123,19 +128,24 @@ class getNetworkDevices extends Command
             }
             if($asset)
             {
+                print "Asset found : " . $asset->serial . "\n";
                 if($part)
                 {
+                    print "Updating Asset with part : " . $part->part_number . "\n";
                     $asset->part_id = $part->id;
                 }
                 if($location)
                 {
+                    print "Updating Asset with Location : " . $location->name . "\n";
                     $asset->location_id = $location->sys_id;
                 }
                 $asset->save();
 
             } else {
+                print "No existing Asset found....\n";
                 if($location && $serial && $part)
                 {
+                    print "Location, Serial, and Part exist, creating a new Asset!\n";
                     $asset = new Asset;
                     $asset->serial = $serial;
                     $asset->part_id = $part->id;
