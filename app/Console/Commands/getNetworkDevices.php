@@ -26,7 +26,8 @@ class getNetworkDevices extends Command
     protected $description = 'Get Network Devices from Network Management System to add to inventory if missing.';
 
     public $devicearray = [];
-
+    public $locations;
+    public $devices;
     /**
      * Create a new command instance.
      *
@@ -34,7 +35,7 @@ class getNetworkDevices extends Command
      */
     public function __construct()
     {
-        parent::__construct();
+          parent::__construct();
     }
 
     /**
@@ -53,8 +54,8 @@ class getNetworkDevices extends Command
     public function getCiscoDevices()
     {
         $manufacturer = Partner::where("name","Cisco")->first();//default to Cisco for Manufacturer.
-        $devices = NetworkDevice::all();
-        foreach($devices as $device)
+        $this->devices = NetworkDevice::all();
+        foreach($this->devices as $device)
         {
             print "Getting device " . $device->name . "\n";
             unset($tmp);
@@ -103,6 +104,7 @@ class getNetworkDevices extends Command
 
     public function addAssets()
     {
+        $this->locations = ServiceNowLocation::all();
         foreach($this->devicearray as $serial => $device)
         {
             print "*****************************\n";
@@ -114,7 +116,7 @@ class getNetworkDevices extends Command
             print "Device Serial : " . $serial . "\n";
             $asset = Asset::where("serial",$serial)->withTrashed()->first();
             $part = Part::where("part_number",$device['part']['part_number'])->withTrashed()->first();
-            $location = ServiceNowLocation::where("name",$device['location'])->first();
+            $location = $this->locations->where("name",$device['location'])->first();
 
             if(!$part)
             {
@@ -172,6 +174,5 @@ class getNetworkDevices extends Command
         }
 
         return $serial;
-    
     }
 }
