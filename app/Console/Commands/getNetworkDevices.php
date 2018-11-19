@@ -109,7 +109,7 @@ class getNetworkDevices extends Command
                 print "No Serial found!  Skipping!\n";
                 continue;
             }
-            print "Device Serial : " . $device->serial . "\n";
+            print "Device Serial : " . $serial . "\n";
             $asset = Asset::where("serial",$serial)->withTrashed()->first();
             $part = Part::where("part_number",$device['part']['part_number'])->withTrashed()->first();
             $location = ServiceNowLocation::where("name",$device['location'])->first();
