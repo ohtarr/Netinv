@@ -96,6 +96,13 @@
                             </a>
                         </th>
                         <th>
+                            <a href="" ng-click="sortType = 'last_online'; sortReverse = !sortReverse" style="color:black">
+                                Last Online
+                                <span ng-show="sortType == 'last_online' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'last_online' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+                        <th>
                             <a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse" style="color:black">
                                 Created At
                                 <span ng-show="sortType == 'created_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
@@ -210,6 +217,7 @@
                                     </select>
                                 </div>
                             </td>
+                            <td>{{ asset.last_online }}</td>
                             <td>{{ asset.created_at }}</td>
                             <td>{{ asset.updated_at }}</td>
                             <td>

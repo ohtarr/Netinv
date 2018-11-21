@@ -3,11 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\NetworkDevice;
+use App\NetworkDeviceCisco;
+use App\NetworkDeviceAruba;
 use App\Asset;
 use App\Partner;
 use App\Part;
 use App\ServiceNowLocation;
+use Carbon\Carbon;
 
 class getNetworkDevices extends Command
 {
@@ -27,7 +29,8 @@ class getNetworkDevices extends Command
 
     public $devicearray = [];
     public $locations;
-    public $devices;
+    public $ciscodevices;
+    public $arubadevices;
     /**
      * Create a new command instance.
      *
@@ -47,6 +50,7 @@ class getNetworkDevices extends Command
     {
         $this->importCsv();
         $this->getCiscoDevices();
+        $this->getArubaDevices();
         //print_r($this->devicearray);
         $this->addAssets();
     }
@@ -54,13 +58,46 @@ class getNetworkDevices extends Command
     public function getCiscoDevices()
     {
         $manufacturer = Partner::where("name","Cisco")->first();//default to Cisco for Manufacturer.
-        $this->devices = NetworkDevice::all();
-        foreach($this->devices as $device)
+        $this->ciscodevices = NetworkDeviceCisco::all();
+        foreach($this->ciscodevices as $device)
         {
             print "Getting device " . $device->name . "\n";
             unset($tmp);
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
-            $serial = self::inventoryToSerial($device->inventory);
+            if($device->protocol)
+            {
+                $tmp['online'] = 1;
+            } else {
+                $tmp['online'] = null;
+            }
+            $serial = self::CiscoinventoryToSerial($device->inventory);
+
+            if($serial)
+            {
+                $sitename = strtoupper(substr($device->name, 0, 8));
+                $tmp['location'] = $sitename;
+                $tmp['part']['part_number'] = $device->model;
+                $this->devicearray[$serial] = $tmp;
+            }
+        }
+    }
+
+    public function getArubaDevices()
+    {
+        $manufacturer = Partner::where("name","Aruba")->first();//default to Cisco for Manufacturer.
+        $this->arubadevices = NetworkDeviceAruba::all();
+        foreach($this->arubadevices as $device)
+        {
+            print "Getting device " . $device->name . "\n";
+            unset($tmp);
+            $tmp['part']['manufacturer_id'] = $manufacturer->id;
+            if($device->protocol)
+            {
+                $tmp['online'] = 1;
+            } else {
+                $tmp['online'] = null;
+            }
+            $serial = self::ArubainventoryToSerial($device->inventory);
 
             if($serial)
             {
@@ -76,28 +113,36 @@ class getNetworkDevices extends Command
     {
         $manufacturer = Partner::where("name","Cisco")->first();  //default to Cisco for Manufacturer.
         //Grab csv file contents and convert to array.
-        $csv = array_map('str_getcsv', file(env("CSV_IMPORT_PATH")));
-        //Grab the title row in the CSV and use it for the associative array keys
-        array_walk($csv, function(&$a) use ($csv) {
-        $a = array_combine($csv[0], $a);
-        });
-        array_shift($csv); //remove column header
-        //Go through each entry in the CSV.  If it has a valid serial, add it to our array of stuff to attempt to add.
-        foreach($csv as $item)
+        if(file_exists(env("CSV_IMPORT_PATH")))
         {
-            print "Importing device " . $item['serial'] . "\n";
-            unset($tmp);
-            if($item['serial'])
+            $file = file(env("CSV_IMPORT_PATH"));
+            if($file)
             {
-                $tmp['part']['part_number'] = $item['model'];
-                $tmp['part']['manufacturer_id'] = $manufacturer->id;
-                if($item['Site'])
+                $csv = array_map('str_getcsv', $file);
+                //Grab the title row in the CSV and use it for the associative array keys
+                array_walk($csv, function(&$a) use ($csv) {
+                $a = array_combine($csv[0], $a);
+                });
+                array_shift($csv); //remove column header
+                //Go through each entry in the CSV.  If it has a valid serial, add it to our array of stuff to attempt to add.
+                foreach($csv as $item)
                 {
-                    $tmp['location'] = $item['Site'];
-                } else {
-                    $tmp['location'] = env("DEFAULT_LOCATION");  //If there is no SITE, assume it's in the DEPOT.
+                    print "Importing device " . $item['serial'] . "\n";
+                    unset($tmp);
+                    if($item['serial'])
+                    {
+                        $tmp['online'] = null;
+                        $tmp['part']['part_number'] = $item['model'];
+                        $tmp['part']['manufacturer_id'] = $manufacturer->id;
+                        if($item['Site'])
+                        {
+                            $tmp['location'] = $item['Site'];
+                        } else {
+                            $tmp['location'] = env("DEFAULT_LOCATION");  //If there is no SITE, assume it's in the DEPOT.
+                        }
+                        $this->devicearray[$item['serial']] = $tmp;
+                    }
                 }
-                $this->devicearray[$item['serial']] = $tmp;
             }
         }
     }
@@ -133,6 +178,10 @@ class getNetworkDevices extends Command
             if($asset)
             {
                 print "Asset found : " . $asset->serial . "\n";
+                if($device['online'] == 1)
+                {
+                    $asset->last_online = Carbon::now();
+                }
                 if($part)
                 {
                     print "Updating Asset with part : " . $part->part_number . "\n";
@@ -154,15 +203,19 @@ class getNetworkDevices extends Command
                     $asset->serial = $serial;
                     $asset->part_id = $part->id;
                     $asset->location_id = $location->sys_id;
+                    if($device['online'])
+                    {
+                        $asset->last_online = Carbon::now();
+                    }
                     $asset->save();
                 }
             }
         }
     }
 
-    public static function inventoryToSerial($show_inventory)
+    public static function CiscoinventoryToSerial($show_inventory)
     {
-        $serial = 'Unknown';
+        $serial = null;
         $invlines = explode("\r\n", $show_inventory);
         foreach ($invlines as $line) {
             // LEGACY PERL CODE: $x =~ /^\s*PID:\s(\S+).*SN:\s+(\S+)\s*$/;
@@ -173,6 +226,18 @@ class getNetworkDevices extends Command
             }
         }
 
+        return $serial;
+    }
+
+    public static function ArubainventoryToSerial($show_inventory)
+    {
+        $serial = null;
+        $reg = "/System Serial#\s+:\s+(\S+)/";
+        if (preg_match($reg, $show_inventory, $hits))
+        {
+            print_r($hits);
+            $serial = $hits[1];
+        }
         return $serial;
     }
 }
