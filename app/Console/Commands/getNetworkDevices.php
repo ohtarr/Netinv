@@ -10,6 +10,8 @@ use App\Partner;
 use App\Part;
 use App\ServiceNowLocation;
 use Carbon\Carbon;
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Client as GuzzleHttpClient;
 
 class getNetworkDevices extends Command
 {
@@ -50,7 +52,8 @@ class getNetworkDevices extends Command
     {
         $this->importCsv();
         $this->getCiscoDevices();
-        $this->getArubaDevices();
+        $this->getArubaWlcs();
+        $this->getArubaWaps();
         $this->addAssets();
         //print_r($this->devicearray);
     }
@@ -106,9 +109,9 @@ class getNetworkDevices extends Command
         }
     }
 
-    public function getArubaDevices()
+    public function getArubaWlcs()
     {
-        $manufacturer = Partner::where("name","Aruba")->first();//default to Cisco for Manufacturer.
+        $manufacturer = Partner::where("name","Aruba")->first();
         $this->arubadevices = NetworkDeviceAruba::all();
         foreach($this->arubadevices as $device)
         {
@@ -128,6 +131,44 @@ class getNetworkDevices extends Command
                 $sitename = strtoupper(substr($device->name, 0, 8));
                 $tmp['location'] = $sitename;
                 $tmp['part']['part_number'] = $device->model;
+                $this->devicearray[$serial] = $tmp;
+            }
+        }
+    }
+
+    public function getArubaWaps()
+    {
+        $manufacturer = Partner::where("name","Aruba")->first();
+        $url = env('NETMAN_BASE_URL') . env('NETMAN_AP_LIST');
+        $cookiejar = new CookieJar(true);
+        $params = [
+            'cookies' => $cookiejar,
+            'cert'    => env('NETMAN_CLIENT_CERT'),
+            ];
+        $client = new GuzzleHttpClient($params);
+        $response = $client->request("GET", $url, $params);
+        //get the body contents and decode json into an array.
+        $array = json_decode($response->getBody()->getContents(), true);
+        //print_r($array);
+        //$array = $array["result"];
+        foreach($array as $wap)
+        {
+            unset($tmp);
+            print "Getting device " . $wap['name'] . "\n";
+            if($wap['status'] = "Up")
+            {
+                $tmp['online'] = 1;
+            } else {
+                $tmp['online'] = null;
+            }
+            $tmp['part']['manufacturer_id'] = $manufacturer->id;
+            $serial = $wap['serial'];
+
+            if($serial)
+            {
+                $sitename = strtoupper(substr($wap['name'], 0, 8));
+                $tmp['location'] = $sitename;
+                $tmp['part']['part_number'] = $wap['model'];
                 $this->devicearray[$serial] = $tmp;
             }
         }
