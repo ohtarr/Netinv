@@ -51,8 +51,8 @@ class getNetworkDevices extends Command
         $this->importCsv();
         $this->getCiscoDevices();
         $this->getArubaDevices();
-        //print_r($this->devicearray);
         $this->addAssets();
+        //print_r($this->devicearray);
     }
 
     public function getCiscoDevices()
@@ -61,24 +61,48 @@ class getNetworkDevices extends Command
         $this->ciscodevices = NetworkDeviceCisco::all();
         foreach($this->ciscodevices as $device)
         {
-            print "Getting device " . $device->name . "\n";
             unset($tmp);
-            $tmp['part']['manufacturer_id'] = $manufacturer->id;
-            if($device->protocol)
+            print "Getting device " . $device->name . "\n";
+            if($device->protocol = "ssh2")
             {
                 $tmp['online'] = 1;
             } else {
                 $tmp['online'] = null;
             }
-            $serial = self::CiscoinventoryToSerial($device->inventory);
-
-            if($serial)
+            $reg = '/NAME:\s+"(\d)"\s*,.+\sPID:\s+(\S+).*SN:\s*(\S+)/';
+            if(preg_match_all($reg, $device->inventory, $hits, PREG_SET_ORDER))
             {
-                $sitename = strtoupper(substr($device->name, 0, 8));
-                $tmp['location'] = $sitename;
-                $tmp['part']['part_number'] = $device->model;
-                $this->devicearray[$serial] = $tmp;
+                //print_r($hits);
+                foreach($hits as $switch)
+                {
+                    unset($tmp2);
+                    $tmp2['part']['manufacturer_id'] = $manufacturer->id;
+                    $tmp2['online'] = $tmp['online'];
+                    $serial = $switch[3];
+
+                    if($serial)
+                    {
+                        $sitename = strtoupper(substr($device->name, 0, 8));
+                        $tmp2['location'] = $sitename;
+                        $tmp2['part']['part_number'] = $device->model;
+                        $this->devicearray[$serial] = $tmp2;
+                    }
+                }
+            } else {
+                unset($tmp2);
+                $tmp2['part']['manufacturer_id'] = $manufacturer->id;
+                $tmp2['online'] = $tmp['online'];
+                $serial = self::CiscoinventoryToSerial($device->inventory);
+    
+                if($serial)
+                {
+                    $sitename = strtoupper(substr($device->name, 0, 8));
+                    $tmp2['location'] = $sitename;
+                    $tmp2['part']['part_number'] = $device->model;
+                    $this->devicearray[$serial] = $tmp2;
+                }
             }
+
         }
     }
 
@@ -235,7 +259,7 @@ class getNetworkDevices extends Command
         $reg = "/System Serial#\s+:\s+(\S+)/";
         if (preg_match($reg, $show_inventory, $hits))
         {
-            print_r($hits);
+            //print_r($hits);
             $serial = $hits[1];
         }
         return $serial;
