@@ -12,6 +12,7 @@ use App\ServiceNowLocation;
 use Carbon\Carbon;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use App\Log;
 
 class getNetworkDevices extends Command
 {
@@ -64,48 +65,50 @@ class getNetworkDevices extends Command
         $this->ciscodevices = NetworkDeviceCisco::all();
         foreach($this->ciscodevices as $device)
         {
-            unset($tmp);
-            print "Getting device " . $device->name . "\n";
             if($device->protocol = "ssh2")
             {
-                $tmp['online'] = 1;
+                $online = 1;
             } else {
-                $tmp['online'] = null;
+                $online = null;
             }
+            if($device->ip)
+            {
+                $ip = $device->ip;
+            }
+            if($device->name)
+            {
+                $name = $device->name;
+            }
+            $sitename = strtoupper(substr($device->name, 0, 8));
+            $serial = self::CiscoinventoryToSerial($device->inventory);
+            $array = [
+                0   =>  [
+                    2   =>  $device->model,
+                    3   =>  $serial,
+                ],
+            ];
+
             $reg = '/NAME:\s+"(\d)"\s*,.+\sPID:\s+(\S+).*SN:\s*(\S+)/';
             if(preg_match_all($reg, $device->inventory, $hits, PREG_SET_ORDER))
             {
-                //print_r($hits);
-                foreach($hits as $switch)
-                {
-                    unset($tmp2);
-                    $tmp2['part']['manufacturer_id'] = $manufacturer->id;
-                    $tmp2['online'] = $tmp['online'];
-                    $serial = $switch[3];
-
-                    if($serial)
-                    {
-                        $sitename = strtoupper(substr($device->name, 0, 8));
-                        $tmp2['location'] = $sitename;
-                        $tmp2['part']['part_number'] = $device->model;
-                        $this->devicearray[$serial] = $tmp2;
-                    }
-                }
-            } else {
-                unset($tmp2);
-                $tmp2['part']['manufacturer_id'] = $manufacturer->id;
-                $tmp2['online'] = $tmp['online'];
-                $serial = self::CiscoinventoryToSerial($device->inventory);
-    
+                unset($array);
+                $array = $hits;
+            }
+            foreach($array as $switch)
+            {                
+                unset($tmp);
+                $serial = $switch[3];
                 if($serial)
                 {
-                    $sitename = strtoupper(substr($device->name, 0, 8));
-                    $tmp2['location'] = $sitename;
-                    $tmp2['part']['part_number'] = $device->model;
-                    $this->devicearray[$serial] = $tmp2;
+                    $tmp['part']['manufacturer_id'] = $manufacturer->id;
+                    $tmp['online'] = $online;
+                    $tmp['name'] = $name;
+                    $tmp['ip'] = $ip;
+                    $tmp['location'] = $sitename;
+                    $tmp['part']['part_number'] = $switch[2];
+                    $this->devicearray[$serial] = $tmp;
                 }
             }
-
         }
     }
 
@@ -115,24 +118,36 @@ class getNetworkDevices extends Command
         $this->arubadevices = NetworkDeviceAruba::all();
         foreach($this->arubadevices as $device)
         {
-            print "Getting device " . $device->name . "\n";
             unset($tmp);
-            $tmp['part']['manufacturer_id'] = $manufacturer->id;
-            if($device->protocol)
-            {
-                $tmp['online'] = 1;
-            } else {
-                $tmp['online'] = null;
-            }
             $serial = self::ArubainventoryToSerial($device->inventory);
-
-            if($serial)
+            if(!$serial)
             {
-                $sitename = strtoupper(substr($device->name, 0, 8));
-                $tmp['location'] = $sitename;
-                $tmp['part']['part_number'] = $device->model;
-                $this->devicearray[$serial] = $tmp;
+                continue;
             }
+            if($device->protocol = "ssh2")
+            {
+                $online = 1;
+            } else {
+                $online = null;
+            }
+            if($device->ip)
+            {
+                $ip = $device->ip;
+            }
+            if($device->name)
+            {
+                $name = $device->name;
+            }
+            $sitename = strtoupper(substr($device->name, 0, 8));
+
+            $tmp['part']['manufacturer_id'] = $manufacturer->id;
+            $tmp['online'] = $online;
+            $tmp['serial'] = $serial;
+            $tmp['location'] = $sitename;
+            $tmp['part']['part_number'] = $device->model;
+            $tmp['ip'] = $device->ip;
+            $tmp['name'] = $device->name;
+            $this->devicearray[$serial] = $tmp;
         }
     }
 
@@ -154,23 +169,24 @@ class getNetworkDevices extends Command
         foreach($array as $wap)
         {
             unset($tmp);
-            print "Getting device " . $wap['name'] . "\n";
+            $serial = $wap['serial'];
+            if(!$serial)
+            {
+                continue;
+            }
+
             if($wap['status'] = "Up")
             {
                 $tmp['online'] = 1;
             } else {
                 $tmp['online'] = null;
             }
+            $tmp['location'] = strtoupper(substr($wap['name'], 0, 8));
+            $tmp['ip'] = $wap['ip'];
+            $tmp['name'] = $wap['name'];
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
-            $serial = $wap['serial'];
-
-            if($serial)
-            {
-                $sitename = strtoupper(substr($wap['name'], 0, 8));
-                $tmp['location'] = $sitename;
-                $tmp['part']['part_number'] = $wap['model'];
-                $this->devicearray[$serial] = $tmp;
-            }
+            $tmp['part']['part_number'] = $wap['model'];
+            $this->devicearray[$serial] = $tmp;
         }
     }
 
@@ -254,11 +270,11 @@ class getNetworkDevices extends Command
                 }
                 if($location)
                 {
-                    print "Updating Asset with Location : " . $location->name . "\n";
+                    print "Updating Asset with Location : " . strtoupper($location->name) . "\n";
                     $asset->location_id = $location->sys_id;
                 }
                 $asset->save();
-
+                $asset->logChanges(strtoupper($device['name']), $device['ip'], strtoupper($device['location']));
             } else {
                 print "No existing Asset found....\n";
                 if($location && $serial && $part)
@@ -273,8 +289,10 @@ class getNetworkDevices extends Command
                         $asset->last_online = Carbon::now();
                     }
                     $asset->save();
+                    $asset->logChanges(strtoupper($device['name']), $device['ip'], strtoupper($device['location']));
                 }
             }
+
         }
     }
 
