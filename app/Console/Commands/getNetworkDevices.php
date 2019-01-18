@@ -262,7 +262,7 @@ class getNetworkDevices extends Command
                 if($asset->trashed())
                 {
                     $message = "Device restored back to ACTIVE in the Assets database.";
-                    $asset->addLog($device['name'], $device['ip'], $device['location'], $message)
+                    $asset->addLog($device['name'], $device['ip'], $device['location'], $message);
                     $asset->restore();
                 }
                 if($device['online'] == 1)

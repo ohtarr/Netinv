@@ -87,7 +87,7 @@ class Asset extends Model
         //print_r($messages);
         foreach($messages as $message)
         {
-            $this->addLog($newname, $newip, $newloc, $message)
+            $this->addLog($newname, $newip, $newloc, $message);
         }
     }
 
