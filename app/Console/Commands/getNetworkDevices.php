@@ -259,12 +259,22 @@ class getNetworkDevices extends Command
             if($asset)
             {
                 print "Asset found : " . $asset->serial . "\n";
+                if($asset->trashed())
+                {
+                    $message = "Device restored back to ACTIVE in the Assets database.";
+                    $asset->addLog($device['name'], $device['ip'], $device['location'], $message)
+                    $asset->restore();
+                }
                 if($device['online'] == 1)
                 {
                     $asset->last_online = Carbon::now();
                 }
                 if($part)
                 {
+                    if($part->trashed())
+                    {
+                        $part->restore();
+                    }
                     print "Updating Asset with part : " . $part->part_number . "\n";
                     $asset->part_id = $part->id;
                 }

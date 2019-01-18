@@ -49,6 +49,17 @@ class Asset extends Model
         return $this->logs->last();
     }
 
+    public function addLog($name, $ip, $loc, $message)
+    {
+        $log = new Log;
+        $log->asset_id = $this->id;
+        $log->name = $name;
+        $log->ip = $ip;
+        $log->location = $loc;
+        $log->message = $message;
+        $log->save();
+    }
+
     public function logChanges($newname, $newip, $newloc)
     {
         $messages = [];
@@ -76,13 +87,7 @@ class Asset extends Model
         //print_r($messages);
         foreach($messages as $message)
         {
-            $log = new Log;
-            $log->asset_id = $this->id;
-            $log->name = $newname;
-            $log->ip = $newip;
-            $log->location = $newloc;
-            $log->message = $message;
-            $log->save();
+            $this->addLog($newname, $newip, $newloc, $message)
         }
     }
 
