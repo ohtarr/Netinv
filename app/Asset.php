@@ -60,7 +60,7 @@ class Asset extends Model
         $log->save();
     }
 
-    public function logChanges($newname, $newip, $newloc)
+    public function logChanges($newname, $ip, $newloc)
     {
         $messages = [];
         $lastlog = $this->getLastLog();
@@ -71,23 +71,23 @@ class Asset extends Model
             {
                 $messages[] = 'Device NAME changed from "' . $lastlog->name . '" to "' . $newname . '".';
             }
-            if($lastlog->ip != $newip)
+/*             if($lastlog->ip != $newip)
             {
                 $messages[] = 'Device IP changed from "' . $lastlog->ip . '" to "' . $newip . '".';
-            }
+            } */
             if($lastlog->location != $newloc)
             {
                 $messages[] = 'Device LOCATION changed from "' . $lastlog->location . '" to "' . $newloc . '".';
             }
         } else {
             $messages[] = 'Device NAME changed from "" to "' . $newname . '".';
-            $messages[] = 'Device IP changed from "" to "' . $newip . '".';
+            //$messages[] = 'Device IP changed from "" to "' . $newip . '".';
             $messages[] = 'Device LOCATION changed from "" to "' . $newloc . '".';
         }
         //print_r($messages);
         foreach($messages as $message)
         {
-            $this->addLog($newname, $newip, $newloc, $message);
+            $this->addLog($newname, $ip, $newloc, $message);
         }
     }
 
