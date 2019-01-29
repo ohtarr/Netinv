@@ -179,7 +179,8 @@ class getNetworkDevices extends Command
             {
                 $tmp['online'] = 1;
             } else {
-                $tmp['online'] = null;
+                //$tmp['online'] = null;
+                continue;
             }
             $tmp['location'] = strtoupper(substr($wap['name'], 0, 8));
             $tmp['ip'] = $wap['ip'];
