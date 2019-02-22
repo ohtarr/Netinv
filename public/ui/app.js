@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app', ['ui.router', 'ngMessages', 'ngStorage'])
+        .module('app', ['ui.router', 'ngMessages', 'ngStorage','ui.select','ngSanitize'])
         .config(config)
         .run(run);
 
