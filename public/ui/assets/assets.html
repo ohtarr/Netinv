@@ -8,7 +8,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-2">
-                        Assets : {{ vm.model.assets.length }}
+                        Assets : {{ vm.pages.total }}
                     </div>
                     <div class="col-md-8">
                         <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15"
@@ -95,14 +95,14 @@
                                 <span ng-show="sortType == 'location.name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'last_online'; sortReverse = !sortReverse" style="color:black">
                                 Last Online
                                 <span ng-show="sortType == 'last_online' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                 <span ng-show="sortType == 'last_online' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse" style="color:black">
                                 Created At
                                 <span ng-show="sortType == 'created_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
@@ -110,14 +110,14 @@
                             </a>
                         </th>
 
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse" style="color:black">
                                 Updated At
                                 <span ng-show="sortType == 'updated_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                 <span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th style="width:150px">
+                        <th style="width:200px">
                             <button ng-if="!vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-plus"></i> Add
                             </button>
@@ -137,9 +137,9 @@
                             <div>
                                 <div class="input-group">
                                     <input type="text" class="form-control form-control-sm" ng-model='vm.selected.asset.serial'
-                                        placeholder="Serial #">
+                                        placeholder="Serial #" ng-keypress="vm.eventEnter($event)">
                                     <span class="input-group-btn">
-                                        <button type="button" ng-click='vm.selected.asset = undefined' class="btn btn-default">
+                                        <button type="button" ng-click='vm.selected.asset = undefined;vm.getAssets()' class="btn btn-default">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </button>
                                     </span>
@@ -161,7 +161,7 @@
                                         </ui-select-choices>
                                     </ui-select>
                                     <span class="input-group-btn">
-                                        <button type="button" ng-click='vm.selected.part = undefined' class="btn btn-default">
+                                        <button type="button" ng-click='vm.selected.part = undefined;vm.getAssets()' class="btn btn-default">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </button>
                                     </span>
@@ -189,7 +189,7 @@
                                         </ui-select-choices>
                                     </ui-select>
                                     <span class="input-group-btn">
-                                        <button type="button" ng-click='vm.selected.location = undefined' class="btn btn-default">
+                                        <button type="button" ng-click='vm.selected.location = undefined;vm.getAssets()' class="btn btn-default">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </button>
                                     </span>

@@ -28,6 +28,13 @@ angular
 			100000
 		];
 
+		vm.eventEnter = function (event) {
+			if(event.which === 13)
+			{
+				vm.getAssets();
+			}
+		}
+
 		vm.pages = {};
 		vm.pages.links = {};
 
@@ -44,7 +51,9 @@ angular
 		}
 
 		vm.clearFilter = function () {
-			vm.selected = {};
+			vm.selected.part = {};
+			vm.selected.asset = {};
+			vm.selected.location = {};
 		}
 
 		vm.addtoggle = function () {
@@ -420,10 +429,10 @@ angular
 				//alert("site Added Succesfully" + data);
 				//$state.reload();
 				//$state.go('assets');
-				vm.model.assets.push(data.data);
+/* 				vm.model.assets.push(data.data); */
 				vm.clearAdd();
-				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
-				renderAssetAll(assetIndex);
+/* 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
+				renderAssetAll(assetIndex); */
 			}, function (error) {
 				//console.log(error)
 				//console.log(error.data.message)
