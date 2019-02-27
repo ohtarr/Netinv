@@ -7,38 +7,53 @@ angular
 		vm.newasset = {};
 
 		vm.showaddrow = false;
+		vm.showfilterrow = false;
 		//initController();
 
-		vm.assetsForm = {};
 		vm.model = {};
 		vm.model.assets = [];
 		vm.model.parts = [];
 		vm.model.partners = [];
 		vm.model.locations = [];
 
+		vm.selected = {};
+		vm.selected.paginate = 100;
+		
+		vm.options = {};
+		vm.options.paginate = [
+			100,
+			500,
+			1000,
+			10000,
+			100000
+		];
+
+		vm.eventEnter = function (event) {
+			if(event.which === 13)
+			{
+				vm.getAssets();
+			}
+		}
+
+		vm.pages = {};
+		vm.pages.links = {};
+
 		vm.httpParams = {};
-		vm.httpParams["filter[id]"] = $location.search().id
+/*		vm.httpParams["filter[id]"] = $location.search().id
 		vm.httpParams["filter[serial]"] = $location.search().serial
 		vm.httpParams["filter[part_id]"] = $location.search().part_id
 		vm.httpParams["filter[vendor_id]"] = $location.search().vendor_id
 		vm.httpParams["filter[warranty_id]"] = $location.search().warranty_id
-		vm.httpParams["filter[location_id]"] = $location.search().location_id
-
-		vm.test = function () {
-			console.log(vm.newasset);
-		}
+		vm.httpParams["filter[location_id]"] = $location.search().location_id */
 
 		vm.clearAdd = function () {
 			vm.newasset = null;
 		}
 
 		vm.clearFilter = function () {
-			vm.httpParams["filter[id]"] = ""
-			vm.httpParams["filter[serial]"] = ""
-			vm.httpParams["filter[part_id]"] = ""
-			vm.httpParams["filter[vendor_id]"] = ""
-			vm.httpParams["filter[warranty_id]"] = ""
-			vm.httpParams["filter[location_id]"] = ""
+			vm.selected.part = {};
+			vm.selected.asset = {};
+			vm.selected.location = {};
 		}
 
 		vm.addtoggle = function () {
@@ -47,6 +62,16 @@ angular
 			} else {
 				if (vm.showaddrow == false) {
 					vm.showaddrow = true;
+				}
+			}
+		}
+
+		vm.filtertoggle = function () {
+			if (vm.showfilterrow == true) {
+				vm.showfilterrow = false;
+			} else {
+				if (vm.showfilterrow == false) {
+					vm.showfilterrow = true;
 				}
 			}
 		}
@@ -96,7 +121,7 @@ angular
 			return null;
 		}
 
-		function isInArrayNgForeach(field, arr) {
+/* 		function isInArrayNgForeach(field, arr) {
 			var result = false;
 			angular.forEach(arr, function (value, key) {
 				if (field == value)
@@ -107,6 +132,7 @@ angular
 
 		function renderAssets(assets) {
 			//var vm.model = [];
+			vm.model.assets = [];
 			angular.forEach(assets, function (value, key) {
 				//console.log(value);
 				vm.model.assets.push(value);
@@ -117,6 +143,7 @@ angular
 		}
 
 		function renderParts(parts) {
+			vm.model.parts = [];
 			angular.forEach(parts, function (value, key) {
 				vm.model.parts.push(value);
 			});
@@ -134,6 +161,45 @@ angular
 
 		}
 
+		function renderPartners(partners) {
+			vm.model.partners = [];
+			angular.forEach(partners, function (value, key) {
+				vm.model.partners.push(value);
+			});
+			vm.model.partners = sortByKey(vm.model.partners, 'name');
+			vm.loading.partners = false;
+			console.log(vm.model.partners);
+
+			angular.forEach(vm.model.assets, function (value, key) {
+				partner = findObjectByKey(vm.model.partners, "id", value.vendor_id);
+				//console.log(partner);
+				vm.model.assets[key].partner = partner;
+			});
+		}
+
+		function renderLocations(locations) {
+			vm.model.locations = [];
+			angular.forEach(locations, function (value, key) {
+				vm.model.locations.push(value);
+			});
+			vm.model.locations = sortByKey(vm.model.locations, 'name');
+			vm.loading.locations = false;
+			console.log(vm.model.locations);
+
+			angular.forEach(vm.model.assets, function (value, key) {
+				loc = findObjectByKey(vm.model.locations, "sys_id", value.location_id);
+				//console.log(loc);
+				vm.model.assets[key].location = loc;
+			});
+		} */
+
+		function renderAllAssets()
+		{
+			angular.forEach(vm.model.assets, function (value, key) {
+				renderAssetAll(key);
+			});
+		}
+		
 		function renderAssetAll(index) {
 			renderAssetPart(index);
 			renderAssetPartner(index);
@@ -155,41 +221,136 @@ angular
 			vm.model.assets[index].location = loc;
 		}
 
-		function renderPartners(partners) {
-			angular.forEach(partners, function (value, key) {
-				vm.model.partners.push(value);
-			});
-			vm.model.partners = sortByKey(vm.model.partners, 'name');
-			vm.loading.partners = false;
-			console.log(vm.model.partners);
-
+		function updateAssets() {
 			angular.forEach(vm.model.assets, function (value, key) {
-				partner = findObjectByKey(vm.model.partners, "id", value.vendor_id);
-				//console.log(partner);
-				vm.model.assets[key].partner = partner;
-			});
-		}
-
-		function renderLocations(locations) {
-			angular.forEach(locations, function (value, key) {
-				vm.model.locations.push(value);
-			});
-			vm.model.locations = sortByKey(vm.model.locations, 'name');
-			vm.loading.locations = false;
-			console.log(vm.model.locations);
-
-			angular.forEach(vm.model.assets, function (value, key) {
+				part = findObjectByKey(vm.model.parts, "id", value.part_id);
+				partner = findObjectByKey(vm.model.partners, "id", value.partner_id);
 				loc = findObjectByKey(vm.model.locations, "sys_id", value.location_id);
-				//console.log(loc);
+
+				vm.model.assets[key].part = part;
+				vm.model.assets[key].partner = partner;
 				vm.model.assets[key].location = loc;
-			});
-		}
+			})
+		};
 
-		function refreshAssetModel(id) {
-			assetIndex = findObjectIndexByKey(vm.model.assets, "id", id);
-		}
+		vm.getAssets = function () {
+			vm.loading.assets = true;
+			httpParams = {};
+			httpParams.page = vm.pages.current_page;
+			if(vm.selected.part){
+				httpParams["filter[part_id]"] = vm.selected.part.id;
+			}
+			if(vm.selected.asset)
+			{
+				httpParams["filter[serial]"] = vm.selected.asset.serial;
+			}
+			if(vm.selected.location)
+			{
+				httpParams["filter[location_id]"] = vm.selected.location.sys_id;
+			}
+			httpParams['paginate'] = vm.selected.paginate;
+			AssetsService.getAssets(httpParams)
+				.then(function (res) {
+					// Check for errors and if token has expired.
+					if (res.data.message) {
+						vm.message = res.data.message;
+						return vm.message;
+					} else {
+						assets = res.data.data;
+						vm.pages.last_page		= res.data.meta.last_page;
+						vm.pages.current_page	= res.data.meta.current_page;
+						vm.pages.per_page		= res.data.meta.per_page;
+						vm.pages.total			= res.data.meta.total;
+						vm.pages.links.first	= res.data.links.first; 
+						vm.pages.links.last		= res.data.links.last;
+						vm.pages.links.next		= res.data.links.next;
+						vm.pages.links.prev		= res.data.links.prev;
+						delete vm.model.assets;
+						vm.model.assets = [];
+						angular.forEach(assets, function (value, key) {
+							//console.log(value);
+							vm.model.assets.push(value);
+						});
+						vm.model.assets = sortByKey(vm.model.assets, 'id');
+						updateAssets();
+						renderAllAssets();
+						vm.loading.assets = false;
+						console.log(vm.model.assets);
 
-		function getAll() {
+					}
+				})
+		};
+
+		function getParts() {
+			PartsService.getParts()
+				.then(function (res) {
+					// Check for errors and if token has expired.
+					if (res.data.message) {
+						vm.message = res.data.message;
+						return vm.message;
+					} else {
+						parts = res.data.data;
+						vm.model.parts = [];
+						angular.forEach(parts, function (value, key) {
+							vm.model.parts.push(value);
+						});
+						vm.model.parts = sortByKey(vm.model.parts, 'part_number');
+						vm.loading.parts = false;
+						updateAssets();
+						renderAllAssets();
+						console.log(vm.model.parts);
+					}
+				})
+		};
+
+		function getPartners() {
+			PartnersService.getPartners()
+				.then(function (res) {
+					// Check for errors and if token has expired.
+					if (res.data.message) {
+						vm.message = res.data.message;
+						return vm.message;
+					} else {
+						partners = res.data.data;
+						vm.model.partners = [];
+						angular.forEach(partners, function (value, key) {
+							vm.model.partners.push(value);
+						});
+						vm.model.partners = sortByKey(vm.model.partners, 'name');
+						vm.loading.partners = false;
+						updateAssets();
+						renderAllAssets();
+					}
+				})
+		};
+
+		function getLocations() {
+			LocsService.getLocations()
+				.then(function (res) {
+					// Check for errors and if token has expired.
+					if (res.data.message) {
+						vm.message = res.data.message;
+						return vm.message;
+					} else {
+						locations = res.data.data;
+						vm.model.locations = [];
+						angular.forEach(locations, function (value, key) {
+							vm.model.locations.push(value);
+						});
+						vm.model.locations = sortByKey(vm.model.locations, 'name');
+						vm.loading.locations = false;
+						updateAssets();
+						renderAllAssets();
+					}
+				})
+		};
+
+		vm.getAssets();
+		getParts();
+		getPartners();
+		getLocations();
+
+/* 		function getAll() {
 			AssetsService.getAssets(vm.httpParams)
 				.then(function (res) {
 					// Check for errors and if token has expired.
@@ -241,14 +402,14 @@ angular
 
 		}
 
-		getAll();
+		getAll(); */
 
 		/* 		$scope.$on('$destroy', function() {
 					//console.log($scope);
 		            $interval.cancel(pullassets);
 				}); */
 
-		var id = $stateParams.id;
+/* 		var id = $stateParams.id;
 		//console.log(id + " printing id here...")
 
 		if (id != undefined) {
@@ -261,17 +422,17 @@ angular
 					//Error
 				});
 		}
-
+ */
 		vm.submitAsset = function (form) {
 			console.log(form);
 			AssetsService.createAsset(angular.copy(form)).then(function (data) {
 				//alert("site Added Succesfully" + data);
 				//$state.reload();
 				//$state.go('assets');
-				vm.model.assets.push(data.data);
+/* 				vm.model.assets.push(data.data); */
 				vm.clearAdd();
-				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
-				renderAssetAll(assetIndex);
+/* 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
+				renderAssetAll(assetIndex); */
 			}, function (error) {
 				//console.log(error)
 				//console.log(error.data.message)
@@ -294,7 +455,6 @@ angular
 			//$state.reload();
 		}
 
-
 		// Delete Asset
 		vm.delete = function (asset) {
 			AssetsService.deleteAsset(asset.id).then(function (data) {
@@ -315,7 +475,6 @@ angular
 			}, function (error) {
 				alert('An error occurred');
 			});
-
 		}
 
 	}])

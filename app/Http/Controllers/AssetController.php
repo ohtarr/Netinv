@@ -29,12 +29,19 @@ class AssetController extends Controller
 		$user = auth()->user();
 		if ($user->cant('read', Asset::class)) {
 			abort(401, 'You are not authorized');
-		}
+        }
+        
+        if($request->paginate)
+        {
+            $paginate = $request->paginate;
+        } else {
+            $paginate = env("ASSETS_PAGINATION");
+        }
 
 		$assets = QueryBuilder::for(Asset::class)
 			->allowedFilters(Filter::exact('id'),Filter::exact('serial'),Filter::exact('part_id'),Filter::exact('vendor_id'),Filter::exact('warranty_id'),Filter::exact('location_id'))
 			->allowedIncludes('part','vendor','warranty')
-			->paginate(env("ASSETS_PAGINATION"));
+			->paginate($paginate);
 			
 		//$assets = Asset::paginate(1000);
 		//return new AssetCollection($assets);
