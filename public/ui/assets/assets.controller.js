@@ -7,27 +7,31 @@ angular
 		vm.newasset = {};
 
 		vm.showaddrow = false;
+		vm.showfilterrow = false;
 		//initController();
 
-		vm.assetsForm = {};
 		vm.model = {};
 		vm.model.assets = [];
 		vm.model.parts = [];
 		vm.model.partners = [];
 		vm.model.locations = [];
 
-		vm.model.test = [
-			{id:1, part_number:"abc"},
-			{id:2, part_number:"def"},
+		vm.selected = {};
+		vm.selected.paginate = 100;
+		
+		vm.options = {};
+		vm.options.paginate = [
+			100,
+			500,
+			1000,
+			10000,
+			100000
 		];
 
-		console.log(vm.model.test);
+		vm.pages = {};
+		vm.pages.links = {};
 
-		vm.selected = {};
-		//vm.selected.query = {};
-		//vm.selected.query.part = {};
-
- 		vm.httpParams = {};
+		vm.httpParams = {};
 /*		vm.httpParams["filter[id]"] = $location.search().id
 		vm.httpParams["filter[serial]"] = $location.search().serial
 		vm.httpParams["filter[part_id]"] = $location.search().part_id
@@ -35,21 +39,12 @@ angular
 		vm.httpParams["filter[warranty_id]"] = $location.search().warranty_id
 		vm.httpParams["filter[location_id]"] = $location.search().location_id */
 
-		vm.test = function () {
-			console.log(vm.newasset);
-		}
-
 		vm.clearAdd = function () {
 			vm.newasset = null;
 		}
 
 		vm.clearFilter = function () {
-			vm.httpParams["filter[id]"] = ""
-			vm.httpParams["filter[serial]"] = ""
-			vm.httpParams["filter[part_id]"] = ""
-			vm.httpParams["filter[vendor_id]"] = ""
-			vm.httpParams["filter[warranty_id]"] = ""
-			vm.httpParams["filter[location_id]"] = ""
+			vm.selected = {};
 		}
 
 		vm.addtoggle = function () {
@@ -58,6 +53,16 @@ angular
 			} else {
 				if (vm.showaddrow == false) {
 					vm.showaddrow = true;
+				}
+			}
+		}
+
+		vm.filtertoggle = function () {
+			if (vm.showfilterrow == true) {
+				vm.showfilterrow = false;
+			} else {
+				if (vm.showfilterrow == false) {
+					vm.showfilterrow = true;
 				}
 			}
 		}
@@ -220,11 +225,21 @@ angular
 		};
 
 		vm.getAssets = function () {
-			 httpParams = {};
+			vm.loading.assets = true;
+			httpParams = {};
+			httpParams.page = vm.pages.current_page;
 			if(vm.selected.part){
 				httpParams["filter[part_id]"] = vm.selected.part.id;
 			}
-
+			if(vm.selected.asset)
+			{
+				httpParams["filter[serial]"] = vm.selected.asset.serial;
+			}
+			if(vm.selected.location)
+			{
+				httpParams["filter[location_id]"] = vm.selected.location.sys_id;
+			}
+			httpParams['paginate'] = vm.selected.paginate;
 			AssetsService.getAssets(httpParams)
 				.then(function (res) {
 					// Check for errors and if token has expired.
@@ -233,6 +248,14 @@ angular
 						return vm.message;
 					} else {
 						assets = res.data.data;
+						vm.pages.last_page		= res.data.meta.last_page;
+						vm.pages.current_page	= res.data.meta.current_page;
+						vm.pages.per_page		= res.data.meta.per_page;
+						vm.pages.total			= res.data.meta.total;
+						vm.pages.links.first	= res.data.links.first; 
+						vm.pages.links.last		= res.data.links.last;
+						vm.pages.links.next		= res.data.links.next;
+						vm.pages.links.prev		= res.data.links.prev;
 						delete vm.model.assets;
 						vm.model.assets = [];
 						angular.forEach(assets, function (value, key) {
@@ -240,10 +263,11 @@ angular
 							vm.model.assets.push(value);
 						});
 						vm.model.assets = sortByKey(vm.model.assets, 'id');
-						vm.loading.assets = false;
 						updateAssets();
 						renderAllAssets();
+						vm.loading.assets = false;
 						console.log(vm.model.assets);
+
 					}
 				})
 		};

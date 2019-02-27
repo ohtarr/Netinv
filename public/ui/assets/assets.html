@@ -2,123 +2,41 @@
 <ng-include src="'app-content/navbar.html'"></ng-include>
 
 <!-- <div style="margin:10px"></div> -->
-
 <div style="margin-left:5%; margin-right:5%;">
-
-    <div class="well form-horizontal" style="margin-top:5px;">
-        <div style="margin:1px"></div>
-        <legend>Assets : {{ vm.model.assets.length }}
-            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
-                <i class="glyphicon glyphicon-refresh"></i> Refresh
-            </button>
-            <div class="input-group col-md-3 pull-right">
-                <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }"
-                    placeholder="Search" name="srch-term" id="srch-term">
-                <div class="input-group-btn">
-                    <button class="btn btn-default btn-disabled" ng-click="vm.search = undefined">
-                        <i class="glyphicon glyphicon-search"></i>
+    <div class="well form-horizontal">
+        <legend>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        Assets : {{ vm.model.assets.length }}
+                    </div>
+                    <div class="col-md-8">
+                        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15"
+                            class="pagination-sm" boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page"
+                            ng-change="vm.getAssets()"></ul>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <ui-select allow-clear ng-model='vm.selected.paginate' theme="bootstrap" on-select="vm.getAssets()">
+                                <ui-select-match>
+                                    Per Page: {{vm.selected.paginate}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="item in vm.options.paginate | filter: $select.search">
+                                    <!--                                             {{part.part_number}} -->
+                                    <div ng-bind-html="item | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                            <span class="input-group-btn">
+                                <button type="button" ng-click='vm.selected.location = undefined' class="btn btn-default">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <table class="table table-striped table-condensed table-bordered table-hover">
-                <thead>
-                <tr style="height:30px">
-                    <td>
-                        Serial
-                    </td>
-                    <td>
-                        Part
-                    </td>
-                    <td>
-                        Vendor
-                    </td>
-                    <td>
-                        Warranty
-                    </td>
-                    <td>
-                        Location
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                </thead>
-                <tr class="bg-danger" style="height:30px">
-                    <td>
-                        <input type="text" class="form-control form-control-sm" ng-model='vm.selected.part.id'>
-                    </td>
-                    <td>
-<!--                         <div ng-controller="SelectHeaderController" class="md-padding" ng-cloak>
-                            <div>
-                                <div layout="row">
-                                <md-input-container>
-                                    <md-select ng-model='partselect'
-                                                md-on-close="clearSearchTerm()"
-                                                data-md-container-class="selectdemoSelectHeader"
-                                                multiple>
-                                    <md-select-header class="demo-select-header">
-                                        <input ng-model="partsearch"
-                                                type="search"
-                                                placeholder="Parts"
-                                                class="demo-header-searchbox md-text">
-                                    </md-select-header>
-                                    <md-optgroup label="parts">
-                                        <md-option ng-value="part_id" ng-repeat="vegetable in vegetables |
-                                        filter:searchTerm">{{part_id}}</md-option>
-                                    </md-optgroup>
-                                    </md-select>
-                                </md-input-container>
-                                </div>
-                            </div>
-                        </div> -->
-                        <div class="form-group">
-                            <div class="col-sm-6">
-                                <div class="input-group">
-                                    <ui-select allow-clear ng-model='vm.selected.part' theme="bootstrap">
-                                        <ui-select-match placeholder="Part Number">
-                                            {{$select.selected.part}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="item in vm.model.parts | filter: $select.search">
-<!--                                             {{part.part_number}} -->
-                                            <div ng-bind-html="item.part_number | highlight: $select.search"></div>
-                                            <small ng-bind-html="item.id | highlight: $select.search"></small>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <span class="input-group-btn">
-                                       <button type="button" ng-click='vm.selected.part = undefined' class="btn btn-default">
-                                            <span class="glyphicon glyphicon-trash"></span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-
-<!--                         <select class="form-control" required ng-model='vm.httpParams["filter[part_id]"]' ng-options="part.id as part.part_number for part in vm.model.parts"
-                            data-width="100%" name="partid">
-                        </select> -->
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[vendor_id]"]'>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" ng-model='vm.httpParams["filter[warranty_id]"]'>
-                    </td>
-                    <td>
-                        <select style="width:140px" class="form-control" required ng-model='vm.httpParams["filter[location_id]"]'
-                            ng-options="location.sys_id as location.name for location in vm.model.locations"
-                            data-width="100%" name="partid">
-                        </select>
-                    </td>
-                    <td>
-                        <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.getAssets()">
-                            <i class="glyphicon glyphicon-refresh"></i> 
-                            Refresh
-                        </button>                        
-                    </td>
-                </tr>                
-            </table>
-            <br>
-            <div style="margin:5px"></div>
         </legend>
+
         <div ng-if="vm.message;" class="well">
             <div class="row">
                 <h4>{{vm.message}}</h4>
@@ -128,18 +46,9 @@
 
         <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
             <!-- <div class="table-responsive"> -->
-            <table class="table table-striped table-condensed table-bordered table-hover">
-                <!--                 <col width="1">
-                <col width="1">
-                <col width="200">
-                <col width="200">
-                <col width="1">
-                <col width="40">
-                <col width="180">
-                <col width="180">
-                <col width="130"> -->
+            <table class="table table-striped table-condensed table-bordered table-hover w-auto">
                 <thead>
-                    <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
+                    <tr style="background-color: #aeb3b7;">
                         <th>
                             <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
                                 ID
@@ -208,23 +117,111 @@
                                 <span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:150px">
                             <button ng-if="!vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-plus"></i> Add
                             </button>
                             <button ng-if="vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-minus"></i> Add
                             </button>
+                            <button class="btn btn-primary btn-sm" ng-click="vm.filtertoggle()">
+                                <i class="glyphicon glyphicon-filter"></i> Filter
+                            </button>
+                        </th>
+                    </tr>
+                    <tr style="background-color: #aeb3b7;" ng-if="vm.showfilterrow">
+                        <th>
+                        </th>
+
+                        <th>
+                            <div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-sm" ng-model='vm.selected.asset.serial'
+                                        placeholder="Serial #">
+                                    <span class="input-group-btn">
+                                        <button type="button" ng-click='vm.selected.asset = undefined' class="btn btn-default">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div>
+
+                                <div class="input-group">
+                                    <ui-select allow-clear ng-model='vm.selected.part' theme="bootstrap" on-select="vm.getAssets()">
+                                        <ui-select-match placeholder="Part Number">
+                                            {{vm.selected.part.part_number}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="item in vm.model.parts | filter: $select.search">
+                                            <!--                                             {{part.part_number}} -->
+                                            <div ng-bind-html="item.part_number | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <span class="input-group-btn">
+                                        <button type="button" ng-click='vm.selected.part = undefined' class="btn btn-default">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+                        <th>
+                            <div>
+
+                                <div class="input-group">
+                                    <ui-select allow-clear ng-model='vm.selected.location' theme="bootstrap" on-select="vm.getAssets()">
+                                        <ui-select-match placeholder="Location">
+                                            {{vm.selected.location.name}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="item in vm.model.locations | filter: $select.search">
+                                            <!--                                             {{part.part_number}} -->
+                                            <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <span class="input-group-btn">
+                                        <button type="button" ng-click='vm.selected.location = undefined' class="btn btn-default">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+
+                        </th>
+                        <th>
+
+                        </th>
+
+                        <th>
+
+                        </th>
+                        <th style="width:200px">
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.clearFilter();vm.getAssets()">
+                                <i class="glyphicon glyphicon-remove"></i>
+                                Clear
+                            </button>
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.getAssets()">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                                Refresh
+                            </button>
                         </th>
                     </tr>
                 </thead>
                 <div>
-                    <div ng-if="vm.loading.assets && !vm.message" class="well">
-                        <div class="row">
-                            <div class="container loader"></div>
-                        </div>
-                        <div style="margin:25px"></div>
-                    </div>
                     <tbody ng-if="!vm.loading.assets">
                         <tr class="bg-danger" style="height:30px" ng-if="vm.showaddrow">
                             <td>
@@ -374,5 +371,13 @@
                 </div>
             </table>
         </div>
+        <div ng-if="vm.loading.assets && !vm.message" class="well">
+            <div class="row">
+                <div class="container loader"></div>
+            </div>
+            <div style="margin:25px"></div>
+        </div>
+        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15" class="pagination-sm"
+            boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page" ng-change="vm.getAssets()"></ul>
     </div>
 </div>
