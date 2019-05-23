@@ -173,6 +173,8 @@ angular
 			//console.log(form);
 			PartnersService.createPartner(angular.copy(form)).then(function (data) {
 				vm.model.partners.push(data.data);
+				partnerIndex = findObjectIndexByKey(vm.model.partners, "id", data.data.id);
+				renderPartnerAll(partnerIndex);
 				vm.clearAdd();
 			}, function (error) {
 				alert('Error: ' + error.data.message + " | Status: " + error.status);

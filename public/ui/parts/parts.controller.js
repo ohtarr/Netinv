@@ -219,6 +219,9 @@ angular
 		vm.submitPart = function (form) {
 			//console.log(form);
 			PartsService.createPart(angular.copy(form)).then(function (data) {
+				vm.model.parts.push(data.data);
+				partIndex = findObjectIndexByKey(vm.model.parts, "id", data.data.id);
+				renderPartAll(partIndex);
 				vm.clearAdd();
 			}, function (error) {
 				alert('Error: ' + error.data.message + " | Status: " + error.status);

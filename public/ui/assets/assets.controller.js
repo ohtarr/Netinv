@@ -365,8 +365,8 @@ angular
 				//$state.go('assets');
  				vm.model.assets.push(data.data);
 				vm.clearAdd();
-/* 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
-				renderAssetAll(assetIndex); */
+ 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
+				renderAssetAll(assetIndex);
 			}, function (error) {
 				//console.log(error)
 				//console.log(error.data.message)
