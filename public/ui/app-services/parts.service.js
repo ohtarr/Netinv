@@ -6,9 +6,9 @@ angular
 
 		
 		// Get Parts
-		self.getParts = function() {
+		self.getParts = function(httpParams) {
 			var defer = $q.defer();
-			return $http.get(globalUrl + '/api/parts')
+			return $http.get(globalUrl + '/api/parts',{params: httpParams})
 				.then(function successCallback(response) {
 					//console.log(response)
 					defer.resolve(response);

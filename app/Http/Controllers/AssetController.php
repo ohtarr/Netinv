@@ -38,29 +38,33 @@ class AssetController extends Controller
             $paginate = env("ASSETS_PAGINATION");
         }
 
-		$assets = QueryBuilder::for(Asset::class)
-			->allowedFilters(Filter::exact('id'),Filter::exact('serial'),Filter::exact('part_id'),Filter::exact('vendor_id'),Filter::exact('warranty_id'),Filter::exact('location_id'))
-			->allowedIncludes('part','vendor','warranty')
-			->paginate($paginate);
-			
-		//$assets = Asset::paginate(1000);
-		//return new AssetCollection($assets);
-		/*
-		$params = $request->all();
-		if($params)
-		{
-			$query = (new Asset)->newQuery();
-			foreach($params as $key => $value)
-			{
-				$query->where($key,$value);
-			}
-			return new AssetCollection($query->get());
-		} else {
-	        $assets = Asset::paginate(1000);
-    	    return new AssetCollection($assets);
-		}
-		/**/
-		return new AssetCollection($assets);
+        $filters = [
+            'id',
+            'serial',
+            'part_id',
+            'vendor_id',
+            'warranty_id',
+            'location_id',
+        ];
+
+        $includes = [
+            'part',
+            'vendor',
+            'warranty',
+        ];
+
+		$query = QueryBuilder::for(Asset::class);
+		$query->allowedFilters($filters);
+		$query->allowedIncludes($includes);
+
+        if ($request->get('type')) {
+            $query->join('parts', 'parts.id', '=', 'assets.part_id');
+            $query->where('parts.type', $request->get('type'));
+        }
+
+        $assets = $query->paginate($paginate);
+
+        return new AssetCollection($assets);
     }
 
     /**

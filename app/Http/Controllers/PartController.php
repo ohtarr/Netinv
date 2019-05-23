@@ -8,6 +8,8 @@ use App\Http\Resources\Part as PartResource;
 use App\Http\Resources\PartCollection;
 use App\Http\Requests\StorePart;
 use Validator;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Filter;
 
 class PartController extends Controller
 {
@@ -29,7 +31,7 @@ class PartController extends Controller
 			abort(401, 'You are not authorized');
 		}
 
-		$params = $request->all();
+/* 		$params = $request->all();
 		if($params)
 		{
 			$query = (new Part)->newQuery();
@@ -41,7 +43,35 @@ class PartController extends Controller
 		} else {
 	        $parts = Part::paginate(1000);
     	    return new PartCollection($parts);
-		}
+        } */
+        
+        if($request->paginate)
+        {
+            $paginate = $request->paginate;
+        } else {
+            $paginate = env("ASSETS_PAGINATION");
+        }
+
+        $filters = [
+            'id',
+            'type',
+            'manufacturer_id',
+            'part_number',
+            'list_price',
+            'current_price',
+            'weight',            
+        ];
+
+        $includes = [
+            'manufacturer',
+        ];
+
+        $query = QueryBuilder::for(Part::class);
+		$query->allowedFilters($filters);
+		$query->allowedIncludes($includes);
+        $parts = $query->paginate($paginate);        
+        
+		return new PartCollection($parts);
     }
 
     /**

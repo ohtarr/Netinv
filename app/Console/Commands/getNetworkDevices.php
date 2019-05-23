@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\NetworkDeviceCisco;
 use App\NetworkDeviceAruba;
+use App\NetworkDeviceOpengear;
 use App\Asset;
 use App\Partner;
 use App\Part;
@@ -34,6 +35,7 @@ class getNetworkDevices extends Command
     public $locations;
     public $ciscodevices;
     public $arubadevices;
+    public $opengeardevices;
     /**
      * Create a new command instance.
      *
@@ -55,6 +57,7 @@ class getNetworkDevices extends Command
         $this->getCiscoDevices();
         $this->getArubaWlcs();
         $this->getArubaWaps();
+        $this->getOpengearDevices();
         $this->addAssets();
         //print_r($this->devicearray);
     }
@@ -191,6 +194,44 @@ class getNetworkDevices extends Command
         }
     }
 
+    public function getOpengearDevices()
+    {
+        $manufacturer = Partner::where("name","Opengear")->first();//default to Cisco for Manufacturer.
+        $this->opengeardevices = NetworkDeviceOpengear::all();
+        foreach($this->opengeardevices as $device)
+        {
+
+            //detect if online or not here
+            $online = 0;
+
+            if($device->ip4)
+            {
+                $ip = $device->ip4;
+            }
+            if($device->name)
+            {
+                $name = $device->name;
+            }
+            $sitename = strtoupper(substr($device->name, 0, 8));
+            $serial = $device->serialnumber;
+            $model = $device->model;
+
+            unset($tmp);
+            if($serial)
+            {
+                $tmp['part']['manufacturer_id'] = $manufacturer->id;
+                $tmp['online'] = $online;
+                $tmp['name'] = $name;
+                $tmp['ip'] = $ip;
+                $tmp['location'] = $sitename;
+                $tmp['part']['part_number'] = $model;
+                $this->devicearray[$serial] = $tmp;
+            }
+
+        }
+    }
+
+
     public function importCsv()
     {
         $manufacturer = Partner::where("name","Cisco")->first();  //default to Cisco for Manufacturer.
@@ -310,17 +351,22 @@ class getNetworkDevices extends Command
     public static function CiscoinventoryToSerial($show_inventory)
     {
         $serial = null;
-        $invlines = explode("\r\n", $show_inventory);
-        foreach ($invlines as $line) {
-            // LEGACY PERL CODE: $x =~ /^\s*PID:\s(\S+).*SN:\s+(\S+)\s*$/;
-            if (preg_match('/.*PID:\s(\S+).*SN:\s+(\S+)\s*$/', $line, $reg)) {
-                $serial = $reg[2];
-
-                return $serial;
-            }
+        //$reg = "/.*PID:\s(\S+).*SN:\s+(\S+)\s*$/m";
+        $reg9k = "/PID:\s+ASR-9001,.*SN:\s+(\S+)/";
+        preg_match($reg9k, $show_inventory, $hits);
+        print_r($hits);
+        if(isset($hits[1]))
+        {
+            return $hits[1];
         }
 
-        return $serial;
+        $reg = "/PID:.*SN:\s+(\S+)/";
+        preg_match($reg, $show_inventory, $hits);
+        print_r($hits);
+        if(isset($hits[1]))
+        {
+            return $hits[1];
+        }
     }
 
     public static function ArubainventoryToSerial($show_inventory)

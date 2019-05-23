@@ -1,7 +1,7 @@
 angular
 	.module('app')
 	.controller('Locations.Controller', ['LocationsService', '$location', '$state', '$scope', '$interval','$stateParams', function(LocationsService, $location, $state, $scope, $interval, $stateParams) {
-		console.log("Inside Locations Controller");
+		//console.log("Inside Locations Controller");
 		var vm = this;
 
 		// Match the window permission set in login.js and app.js - may want to user a service or just do an api call to get these. will decide later.

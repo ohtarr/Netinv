@@ -78,22 +78,42 @@
         // require an authenticated user before continuing.
         var user = userAgentApplication.getUser();
         if (!user) {
-            console.log('angular run does not have valid user, i should abort');
+            //console.log('angular run does not have valid user, i should abort');
             throw 'kaboom';
         } else {
-            console.log('angular run DOES have a dalid user, proceeding to token request');
+            //console.log('angular run DOES have a valid user, proceeding to token request');
             // Try to acquire the token used to query Graph API silently first:
             userAgentApplication.acquireTokenSilent(APIScopes)
                 .then(function (token) {
-                    console.log('acquiretokensilent got token ' + token);
+                    //console.log('acquiretokensilent got token ' + token);
                     // save the cancerous token so we know we are logged in
                     localStorage.currentUser = { token: token };
                     window.token = token;
                     $http.defaults.headers.common.Authorization = 'Bearer ' + token;
                     //console.log('http.defaults.headers.common.Authorization = ' + $http.defaults.headers.common.Authorization);
+                     window.refreshTokenInterval = setInterval( function(){
 
+                        userAgentApplication.acquireTokenSilent(APIScopes)
+                        .then(function (token) {
+                            //console.log('acquiretokensilent got token ' + token);
+                            // save the cancerous token so we know we are logged in
+                            localStorage.currentUser = { token: token };
+                            window.token = token;
+                            $http.defaults.headers.common.Authorization = 'Bearer ' + token;
+                            //console.log('http.defaults.headers.common.Authorization = ' + $http.defaults.headers.common.Authorization);
+                
+                        }, function (error) {
+                            //console.log('acquiretokenssilent failed, attempting acquiretokenredirect');
+                            // If the acquireTokenSilent() method fails, then acquire the token interactively via acquireTokenRedirect().
+                            if (error) {
+                                userAgentApplication.acquireTokenRedirect(APIScopes);
+                            }
+                        });
+                        
+                    }, 10 * 60 * 1000); // 10 minutes * 60 seconds * 1000 milliseconds
+                    //console.log("Refresh token window id " + window.refreshTokenInterval);
                 }, function (error) {
-                    console.log('acquiretokenssilent failed, attempting acquiretokenredirect');
+                    //console.log('acquiretokenssilent failed, attempting acquiretokenredirect');
                     // If the acquireTokenSilent() method fails, then acquire the token interactively via acquireTokenRedirect().
                     if (error) {
                         userAgentApplication.acquireTokenRedirect(APIScopes);
@@ -102,4 +122,26 @@
         }
 
     }
+
+    function getNewToken()
+    {
+        //console.log('<hacker voice> Im in get me a new token');
+         userAgentApplication.acquireTokenSilent(APIScopes)
+        .then(function (token) {
+            //console.log('acquiretokensilent got token ' + token);
+            // save the cancerous token so we know we are logged in
+            localStorage.currentUser = { token: token };
+            window.token = token;
+            $http.defaults.headers.common.Authorization = 'Bearer ' + token;
+            //console.log('http.defaults.headers.common.Authorization = ' + $http.defaults.headers.common.Authorization);
+
+        }, function (error) {
+            //console.log('acquiretokenssilent failed, attempting acquiretokenredirect');
+            // If the acquireTokenSilent() method fails, then acquire the token interactively via acquireTokenRedirect().
+            if (error) {
+                userAgentApplication.acquireTokenRedirect(APIScopes);
+            }
+        });
+    }
+
 })();

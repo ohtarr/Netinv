@@ -1,40 +1,87 @@
 angular
 	.module('app')
 	.controller('Parts.Controller', ['PartsService','PartnersService','$location', '$state', '$scope', '$interval','$stateParams', function(PartsService, PartnersService, $location, $state, $scope, $interval, $stateParams) {
-		console.log("Inside Parts Controller");
+		//console.log("Inside Parts Controller");
 		var vm = this;
 
 		vm.newpart = {};
 
 		vm.showaddrow = false;
+		vm.showfilterrow = false;
 		//initController();
 
-		vm.partsForm = {};
 		vm.model = {};
 		vm.model.parts = [];
 		vm.model.manufacturers = [];
+
+		vm.selected = {};
+		vm.selected.paginate = 100;
 		
-		vm.clearAdd = function(){
+		vm.options = {};
+		vm.options.paginate = [
+			100,
+			500,
+			1000,
+			10000,
+			100000
+		];
+
+		vm.options.types = [
+			"Router",
+			"Switch",
+			"Controller",
+			"Access Point",
+			"Firewall",
+			"Server",
+		];
+
+		vm.eventEnter = function (event) {
+			if(event.which === 13)
+			{
+				vm.getParts();
+			}
+		}
+
+		vm.pages = {};
+		vm.pages.links = {};
+
+		vm.clearAdd = function () {
 			vm.newpart = null;
 		}
 
-		vm.addtoggle = function(){
-			if(vm.showaddrow == true){
+		vm.clearFilter = function () {
+			vm.selected.filter = null;
+		}
+
+		vm.addtoggle = function () {
+			if (vm.showaddrow == true) {
 				vm.showaddrow = false;
-			}else{
-				if(vm.showaddrow == false){
+			} else {
+				if (vm.showaddrow == false) {
 					vm.showaddrow = true;
+					vm.showfilterrow = false;
 				}
 			}
 		}
 
-		vm.refresh = function (){
+		vm.filtertoggle = function () {
+			if (vm.showfilterrow == true) {
+				vm.showfilterrow = false;
+			} else {
+				if (vm.showfilterrow == false) {
+					vm.showfilterrow = true;
+					vm.showaddrow = false;
+				}
+			}
+		}
+
+		vm.refresh = function () {
 			// jQuery Hack to fix body from the Model.
-					$(".modal-backdrop").hide();
-					$('body').removeClass("modal-open");
-					$('body').removeClass("modal-open");
-					$('body').removeAttr( 'style' );
-				// End of Hack */
+			$(".modal-backdrop").hide();
+			$('body').removeClass("modal-open");
+			$('body').removeClass("modal-open");
+			$('body').removeAttr('style');
+			// End of Hack */
 			//console.log(vm.httpParams);
 			$state.reload();
 		};
@@ -46,8 +93,9 @@ angular
 		vm.loading.manufacturers = true;
 
 		function sortByKey(array, key) {
-			return array.sort(function(a, b) {
-				var x = a[key]; var y = b[key];
+			return array.sort(function (a, b) {
+				var x = a[key];
+				var y = b[key];
 				return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 			});
 		}
@@ -70,106 +118,109 @@ angular
 			return null;
 		}
 
-		function isInArrayNgForeach(field, arr) {
-			var result = false;
-			angular.forEach(arr, function(value, key) {
-				if(field == value)
-					result = true;
-			});
-			return result;
-		}
-
-		function renderParts(parts)
+		function renderAllParts()
 		{
-			angular.forEach(parts, function(value, key) {
-				vm.model.parts.push(value);
-			});
-			vm.loading.parts = false;
-			console.log(vm.model.parts);
-		}
-
-		function renderManufacturers(manufacturers)
-		{
-			angular.forEach(manufacturers, function(value, key) {
-				vm.model.manufacturers.push(value);
-			});
-			vm.model.manufacturers = sortByKey(vm.model.manufacturers, 'name');
-			vm.loading.manufacturers = false;
-			console.log(vm.model.manufacturers);
-
-			angular.forEach(vm.model.parts, function(value, key) {
-				manufacturer = findObjectByKey(vm.model.manufacturers, "id", value.manufacturer_id);
-				vm.model.parts[key].manufacturer = manufacturer;
+			angular.forEach(vm.model.parts, function (value, key) {
+				renderPartAll(key);
 			});
 		}
+		
+		function renderPartAll(index) {
+			renderPartManufacturer(index);
+		}
 
-		function renderPartManufacturer(index){
+		function renderPartManufacturer(index) {
 			manufacturer = findObjectByKey(vm.model.manufacturers, "id", vm.model.parts[index].manufacturer_id);
 			vm.model.parts[index].manufacturer = manufacturer;
 		}
 
-		function renderPartAll(index)
-		{
-			renderPartManufacturer(index)
-		}
+/* 		function updateParts() {
+			angular.forEach(vm.model.parts, function (value, key) {
+				manufacturer = findObjectByKey(vm.model.manufacturers, "id", value.manufacturer_id);
+				vm.model.parts[key].manufacturer = manufacturer;
+			})
+		}; */
 
-/* 		function renderPart(index, part)
-		{
-			console.log(part);
-			vm.model.parts[index] = part;
-		} */
-		
-		function getAll()
-		{
-			PartsService.getParts()
-			.then(function(res){
-				// Check for errors and if token has expired.
-				if(res.data.message){
-					vm.message = res.data.message;
-					return vm.message;
-				}else{
-					renderParts(res.data.data);
-					PartnersService.getPartners()
-					.then(function(res){
-						// Check for errors and if token has expired. 
-						if(res.data.message){
-							vm.message = res.data.message;
-							return vm.message;
-						}else{
-							renderManufacturers(res.data.data);
-						}
-					}, function(err){
-						alert(err);
-					});
-				}
-			}, function(err){
-				alert(err);
+		vm.getParts = function () {
+			vm.loading.parts = true;
+			var httpParams = {};
+			httpParams.page = vm.pages.current_page;
+
+			angular.forEach(vm.selected.filter, function (value, key) {
+				//console.log(value);
+				var filter = "filter["+key+"]";
+				httpParams[filter] = value;
 			});
-		}
 
-		getAll();
+/* 			if(vm.selected.part){
+				httpParams["filter[id]"] = vm.selected.part.id;
+			}
+			if(vm.selected.manufacturer){
+				httpParams["filter[manufacturer_id]"] = vm.selected.manufacturer.id;
+			} */
+			httpParams['paginate'] = vm.selected.paginate;
+			PartsService.getParts(httpParams)
+				.then(function (res) {
+					// Check for errors and if token has expired.
+					if (res.data.message) {
+						vm.message = res.data.message;
+						return vm.message;
+					} else {
+						parts = res.data.data;
+						vm.pages.last_page		= res.data.meta.last_page;
+						vm.pages.current_page	= res.data.meta.current_page;
+						vm.pages.per_page		= res.data.meta.per_page;
+						vm.pages.total			= res.data.meta.total;
+						vm.pages.links.first	= res.data.links.first; 
+						vm.pages.links.last		= res.data.links.last;
+						vm.pages.links.next		= res.data.links.next;
+						vm.pages.links.prev		= res.data.links.prev;
+						delete vm.model.parts;
+						vm.model.parts = [];
+						angular.forEach(parts, function (value, key) {
+							//console.log(value);
+							vm.model.parts.push(value);
+						});
+						vm.model.parts = sortByKey(vm.model.parts, 'id');
+						renderAllParts();
+						vm.loading.parts = false;
+						//console.log(vm.model.parts);
+					}
+				})
+		};
 
-		var id = $stateParams.id;
+		function getManufacturers() {
+			vm.loading.manufacturers = true;
+			PartnersService.getPartners()
+				.then(function (res) {
+					// Check for errors and if token has expired.
+					if (res.data.message) {
+						vm.message = res.data.message;
+						return vm.message;
+					} else {
+						manufacturers = res.data.data;
+						vm.model.manufacturers = [];
+						angular.forEach(manufacturers, function (value, key) {
+							vm.model.manufacturers.push(value);
+						});
+						vm.model.manufacturers = sortByKey(vm.model.manufacturers, 'name');
+						vm.loading.manufacturers = false;
+						renderAllParts();
+						vm.loading.manufacturers = false;
+						//console.log(vm.model.manufacturers);
+					}
+				})
+		};
 
-		if(id != undefined){
-			// Fix undefined site error on site list loading.
-			vm.getPart = PartsService.getPart(id)
-			.then(function(res){
-				//console.log(res)
-				vm.partForm = res.data.data;
-			}, function(err){
-							//Error
-			});
-		}
+		getManufacturers();
+		vm.getParts();
 
-		vm.submitPart = function(form) {
-			console.log(form);
-			PartsService.createPart(angular.copy(form)).then(function(data) {
-				vm.model.parts.push(data.data);
+
+		vm.submitPart = function (form) {
+			//console.log(form);
+			PartsService.createPart(angular.copy(form)).then(function (data) {
 				vm.clearAdd();
-				partIndex = findObjectIndexByKey(vm.model.parts, "id", data.data.id);
-				renderPartAll(partIndex);
-			}, function(error) {
+			}, function (error) {
 				alert('Error: ' + error.data.message + " | Status: " + error.status);
 			});
 		}
@@ -178,40 +229,37 @@ angular
 		vm.edit = {};
 
 		// Update DID Block service called by the save button.
-		vm.update = function(part) {
-			console.log("SUBMITTED PART:");
-			console.log(part);
-			PartsService.updatePart(part.id, part).then(function(data) {
-			  partIndex = findObjectIndexByKey(vm.model.parts, "id", part.id);
-			  renderPartAll(partIndex);
-			}, function(error) {
+		vm.update = function (part) {
+
+			PartsService.updatePart(part.id, part).then(function (data) {
+				partIndex = findObjectIndexByKey(vm.model.parts, "id", part.id);
+				renderPartAll(partIndex);
+			}, function (error) {
 				alert('An error occurred while updating the site')
 			});
 			//$state.reload();
 		}
 
-
 		// Delete Part
-		vm.delete = function(part) {
-			PartsService.deletePart(part.id).then(function(data) {
+		vm.delete = function (part) {
+			PartsService.deletePart(part.id).then(function (data) {
 
 				// jQuery Hack to fix body from the Model.
-					$(".modal-backdrop").hide();
-					$('body').removeClass("modal-open");
-					$('body').removeClass("modal-open");
-					$('body').removeAttr( 'style' );
+				$(".modal-backdrop").hide();
+				$('body').removeClass("modal-open");
+				$('body').removeClass("modal-open");
+				$('body').removeAttr('style');
 				// End of Hack */
-				console.log(vm.model.parts);
+				//console.log(vm.model.parts);
 				partIndex = findObjectIndexByKey(vm.model.parts, "id", part.id);
-				console.log(partIndex);
+				//console.log(partIndex);
 				//delete vm.model.parts[partIndex];
-				vm.model.parts.splice(partIndex,1);
-				console.log(vm.model.parts);
+				vm.model.parts.splice(partIndex, 1);
+				//console.log(vm.model.parts);
 				//return $state.reload();
-          }, function(error) {
+			}, function (error) {
 				alert('An error occurred');
-          });
-
+			});
 		}
 
 	}])

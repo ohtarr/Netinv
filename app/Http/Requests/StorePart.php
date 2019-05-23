@@ -25,7 +25,7 @@ class StorePart extends FormRequest
     {
         return [
             'manufacturer_id'   =>  'required',
-            'part_number'   =>  'required',
+            'part_number'       =>  'required',
         ];
     }
 

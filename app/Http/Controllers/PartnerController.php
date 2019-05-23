@@ -8,6 +8,8 @@ use App\Http\Resources\Partner as PartnerResource;
 use App\Http\Resources\PartnerCollection;
 use App\Http\Requests\StorePartner;
 use Validator;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\Filter;
 
 class PartnerController extends Controller
 {
@@ -29,7 +31,31 @@ class PartnerController extends Controller
                         abort(401, 'You are not authorized');
                 }
 
-                $params = $request->all();
+                if($request->paginate)
+                {
+                    $paginate = $request->paginate;
+                } else {
+                    $paginate = env("ASSETS_PAGINATION");
+                }
+
+                $filters = [
+                    'id',
+                    'name',
+                    'url',
+                    'description',
+                ];
+        
+                $includes = [
+                ];
+
+                $query = QueryBuilder::for(Partner::class);
+                $query->allowedFilters($filters);
+                $query->allowedIncludes($includes);
+                $partners = $query->paginate($paginate);        
+                
+                return new PartnerCollection($partners);
+
+/*                 $params = $request->all();
                 if($params)
                 {
                         $query = (new Partner)->newQuery();
@@ -41,7 +67,7 @@ class PartnerController extends Controller
                 } else {
                 $models = Partner::paginate(1000);
             return new PartnerCollection($models);
-                }
+                } */
     }
 
     /**
