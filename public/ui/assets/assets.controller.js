@@ -35,6 +35,12 @@ angular
 			"Access Point",
 			"Firewall",
 			"Server",
+			"Bridge",
+			"Accessory",
+			"UPS",
+			"PDU",
+			"Console Server",
+			"Rack",
 		];
 
 		vm.eventEnter = function (event) {
