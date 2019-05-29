@@ -61,6 +61,14 @@
                         </th>
 
                         <th>
+                            <a href="" ng-click="sortType = 'parttype'; sortReverse = !sortReverse" style="color:black">
+                                Type
+                                <span ng-show="sortType == 'parttype' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'parttype' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
                             <a href="" ng-click="sortType = 'part.part_number'; sortReverse = !sortReverse" style="color:black">
                                 Part
                                 <span ng-show="sortType == 'part.part_number' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
@@ -124,44 +132,59 @@
                             </button>
                         </th>
                     </tr>
-                    <tr style="background-color: #aeb3b7;" ng-if="vm.showfilterrow">
+                    <tr class="bg-warning" ng-if="vm.showfilterrow">
                         <th>
                         </th>
 
                         <th>
-                            <div>
-                                <div class="input-group">
-                                    <input type="text" class="form-control form-control-sm" ng-model='vm.selected.asset.serial'
-                                        placeholder="Serial #" ng-keypress="vm.eventEnter($event)">
-                                    <span class="input-group-btn">
-                                        <button type="button" ng-click='vm.selected.asset = undefined;vm.getAssets()' class="btn btn-default">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                    </span>
-                                </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.selected.filter.serial'
+                                    placeholder="Serial #" ng-keypress="vm.eventEnter($event)">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.serial = undefined;vm.getAssets()' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
                             </div>
                         </th>
 
                         <th>
-                            <div>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.query.type' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Part Type">
+                                        {{$select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item as item in vm.options.types | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.query.type = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
 
-                                <div class="input-group">
-                                    <ui-select allow-clear ng-model='vm.selected.part' theme="bootstrap" on-select="vm.getAssets()">
-                                        <ui-select-match placeholder="Part Number">
-                                            {{vm.selected.part.part_number}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="item in vm.model.parts | filter: $select.search">
-                                            <!--                                             {{part.part_number}} -->
-                                            <div ng-bind-html="item.part_number | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <span class="input-group-btn">
-                                        <button type="button" ng-click='vm.selected.part = undefined;vm.getAssets()' class="btn btn-default">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                    </span>
-                                </div>
-
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.part_id' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Part Number">
+                                        {{$select.selected.part_number}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.parts | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item.part_number | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.part_id = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
                             </div>
                         </th>
 
@@ -170,38 +193,36 @@
 
                         <th>
                         </th>
+
                         <th>
-                            <div>
-
-                                <div class="input-group">
-                                    <ui-select allow-clear ng-model='vm.selected.location' theme="bootstrap" on-select="vm.getAssets()">
-                                        <ui-select-match placeholder="Location">
-                                            {{vm.selected.location.name}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="item in vm.model.locations | filter: $select.search">
-                                            <!--                                             {{part.part_number}} -->
-                                            <div ng-bind-html="item.name | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <span class="input-group-btn">
-                                        <button type="button" ng-click='vm.selected.location = undefined;vm.getAssets()' class="btn btn-default">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                    </span>
-
-                                </div>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.location_id' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Location">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.sys_id as item in vm.model.locations | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.location_id = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
                             </div>
                         </th>
-                        <th>
 
-                        </th>
                         <th>
-
                         </th>
 
                         <th>
-
                         </th>
+
+                        <th>
+                        </th>
+
                         <th style="width:200px">
                             <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
                                 ng-click="vm.clearFilter();vm.getAssets()">
@@ -215,155 +236,217 @@
                             </button>
                         </th>
                     </tr>
-                </thead>
-                <div>
-                    <tbody ng-if="!vm.loading.assets">
-                        <tr class="bg-danger" style="height:30px" ng-if="vm.showaddrow">
-                            <td>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial">
-                            </td>
-                            <td>
-                                <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
-                                    data-width="100%" name="partid">
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
-                                    data-width="100%" name="partid">
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
-                            </td>
-                            <td>
-                                <select style="width:140px" class="form-control" required ng-model='vm.newasset.location_id'
-                                    ng-options="location.sys_id as location.name for location in vm.model.locations"
-                                    data-width="100%" name="partid">
-                                </select>
-                            </td>
+                    
+                    <tr class="bg-success" style="height:30px" ng-if="vm.showaddrow">
+                        <td>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newasset.serial'
+                                    placeholder="Serial" >
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newasset.serial = undefined' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial" placeholder="Serial #"> -->
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.newasset.part_id' theme="bootstrap">
+                                    <ui-select-match placeholder="Part Number">
+                                        {{$select.selected.part_number}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.parts | filter: $select.search">
+                                        <div ng-bind-html="item.part_number | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newasset.part_id = undefined'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                                 <select class="form-control" required ng-model='vm.newasset.part_id' ng-options="part.id as part.part_number for part in vm.model.parts"
+                                data-width="100%" name="partid">
+                            </select> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.newasset.vendor_id' theme="bootstrap">
+                                    <ui-select-match placeholder="Purchased From">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.partners | filter: $select.search">
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newasset.vendor_id = undefined'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                                 <select class="form-control" required ng-model='vm.newasset.vendor_id' ng-options="partner.id as partner.name for partner in vm.model.partners"
+                                data-width="100%" name="partid">
+                            </select> -->
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.newasset.location_id' theme="bootstrap">
+                                    <ui-select-match placeholder="Location">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.sys_id as item in vm.model.locations | filter: $select.search">
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newasset.location_id = undefined'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                            <!--  <select style="width:140px" class="form-control" required ng-model='vm.newasset.location_id'
+                                ng-options="location.sys_id as location.name for location in vm.model.locations"
+                                data-width="100%" name="partid">
+                            </select> -->
+                        </td>
 
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-xs btn-primary" ng-click="vm.submitAsset(vm.newasset);"> Add
+                            </button>
+                            <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody ng-if="!vm.loading.assets">
+                    <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
+                    <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
+                        <td>
+                            {{ asset.id }}
+                        </td>
+                        <td>
+                            <div ng-show="!vm.edit[asset.id]">
+                                {{ asset.serial }}
+                            </div>
+                            <div ng-if="vm.edit[asset.id]">
+                                <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
+                            </div>
+                        </td>
+                        <td>
+                            {{ asset.part.type }}
+                        </td>
+                        <td>
+                            <div ng-show="!vm.edit[asset.id] && vm.model.parts">
+                                {{ asset.part.part_number }}
+                            </div>
+                            <div ng-if="vm.edit[asset.id]">
+                                <select class="form-control form-control-sm" required ng-model='asset.part_id'
+                                    ng-options='part.id as part.part_number for part in vm.model.parts' data-width="100%"
+                                    name="partid">
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div ng-show="!vm.edit[asset.id]">
+                                {{ asset.partner.name }}
+                            </div>
+                            <div ng-if="vm.edit[asset.id]">
+                                <select style="width:180px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
+                                    ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
+                                    data-width="100%" name="vendorid">
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div ng-show="!vm.edit[asset.id]">
+                                {{ asset.warranty_id }}
+                            </div>
+                            <div ng-if="vm.edit[asset.id]">
+                                <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
+                            </div>
+                        </td>
+                        <td>
+                            <div ng-show="!vm.edit[asset.id] && vm.model.locations">
+                                {{ asset.location.name }}
+                            </div>
+                            <div ng-if="vm.edit[asset.id]">
+                                <select style="width:140px" class="form-control form-control-sm" required ng-model='asset.location_id'
+                                    ng-options='location.sys_id as location.name for location in vm.model.locations'
+                                    data-width="100%" name="locationid">
+                                </select>
+                            </div>
+                        </td>
+                        <td>{{ asset.last_online }}</td>
+                        <td>{{ asset.created_at }}</td>
+                        <td>{{ asset.updated_at }}</td>
+                        <td>
+                            <div ng-show="!vm.edit[asset.id]">
+                                <button class="btn btn-primary btn-xs " ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
+                                    <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
                                 </button>
-                                <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
-                            </td>
-                        </tr>
-                        <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
-                        <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
-                            <td>
-                                {{ asset.id }}
-                            </td>
-                            <td>
-                                <div ng-show="!vm.edit[asset.id]">
-                                    {{ asset.serial }}
-                                </div>
-                                <div ng-if="vm.edit[asset.id]">
-                                    <input type="text" class="form-control form-control-sm" ng-model="asset.serial">
-                                </div>
-                            </td>
-                            <td>
-                                <div ng-show="!vm.edit[asset.id] && vm.model.parts">
-                                    {{ asset.part.part_number }}
-                                </div>
-                                <div ng-if="vm.edit[asset.id]">
-                                    <select class="form-control form-control-sm" required ng-model='asset.part_id'
-                                        ng-options='part.id as part.part_number for part in vm.model.parts' data-width="100%"
-                                        name="partid">
-                                    </select>
-                                </div>
-                            </td>
-                            <td>
-                                <div ng-show="!vm.edit[asset.id]">
-                                    {{ asset.partner.name }}
-                                </div>
-                                <div ng-if="vm.edit[asset.id]">
-                                    <select style="width:180px" class="form-control form-control-sm" required ng-model='asset.vendor_id'
-                                        ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
-                                        data-width="100%" name="vendorid">
-                                    </select>
-                                </div>
-                            </td>
-                            <td>
-                                <div ng-show="!vm.edit[asset.id]">
-                                    {{ asset.warranty_id }}
-                                </div>
-                                <div ng-if="vm.edit[asset.id]">
-                                    <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
-                                </div>
-                            </td>
-                            <td>
-                                <div ng-show="!vm.edit[asset.id] && vm.model.locations">
-                                    {{ asset.location.name }}
-                                </div>
-                                <div ng-if="vm.edit[asset.id]">
-                                    <select style="width:140px" class="form-control form-control-sm" required ng-model='asset.location_id'
-                                        ng-options='location.sys_id as location.name for location in vm.model.locations'
-                                        data-width="100%" name="locationid">
-                                    </select>
-                                </div>
-                            </td>
-                            <td>{{ asset.last_online }}</td>
-                            <td>{{ asset.created_at }}</td>
-                            <td>{{ asset.updated_at }}</td>
-                            <td>
-                                <div ng-show="!vm.edit[asset.id]">
-                                    <button class="btn btn-primary btn-xs " ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                        <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{asset.id}}-modal">
-                                        Delete
-                                    </button>
-                                    <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
-                                    <div class="modal fade" id="{{asset.id}}-modal" role="dialog">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4>Are you sure?
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>
-                                                        You are about to delete Asset ID: {{ asset.id }}
-                                                    </p>
-                                                    <table class="table table-striped table-condensed table-bordered table-hover">
-                                                        <tr>
-                                                            <th>ID</th>
-                                                            <th>Serial</th>
-                                                            <th>Part</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>{{ asset.id }}</td>
-                                                            <td>{{ asset.serial }}</td>
-                                                            <td>{{ asset.part.part_number }}</td>
-                                                        </tr>
-                                                    </table>
-                                                    <p>All provisioned information will be lost. Are you sure you want
-                                                        to
-                                                        proceed?</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
-                                                    <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(asset)">Delete</a>
-                                                    <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
-                                                </div>
+                                <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{asset.id}}-modal">
+                                    Delete
+                                </button>
+                                <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
+                                <div class="modal fade" id="{{asset.id}}-modal" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4>Are you sure?
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>
+                                                    You are about to delete Asset ID: {{ asset.id }}
+                                                </p>
+                                                <table class="table table-striped table-condensed table-bordered table-hover">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Serial</th>
+                                                        <th>Part</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{ asset.id }}</td>
+                                                        <td>{{ asset.serial }}</td>
+                                                        <td>{{ asset.part.part_number }}</td>
+                                                    </tr>
+                                                </table>
+                                                <p>All provisioned information will be lost. Are you sure you want
+                                                    to
+                                                    proceed?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
+                                                <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(asset)">Delete</a>
+                                                <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- End of Modal -->
                                 </div>
-                                <div ng-if="vm.edit[asset.id]">
-                                    <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
-                                        Save </button>
-                                    <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
-                                        Undo </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </div>
+                                <!-- End of Modal -->
+                            </div>
+                            <div ng-if="vm.edit[asset.id]">
+                                <button class="btn btn-xs btn-primary" ng-click="vm.update(asset); vm.edit[asset.id] = !vm.edit[asset.id]">
+                                    Save </button>
+                                <button class="btn btn-xs btn-warning" ng-click="vm.edit[asset.id] = !vm.edit[asset.id]">
+                                    Undo </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <div ng-if="vm.loading.assets && !vm.message" class="well">

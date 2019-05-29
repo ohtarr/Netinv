@@ -38,18 +38,18 @@ if (userAgentApplication.redirectUri) {
     userAgentApplication.redirectUri = msalconfig.redirectUri;
 }
 
-console.log('inside window.onload');
+//console.log('inside window.onload');
 // If page is refreshed, continue to display user info
 if (!userAgentApplication.isCallback(window.location.hash) && window.parent === window && !window.opener) {
-    console.log('window location hash is NOT a valid callback, checking for authenticated user ' + window.location.hash);
+    //console.log('window location hash is NOT a valid callback, checking for authenticated user ' + window.location.hash);
     var user = userAgentApplication.getUser();
     if (user) {
-        console.log('got valid user, can continue loading load.js for remaining app pieces');
+        //console.log('got valid user, can continue loading load.js for remaining app pieces');
         //console.log(user);
 
         document.write('<script src="load.js" type="text/javascript"></script>');
     } else {
-        console.log('did not get valid user, should redirect for authentication');
+        //console.log('did not get valid user, should redirect for authentication');
         userAgentApplication.loginRedirect(APIScopes);
     }
 } else {
@@ -64,7 +64,7 @@ if (!userAgentApplication.isCallback(window.location.hash) && window.parent === 
  * @param {string} tokenType - The token type: For loginRedirect, tokenType = "id_token". For acquireTokenRedirect, tokenType:"access_token".
  */
 function loginCallback(errorDesc, token, error, tokenType) {
-    console.log('inside loginCallback, does this ever actually trigger?');
+    //console.log('inside loginCallback, does this ever actually trigger?');
     if (errorDesc) {
         console.log(msal.authority);
         console.log(error);
@@ -72,7 +72,7 @@ function loginCallback(errorDesc, token, error, tokenType) {
     } else {
         //getToken();
     }
-    console.log('usually this fires before microsofts library redirects us back to ourselves without the idtoken');
+    //console.log('usually this fires before microsofts library redirects us back to ourselves without the idtoken');
 }
 
 /**

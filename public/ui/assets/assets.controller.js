@@ -1,7 +1,7 @@
 angular
 	.module('app')
 	.controller('Assets.Controller', ['AssetsService', 'PartsService', 'PartnersService', 'LocsService', '$location', '$state', '$scope', '$interval', '$stateParams', function (AssetsService, PartsService, PartnersService, LocsService, $location, $state, $scope, $interval, $stateParams) {
-		console.log("Inside Assets Controller");
+		//console.log("Inside Assets Controller");
 		var vm = this;
 
 		vm.newasset = {};
@@ -28,6 +28,15 @@ angular
 			100000
 		];
 
+		vm.options.types = [
+			"Router",
+			"Switch",
+			"Controller",
+			"Access Point",
+			"Firewall",
+			"Server",
+		];
+
 		vm.eventEnter = function (event) {
 			if(event.which === 13)
 			{
@@ -39,21 +48,14 @@ angular
 		vm.pages.links = {};
 
 		vm.httpParams = {};
-/*		vm.httpParams["filter[id]"] = $location.search().id
-		vm.httpParams["filter[serial]"] = $location.search().serial
-		vm.httpParams["filter[part_id]"] = $location.search().part_id
-		vm.httpParams["filter[vendor_id]"] = $location.search().vendor_id
-		vm.httpParams["filter[warranty_id]"] = $location.search().warranty_id
-		vm.httpParams["filter[location_id]"] = $location.search().location_id */
 
 		vm.clearAdd = function () {
 			vm.newasset = null;
 		}
 
 		vm.clearFilter = function () {
-			vm.selected.part = {};
-			vm.selected.asset = {};
-			vm.selected.location = {};
+			vm.selected.filter = {};
+			vm.selected.query = {};
 		}
 
 		vm.addtoggle = function () {
@@ -62,6 +64,7 @@ angular
 			} else {
 				if (vm.showaddrow == false) {
 					vm.showaddrow = true;
+					vm.showfilterrow = false;
 				}
 			}
 		}
@@ -72,6 +75,7 @@ angular
 			} else {
 				if (vm.showfilterrow == false) {
 					vm.showfilterrow = true;
+					vm.showaddrow = false;
 				}
 			}
 		}
@@ -121,78 +125,6 @@ angular
 			return null;
 		}
 
-/* 		function isInArrayNgForeach(field, arr) {
-			var result = false;
-			angular.forEach(arr, function (value, key) {
-				if (field == value)
-					result = true;
-			});
-			return result;
-		}
-
-		function renderAssets(assets) {
-			//var vm.model = [];
-			vm.model.assets = [];
-			angular.forEach(assets, function (value, key) {
-				//console.log(value);
-				vm.model.assets.push(value);
-			});
-			vm.model.assets = sortByKey(vm.model.assets, 'id');
-			vm.loading.assets = false;
-			console.log(vm.model.assets);
-		}
-
-		function renderParts(parts) {
-			vm.model.parts = [];
-			angular.forEach(parts, function (value, key) {
-				vm.model.parts.push(value);
-			});
-			vm.model.parts = sortByKey(vm.model.parts, 'part_number');
-			vm.loading.parts = false;
-			console.log(vm.model.parts);
-
-			angular.forEach(vm.model.assets, function (value, key) {
-				part = findObjectByKey(vm.model.parts, "id", value.part_id);
-				//console.log(part);
-				vm.model.assets[key].part = part;
-				//value.part = value;
-
-			});
-
-		}
-
-		function renderPartners(partners) {
-			vm.model.partners = [];
-			angular.forEach(partners, function (value, key) {
-				vm.model.partners.push(value);
-			});
-			vm.model.partners = sortByKey(vm.model.partners, 'name');
-			vm.loading.partners = false;
-			console.log(vm.model.partners);
-
-			angular.forEach(vm.model.assets, function (value, key) {
-				partner = findObjectByKey(vm.model.partners, "id", value.vendor_id);
-				//console.log(partner);
-				vm.model.assets[key].partner = partner;
-			});
-		}
-
-		function renderLocations(locations) {
-			vm.model.locations = [];
-			angular.forEach(locations, function (value, key) {
-				vm.model.locations.push(value);
-			});
-			vm.model.locations = sortByKey(vm.model.locations, 'name');
-			vm.loading.locations = false;
-			console.log(vm.model.locations);
-
-			angular.forEach(vm.model.assets, function (value, key) {
-				loc = findObjectByKey(vm.model.locations, "sys_id", value.location_id);
-				//console.log(loc);
-				vm.model.assets[key].location = loc;
-			});
-		} */
-
 		function renderAllAssets()
 		{
 			angular.forEach(vm.model.assets, function (value, key) {
@@ -221,7 +153,7 @@ angular
 			vm.model.assets[index].location = loc;
 		}
 
-		function updateAssets() {
+/* 		function updateAssets() {
 			angular.forEach(vm.model.assets, function (value, key) {
 				part = findObjectByKey(vm.model.parts, "id", value.part_id);
 				partner = findObjectByKey(vm.model.partners, "id", value.partner_id);
@@ -231,24 +163,24 @@ angular
 				vm.model.assets[key].partner = partner;
 				vm.model.assets[key].location = loc;
 			})
-		};
+		}; */
 
 		vm.getAssets = function () {
 			vm.loading.assets = true;
-			httpParams = {};
+			var httpParams = {};
 			httpParams.page = vm.pages.current_page;
-			if(vm.selected.part){
-				httpParams["filter[part_id]"] = vm.selected.part.id;
-			}
-			if(vm.selected.asset)
-			{
-				httpParams["filter[serial]"] = vm.selected.asset.serial;
-			}
-			if(vm.selected.location)
-			{
-				httpParams["filter[location_id]"] = vm.selected.location.sys_id;
-			}
+			angular.forEach(vm.selected.filter, function (value, key) {
+				//console.log(value);
+				var filter = "filter["+key+"]";
+				httpParams[filter] = value;
+			});
+			angular.forEach(vm.selected.query, function (value, key) {
+				//console.log(value);
+				httpParams[key] = value;
+			});
 			httpParams['paginate'] = vm.selected.paginate;
+			//console.log("http params:");
+			//console.log(httpParams);
 			AssetsService.getAssets(httpParams)
 				.then(function (res) {
 					// Check for errors and if token has expired.
@@ -272,17 +204,19 @@ angular
 							vm.model.assets.push(value);
 						});
 						vm.model.assets = sortByKey(vm.model.assets, 'id');
-						updateAssets();
+						//updateAssets();
 						renderAllAssets();
 						vm.loading.assets = false;
-						console.log(vm.model.assets);
+						//console.log(vm.model.assets);
 
 					}
 				})
 		};
 
 		function getParts() {
-			PartsService.getParts()
+			var httpParams = {};
+
+			PartsService.getParts(httpParams)
 				.then(function (res) {
 					// Check for errors and if token has expired.
 					if (res.data.message) {
@@ -296,9 +230,9 @@ angular
 						});
 						vm.model.parts = sortByKey(vm.model.parts, 'part_number');
 						vm.loading.parts = false;
-						updateAssets();
+						//updateAssets();
 						renderAllAssets();
-						console.log(vm.model.parts);
+						//console.log(vm.model.parts);
 					}
 				})
 		};
@@ -318,7 +252,7 @@ angular
 						});
 						vm.model.partners = sortByKey(vm.model.partners, 'name');
 						vm.loading.partners = false;
-						updateAssets();
+						//updateAssets();
 						renderAllAssets();
 					}
 				})
@@ -339,7 +273,7 @@ angular
 						});
 						vm.model.locations = sortByKey(vm.model.locations, 'name');
 						vm.loading.locations = false;
-						updateAssets();
+						//updateAssets();
 						renderAllAssets();
 					}
 				})
@@ -424,24 +358,21 @@ angular
 		}
  */
 		vm.submitAsset = function (form) {
-			console.log(form);
+			//console.log(form);
 			AssetsService.createAsset(angular.copy(form)).then(function (data) {
 				//alert("site Added Succesfully" + data);
 				//$state.reload();
 				//$state.go('assets');
-/* 				vm.model.assets.push(data.data); */
+ 				vm.model.assets.push(data.data);
 				vm.clearAdd();
-/* 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
-				renderAssetAll(assetIndex); */
+ 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", data.data.id);
+				renderAssetAll(assetIndex);
 			}, function (error) {
 				//console.log(error)
 				//console.log(error.data.message)
 				alert('Error: ' + error.data.message + " | Status: " + error.status);
 			});
 		}
-
-		// Edit state for DID block Edit button.
-		vm.edit = {};
 
 		// Update DID Block service called by the save button.
 		vm.update = function (asset) {
@@ -465,12 +396,12 @@ angular
 				$('body').removeClass("modal-open");
 				$('body').removeAttr('style');
 				// End of Hack */
-				console.log(vm.model.assets);
+				//console.log(vm.model.assets);
 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", asset.id);
-				console.log(assetIndex);
+				//console.log(assetIndex);
 				//delete vm.model.assets[assetIndex];
 				vm.model.assets.splice(assetIndex, 1);
-				console.log(vm.model.assets);
+				//console.log(vm.model.assets);
 				//return $state.reload();
 			}, function (error) {
 				alert('An error occurred');

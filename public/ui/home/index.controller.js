@@ -6,7 +6,7 @@
         .controller('Home.IndexController', Controller);
     function Controller($location, AssetsService) {
         var vm = this;
-		console.log('inside home controller')
+		//console.log('inside home controller')
         getAssets();
 
         vm.messages = 'Loading...';
@@ -40,7 +40,7 @@
 					}
 
 				}, function(err){
-					console.log(err)
+					//console.log(err)
 					alert(err);
 				});
 		}

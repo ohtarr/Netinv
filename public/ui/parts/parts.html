@@ -2,34 +2,35 @@
 <ng-include src="'app-content/navbar.html'"></ng-include>
 
 <!-- <div style="margin:10px"></div> -->
-
 <div style="margin-left:5%; margin-right:5%;">
-
-    <div class="well form-horizontal" style="margin-top:5px;">
-        <div style="margin:1px"></div>
-        <legend>Parts : {{ vm.model.parts.length }}
-            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
-                <i class="glyphicon glyphicon-refresh"></i> Refresh
-            </button>
-            <div class="input-group col-md-3 pull-right">
-                <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }"
-                    placeholder="Search" name="srch-term" id="srch-term">
-                <div class="input-group-btn">
-                    <button class="btn btn-default btn-disabled" ng-click="vm.search = undefined">
-                        <i class="glyphicon glyphicon-search"></i>
+    <div class="well form-horizontal">
+        <legend>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        Parts : {{ vm.pages.total }}
+                    </div>
+                    <div class="col-md-8">
+                        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15"
+                            class="pagination-sm" boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page"
+                            ng-change="vm.getParts()"></ul>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <ui-select allow-clear ng-model='vm.selected.paginate' theme="bootstrap" on-select="vm.getParts()">
+                                <ui-select-match>
+                                    Per Page: {{vm.selected.paginate}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="item in vm.options.paginate | filter: $select.search">
+                                    <!--                                             {{part.part_number}} -->
+                                    <div ng-bind-html="item | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <br>
-            <div style="margin:5px"></div>
         </legend>
-
-        <!-- Loading -->
-        <div ng-if="vm.loading.parts && !vm.message" class="well">
-            <div class="row">
-                <div class="container loader"></div>
-            </div>
-            <div style="margin:25px"></div>
-        </div>
 
         <div ng-if="vm.message;" class="well">
             <div class="row">
@@ -38,11 +39,10 @@
             <div style="margin:65px"></div>
         </div>
 
-        <div ng-if="!vm.loading.parts" class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
-            <!-- <div class="table-responsive"> -->
-            <table class="table table-striped table-condensed table-bordered table-hover">
+        <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+            <table class="table table-striped table-condensed table-bordered table-hover w-auto">
                 <thead>
-                    <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
+                    <tr style="background-color: #aeb3b7;">
                         <th>
                             <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
                                 ID
@@ -52,10 +52,18 @@
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'manufacturer.name'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
+                                Type
+                                <span ng-show="sortType == 'id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'manufacturer'; sortReverse = !sortReverse" style="color:black">
                                 Manufacturer
-                                <span ng-show="sortType == 'manufacturer.name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'manufacturer.name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'manufacturer' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'manufacturer' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
@@ -68,12 +76,21 @@
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'list_price/1'; sortReverse = !sortReverse" style="color:black">
+                            <a href="" ng-click="sortType = 'list.price'; sortReverse = !sortReverse" style="color:black">
                                 List_Price
-                                <span ng-show="sortType == 'list_price/1' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'list_price/1' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                                <span ng-show="sortType == 'list.price' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'list.price' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
+                                Current_Price
+                                <span ng-show="sortType == 'id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
                         <th>
                             <a href="" ng-click="sortType = 'weight'; sortReverse = !sortReverse" style="color:black">
                                 Weight
@@ -81,7 +98,7 @@
                                 <span ng-show="sortType == 'weight' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse" style="color:black">
                                 Created At
                                 <span ng-show="sortType == 'created_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
@@ -89,73 +106,278 @@
                             </a>
                         </th>
 
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse" style="color:black">
                                 Updated At
                                 <span ng-show="sortType == 'updated_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                 <span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:200px">
                             <button ng-if="!vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-plus"></i> Add
                             </button>
                             <button ng-if="vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-minus"></i> Add
                             </button>
+                            <button class="btn btn-primary btn-sm" ng-click="vm.filtertoggle()">
+                                <i class="glyphicon glyphicon-filter"></i> Filter
+                            </button>
                         </th>
+                    </tr>
+                    <tr class="bg-warning" ng-if="vm.showfilterrow">
+                        <th>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.type' theme="bootstrap" on-select="vm.getParts()">
+                                    <ui-select-match placeholder="Type">
+                                        {{$select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item in vm.options.types | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.type = undefined;vm.getParts()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.manufacturer_id' theme="bootstrap" on-select="vm.getParts()">
+                                    <ui-select-match placeholder="Manufacturer">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.manufacturers | filter: $select.search">
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.manufacturer_id = undefined;vm.getParts()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <input type="text" class="form-control form-control-sm" ng-model="vm.selected.filter.part_number" ng-keypress="($event.charCode==13)? vm.getParts() : return" placeholder="Part Number">
+                        </th>
+<!--                         <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.id' theme="bootstrap" on-select="vm.getParts()">
+                                    <ui-select-match placeholder="Part Number">
+                                        {{$select.selected.part_number}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.parts | filter: $select.search">
+                                        <div ng-bind-html="item.part_number | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.id = undefined;vm.getParts()' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th> -->
+                        <th>
+                            <!-- list_price -->
+                        </th>
+                        <th>
+                            <!-- current_price -->
+                        </th>
+                        <th>
+                            <!-- weight -->
+                        </th>
+                        <th>
+                            <!-- created_at -->
+                        </th>
+                        <th>
+                            <!-- updated_at -->
+                        </th>
+                        <th style="width:200px">
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.clearFilter();vm.getParts()">
+                                <i class="glyphicon glyphicon-remove"></i>
+                                Clear
+                            </button>
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.getParts()">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                                Refresh
+                            </button>
+                        </th>
+                    </tr>
+                    <tr class="bg-success" style="height:30px" ng-if="vm.showaddrow">
+                        <td>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.newpart.type' theme="bootstrap">
+                                    <ui-select-match placeholder="Type">
+                                        {{$select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item in vm.options.types | filter: $select.search">
+                                        <div ng-bind-html="item | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpart.type = undefined'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.newpart.type' theme="bootstrap">
+                                    <ui-select-match placeholder="Type">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item in vm.options.types track by $index">
+                                        <div ng-bind-html="item | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.type = undefined;vm.getParts()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.newpart.manufacturer_id' theme="bootstrap">
+                                    <ui-select-match placeholder="Manufacturer">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.manufacturers">
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.manufacturer = undefined'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpart.part_number'
+                                    placeholder="Part Number" >
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpart.part_number = undefined' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.part_number"
+                                placeholder="Part Number"> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpart.list_price'
+                                    placeholder="List Price" >
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpart.list_price = undefined' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.list_price"
+                                placeholder="List Price"> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpart.current_price'
+                                    placeholder="Current Price" >
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpart.current_price = undefined' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.current_price"
+                                placeholder="Current Price"> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpart.weight'
+                                    placeholder="Weight" >
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpart.weight = undefined' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.weight"
+                                placeholder="Weight"> -->
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-xs btn-primary" ng-click="vm.submitPart(vm.newpart);">
+                                Add
+                            </button>
+                            <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()">
+                                Clear
+                            </button>
+                        </td>
                     </tr>
                 </thead>
                 <div>
-                    <tbody>
-                        <tr class="bg-danger" style="height:30px" ng-if="vm.showaddrow">
-                            <td>
-                            </td>
-                            <td>
-                                <!--                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.manufacturer_id"> -->
-                                <select class="form-control" required ng-model='vm.newpart.manufacturer_id' ng-options="manufacturer.id as manufacturer.name for manufacturer in vm.model.manufacturers"
-                                    data-width="100%" name="manufacturer_id">
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.part_number">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.list_price">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newpart.weight">
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                                <button class="btn btn-xs btn-primary" ng-click="vm.submitPart(vm.newpart);"> Add
-                                </button>
-                                <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
-                            </td>
-                        </tr>
+                    <tbody ng-if="!vm.loading.parts">
                         <tr style="height:30px" !important; ng-repeat="part in vm.model.parts | orderBy:sortType:sortReverse | filter:vm.search: strict">
                             <td>
                                 {{ part.id }}
                             </td>
                             <td>
                                 <div ng-show="!vm.edit[part.id]">
+                                    {{ part.type }}
+                                </div>
+
+                                <div class="input-group" ng-if="vm.edit[part.id]">
+                                    <ui-select allow-clear ng-model='part.type' theme="bootstrap">
+                                        <ui-select-match placeholder="Type">
+                                            {{$select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="item in vm.options.types | filter: $select.search">
+                                            <div ng-bind-html="item | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+<!-- 
+                                <div ng-if="vm.edit[part.id]">
+                                    <select class="form-control form-control-sm" required ng-model='part.type'
+                                        ng-options='type for type in vm.options.types' data-width="100%"
+                                        name="type">
+                                    </select>
+                                </div> -->
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[part.id]">
                                     {{ part.manufacturer.name }}
                                 </div>
-                                <div ng-show="vm.edit[part.id]">
+                                <div ng-if="vm.edit[part.id]">
                                     <select class="form-control form-control-sm" required ng-model='part.manufacturer_id'
-                                        ng-options='manufacturer.id as manufacturer.name for manufacturer in vm.model.manufacturers'
-                                        data-width="100%" name="partid">
+                                        ng-options='manufacturer.id as manufacturer.name for manufacturer in vm.model.manufacturers' data-width="100%"
+                                        name="partid">
                                     </select>
                                 </div>
                             </td>
                             <td>
-                                <div ng-show="!vm.edit[part.id]">
+                                <div ng-show="!vm.edit[part.id] && vm.model.parts">
                                     {{ part.part_number }}
                                 </div>
-                                <div ng-show="vm.edit[part.id]">
+                                <div ng-if="vm.edit[part.id]">
                                     <input type="text" class="form-control form-control-sm" ng-model="part.part_number">
                                 </div>
                             </td>
@@ -163,24 +385,29 @@
                                 <div ng-show="!vm.edit[part.id]">
                                     {{ part.list_price }}
                                 </div>
-                                <div ng-show="vm.edit[part.id]">
+                                <div ng-if="vm.edit[part.id]">
                                     <input type="text" class="form-control form-control-sm" ng-model="part.list_price">
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[part.id]">
+                                    {{ part.current_price }}
+                                </div>
+                                <div ng-if="vm.edit[part.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="part.current_price">
                                 </div>
                             </td>
                             <td>
                                 <div ng-show="!vm.edit[part.id]">
                                     {{ part.weight }}
                                 </div>
-                                <div ng-show="vm.edit[part.id]">
-                                    <input type="text" class="form-control form-control-sm" ng-model="part.weight">
+                                <div ng-if="vm.edit[part.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="part.warranty_id">
                                 </div>
                             </td>
-                            <td>
-                                {{ part.created_at }}
-                            </td>
-                            <td>
-                                {{ part.updated_at }}
-                            </td>
+
+                            <td>{{ part.created_at }}</td>
+                            <td>{{ part.updated_at }}</td>
                             <td>
                                 <div ng-show="!vm.edit[part.id]">
                                     <button class="btn btn-primary btn-xs " ng-click="vm.edit[part.id] = !vm.edit[part.id]">
@@ -203,12 +430,10 @@
                                                     <table class="table table-striped table-condensed table-bordered table-hover">
                                                         <tr>
                                                             <th>ID</th>
-                                                            <th>Manufacturer</th>
                                                             <th>Part_Number</th>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ part.id }}</td>
-                                                            <td>{{ part.manufacturer.name }}</td>
                                                             <td>{{ part.part_number }}</td>
                                                         </tr>
                                                     </table>
@@ -224,21 +449,27 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- End of Modal -->
                                 </div>
-                                <div ng-show="vm.edit[part.id]">
+                                <div ng-if="vm.edit[part.id]">
                                     <button class="btn btn-xs btn-primary" ng-click="vm.update(part); vm.edit[part.id] = !vm.edit[part.id]">
-                                        Save
-                                    </button>
+                                        Save </button>
                                     <button class="btn btn-xs btn-warning" ng-click="vm.edit[part.id] = !vm.edit[part.id]">
-                                        Undo
-                                    </button>
+                                        Undo </button>
                                 </div>
-                                <!-- End of Modal -->
                             </td>
                         </tr>
                     </tbody>
                 </div>
             </table>
         </div>
+        <div ng-if="vm.loading.parts && !vm.message" class="well">
+            <div class="row">
+                <div class="container loader"></div>
+            </div>
+            <div style="margin:25px"></div>
+        </div>
+        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15" class="pagination-sm"
+            boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page" ng-change="vm.getParts()"></ul>
     </div>
 </div>

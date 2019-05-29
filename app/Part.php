@@ -15,7 +15,7 @@ class Part extends Model
         'deleted_at',
     ];
 	
-	protected $fillable = ['manufacturer_id','part_number','list_price','weight'];
+	protected $fillable = ['type','manufacturer_id','part_number','list_price','current_price','weight'];
 
     public function assets()
     {
@@ -25,5 +25,10 @@ class Part extends Model
     public function manufacturer()
     {
         return $this->belongsTo('App\Partner', 'manufacturer_id', 'id');
+    }
+
+    public function parttype()
+    {
+        return $this->belongsTo('App\PartType', 'part_type_id', 'id');
     }
 }

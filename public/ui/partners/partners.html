@@ -2,34 +2,35 @@
 <ng-include src="'app-content/navbar.html'"></ng-include>
 
 <!-- <div style="margin:10px"></div> -->
-
 <div style="margin-left:5%; margin-right:5%;">
-
-    <div class="well form-horizontal" style="margin-top:5px;">
-        <div style="margin:1px"></div>
-        <legend>Partners : {{ vm.model.partners.length }}
-            <button class="btn btn-default btn-sm pull-right" style="color: white; background-color:#555a5e;" ng-click="vm.refresh()">
-                <i class="glyphicon glyphicon-refresh"></i> Refresh
-            </button>
-            <div class="input-group col-md-3 pull-right">
-                <input type="text" class="form-control" ng-model="vm.search" ng-model-options="{ debounce: 800 }"
-                    placeholder="Search" name="srch-term" id="srch-term">
-                <div class="input-group-btn">
-                    <button class="btn btn-default btn-disabled" ng-click="vm.search = undefined">
-                        <i class="glyphicon glyphicon-search"></i>
+    <div class="well form-horizontal">
+        <legend>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        Partners : {{ vm.pages.total }}
+                    </div>
+                    <div class="col-md-8">
+                        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15"
+                            class="pagination-sm" boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page"
+                            ng-change="vm.getPartners()"></ul>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <ui-select allow-clear ng-model='vm.selected.paginate' theme="bootstrap" on-select="vm.getPartners()">
+                                <ui-select-match>
+                                    Per Page: {{vm.selected.paginate}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="item in vm.options.paginate | filter: $select.search">
+                                    <!--                                             {{part.part_number}} -->
+                                    <div ng-bind-html="item | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <br>
-            <div style="margin:5px"></div>
         </legend>
-
-        <!-- Loading -->
-        <div ng-if="vm.loading.partners && !vm.message" class="well">
-            <div class="row">
-                <div class="container loader"></div>
-            </div>
-            <div style="margin:25px"></div>
-        </div>
 
         <div ng-if="vm.message;" class="well">
             <div class="row">
@@ -38,20 +39,11 @@
             <div style="margin:65px"></div>
         </div>
 
-        <div ng-if="!vm.loading.partners" class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+        <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
             <!-- <div class="table-responsive"> -->
-            <table class="table table-striped table-condensed table-bordered table-hover">
-<!--                 <col width="1">
-                <col width="1">
-                <col width="200">
-                <col width="200">
-                <col width="1">
-                <col width="40">
-                <col width="180">
-                <col width="180">
-                <col width="130"> -->
+            <table class="table table-striped table-condensed table-bordered table-hover w-auto">
                 <thead>
-                    <tr style="background-color: #aeb3b7; background-image: linear-gradient(#e4e6e7, #d6d9db 60%, #c9cccf);">
+                    <tr style="background-color: #aeb3b7;">
                         <th>
                             <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse" style="color:black">
                                 ID
@@ -83,7 +75,7 @@
                                 <span ng-show="sortType == 'description' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse" style="color:black">
                                 Created At
                                 <span ng-show="sortType == 'created_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
@@ -91,122 +83,231 @@
                             </a>
                         </th>
 
-                        <th>
+                        <th style="width:175px">
                             <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse" style="color:black">
                                 Updated At
                                 <span ng-show="sortType == 'updated_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                 <span ng-show="sortType == 'updated_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
-                        <th>
+                        <th style="width:200px">
                             <button ng-if="!vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-plus"></i> Add
                             </button>
                             <button ng-if="vm.showaddrow" class="btn btn-primary btn-sm" ng-click="vm.addtoggle()">
                                 <i class="glyphicon glyphicon-minus"></i> Add
                             </button>
+                            <button class="btn btn-primary btn-sm" ng-click="vm.filtertoggle()">
+                                <i class="glyphicon glyphicon-filter"></i> Filter
+                            </button>
                         </th>
                     </tr>
+
+                    <tr class="bg-warning" ng-if="vm.showfilterrow">
+                        <th>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.selected.filter.name'
+                                    placeholder="Name" ng-keypress="vm.eventEnter($event)">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.name = undefined;vm.getPartners()' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.name' theme="bootstrap" on-select="vm.getPartners()">
+                                    <ui-select-match placeholder="Name">
+                                        {{vm.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item in vm.model.partners | filter: $select.search">
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.partners = undefined;vm.getPartners()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div> -->
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+
+                        </th>
+                        <th>
+                        </th>
+                        <th style="width:200px">
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.clearFilter();vm.getPartners()">
+                                <i class="glyphicon glyphicon-remove"></i>
+                                Clear
+                            </button>
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.getPartners()">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                                Refresh
+                            </button>
+                        </th>
+                    </tr>
+                    <tr class="bg-success" style="height:30px" ng-if="vm.showaddrow">
+                        <td>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpartner.name'
+                                    placeholder="Name">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpartner.name = undefined;' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.name"
+                                placeholder="Name"> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpartner.url'
+                                    placeholder="URL">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpartner.url = undefined;' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.url"
+                                placeholder="URL"> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpartner.description'
+                                    placeholder="Description">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpartner.description = undefined;' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.description"
+                                placeholder="Description"> -->
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-xs btn-primary" ng-click="vm.submitPartner(vm.newpartner);">
+                                Add
+                            </button>
+                            <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()">
+                                Clear
+                            </button>
+                        </td>
+                    </tr>
                 </thead>
-                <div ng-if="vm.model.partners.length > 0">
-                    <tbody>
-                        <tr class="bg-danger" style="height:30px" ng-if="vm.showaddrow">
-                            <td>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.name">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.url">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.description">
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="btn btn-xs btn-primary" ng-click="vm.submitPartner(vm.newpartner);"> Add
-                                </button>
-                                <button class="btn btn-xs btn-default" ng-click="vm.clearAdd()"> Clear </button>
-                            </td>
-                        </tr>
-                        <!-- <tr ng-repeat="partner in vm.model.partners track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
+                <div>
+                    <tbody ng-if="!vm.loading.parts">
                         <tr style="height:30px" !important; ng-repeat="partner in vm.model.partners | orderBy:sortType:sortReverse | filter:vm.search: strict">
                             <td>
                                 {{ partner.id }}
                             </td>
-                            <td ng-show="!vm.edit[partner.id]">
-                                {{ partner.name }}
+                            <td>
+                                <div ng-show="!vm.edit[partner.id]">
+                                    {{ partner.name }}
+                                </div>
+                                <div ng-if="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.name" placeholder="Name">
+                                </div>
                             </td>
-                            <td ng-show="!vm.edit[partner.id]">{{ partner.url }}</td>
-                            <td ng-show="!vm.edit[partner.id]">{{ partner.description }}</td>
-                            <td ng-show="!vm.edit[partner.id]">{{ partner.created_at }}</td>
-                            <td ng-show="!vm.edit[partner.id]">{{ partner.updated_at }}</td>
-                            <td ng-show="!vm.edit[partner.id]">
-                                <button class="btn btn-primary btn-xs " ng-click="vm.edit[partner.id] = !vm.edit[partner.id]">
-                                    <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
-                                </button>
-                                <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{partner.id}}-modal">
-                                    Delete
-                                </button>
-                                <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
-                                <div class="modal fade" id="{{partner.id}}-modal" role="dialog">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4>Are you sure?
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    You are about to delete Partner ID: {{ partner.id }}
-                                                </p>
-                                                <table class="table table-striped table-condensed table-bordered table-hover">
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>Name</th>
-                                                        <th>Description</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>{{ partner.id }}</td>
-                                                        <td>{{ partner.name }}</td>
-                                                        <td>{{ partner.description }}</td>
-                                                    </tr>
-                                                </table>
-                                                <p>All provisioned information will be lost. Are you sure you want to
-                                                    proceed?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
-                                                <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(partner)">Delete</a>
-                                                <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                            <td>
+                                <div ng-show="!vm.edit[partner.id] && vm.model.partners">
+                                    {{ partner.url }}
+                                </div>
+                                <div ng-if="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.url" placeholder="URL">
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[partner.id]">
+                                    {{ partner.description }}
+                                </div>
+                                <div ng-if="vm.edit[partner.id]">
+                                    <select style="width:180px" class="form-control form-control-sm" required ng-model='part.vendor_id'
+                                        ng-options='vendor.id as vendor.name for vendor in vm.model.partners'
+                                        data-width="100%" name="vendorid">
+                                    </select>
+                                </div>
+                            </td>
+                            <td>{{ part.created_at }}</td>
+                            <td>{{ part.updated_at }}</td>
+                            <td>
+                                <div ng-show="!vm.edit[partner.id]">
+                                    <button class="btn btn-primary btn-xs " ng-click="vm.edit[partner.id] = !vm.edit[partner.id]">
+                                        <i class="glyphicon glyphicon glyphicon-pencil"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-xs " data-toggle="modal" data-target="#{{partner.id}}-modal">
+                                        Delete
+                                    </button>
+                                    <!-- Are you sure Modal - Hidden Unless Delete button is Pressed -->
+                                    <div class="modal fade" id="{{partner.id}}-modal" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4>Are you sure?
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>
+                                                        You are about to delete Partner ID: {{ partner.id }}
+                                                    </p>
+                                                    <table class="table table-striped table-condensed table-bordered table-hover">
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Name</th>
+                                                            <th>Description</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{ partner.id }}</td>
+                                                            <td>{{ partner.name }}</td>
+                                                            <td>{{ partner.description }}</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p>All provisioned information will be lost. Are you sure you want
+                                                        to
+                                                        proceed?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <!--  dismiss modal not working with ng-click... Added jQuery Hack in Controller delete function.-->
+                                                    <a class="btn btn-danger" data-dismiss="modal" ng-click="vm.delete(partner)">Delete</a>
+                                                    <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- End of Modal -->
                                 </div>
-                                <!-- End of Modal -->
-                            </td>
-                            <!--Edit View-->
-                            <td ng-if="vm.edit[partner.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="partner.name">
-                            </td>
-                            <td ng-if="vm.edit[partner.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="partner.url">
-                            </td>
-                            <td ng-if="vm.edit[partner.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="partner.description">
-                            </td>
-                            <td ng-if="vm.edit[partner.id]">{{ partner.created_at }}</td>
-                            <td ng-if="vm.edit[partner.id]">{{ partner.updated_at }}</td>
-                            <td ng-if="vm.edit[partner.id]">
-                                <button class="btn btn-xs btn-primary" ng-click="vm.update(partner); vm.edit[partner.id] = !vm.edit[partner.id]">
-                                    Save </button>
-                                <button class="btn btn-xs btn-warning" ng-click="vm.edit[partner.id] = !vm.edit[partner.id]">
-                                    Undo </button>
+                                <div ng-if="vm.edit[partner.id]">
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.update(partner); vm.edit[partner.id] = !vm.edit[partner.id]">
+                                        Save </button>
+                                    <button class="btn btn-xs btn-warning" ng-click="vm.edit[partner.id] = !vm.edit[partner.id]">
+                                        Undo </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
                 </div>
             </table>
         </div>
+        <div ng-if="vm.loading.parts && !vm.message" class="well">
+            <div class="row">
+                <div class="container loader"></div>
+            </div>
+            <div style="margin:25px"></div>
+        </div>
+        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15" class="pagination-sm"
+            boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page" ng-change="vm.getPartners()"></ul>
     </div>
 </div>

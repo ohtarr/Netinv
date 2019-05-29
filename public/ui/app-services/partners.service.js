@@ -6,9 +6,9 @@ angular
 
 		
 		// Get Partners
-		self.getPartners = function() {
+		self.getPartners = function(httpParams) {
 			var defer = $q.defer();
-			return $http.get(globalUrl + '/api/partners')
+			return $http.get(globalUrl + '/api/partners',{params: httpParams})
 				.then(function successCallback(response) {
 					//console.log(response)
 					defer.resolve(response);
