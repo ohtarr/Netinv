@@ -193,8 +193,8 @@
 
                         <th>
                             <div class="input-group">
-                                <ui-select allow-clear ng-model='vm.selected.filter.vendor_id' theme="bootstrap" on-select="vm.getAssets()">
-                                    <ui-select-match placeholder="Vendor">
+                                <ui-select allow-clear ng-model='vm.selected.query.manufacturer_id' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Manufacturer">
                                         {{$select.selected.name}}
                                     </ui-select-match>
                                     <ui-select-choices repeat="item.id as item in vm.model.partners | filter: $select.search">
@@ -203,7 +203,7 @@
                                     </ui-select-choices>
                                 </ui-select>
                                 <span class="input-group-btn">
-                                    <button type="button" ng-click='vm.selected.filter.vendor_id = undefined;vm.getAssets()'
+                                    <button type="button" ng-click='vm.selected.query.manufacturer_id = undefined;vm.getAssets()'
                                         class="btn btn-default">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </button>
