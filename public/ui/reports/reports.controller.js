@@ -239,7 +239,8 @@ angular
 						vm.model.parts = [];
 						angular.forEach(parts, function (value, key) {
 							percent = (100 - value.manufacturer.discount);
-							price = (value.list_price * percent);
+							decimal = (percent / 100);
+							price = (value.list_price * decimal);
 							value.price = price;
 							vm.model.parts.push(value);
 						});
