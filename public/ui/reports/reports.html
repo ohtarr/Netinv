@@ -69,10 +69,18 @@
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'vendor'; sortReverse = !sortReverse" style="color:black">
-                                Vendor
-                                <span ng-show="sortType == 'vendor' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'vendor' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            <a href="" ng-click="sortType = 'manufacturer'; sortReverse = !sortReverse" style="color:black">
+                                Manufacturer
+                                <span ng-show="sortType == 'manufacturer' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'manufacturer' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'price'; sortReverse = !sortReverse" style="color:black">
+                                Price
+                                <span ng-show="sortType == 'price' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'price' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
 
@@ -204,6 +212,9 @@
                         </th>
 
                         <th>
+                        </th>
+
+                        <th>
                             <div class="input-group">
                                 <ui-select allow-clear ng-model='vm.selected.filter.location_id' theme="bootstrap" on-select="vm.getAssets()">
                                     <ui-select-match placeholder="Location">
@@ -265,7 +276,10 @@
                             {{ asset.part.part_number }}
                         </td>
                         <td>
-                            {{ asset.partner.name }}
+                            {{ asset.part.manufacturer.name }}
+                        </td>
+                        <td>
+                            {{ asset.part.price }}
                         </td>
                         <td>
                             {{ asset.location.name }}

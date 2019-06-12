@@ -1,7 +1,7 @@
 angular
 	.module('app')
 	.controller('Reports.Controller', ['AssetsService', 'PartsService', 'PartnersService', 'LocsService', '$location', '$state', '$scope', '$interval', '$stateParams', function (AssetsService, PartsService, PartnersService, LocsService, $location, $state, $scope, $interval, $stateParams) {
-		console.log("Inside Reports Controller");
+		//console.log("Inside Reports Controller");
 		var vm = this;
 
 		vm.newasset = {};
@@ -159,6 +159,12 @@ angular
 			vm.model.assets[index].location = loc;
 		}
 
+		function renderAssetPrice(index) {
+			percent = (100 - vm.model.assets[index].part.manufacturer.discount);
+			price = (vm.model.assets[index].part.list_price * percent);
+			vm.model.assets[index].price = price;
+		}
+
 /* 		function updateAssets() {
 			angular.forEach(vm.model.assets, function (value, key) {
 				part = findObjectByKey(vm.model.parts, "id", value.part_id);
@@ -221,7 +227,7 @@ angular
 
 		function getParts() {
 			var httpParams = {};
-
+			httpParams['include'] = "manufacturer";
 			PartsService.getParts(httpParams)
 				.then(function (res) {
 					// Check for errors and if token has expired.
@@ -232,6 +238,9 @@ angular
 						parts = res.data.data;
 						vm.model.parts = [];
 						angular.forEach(parts, function (value, key) {
+							percent = (100 - value.manufacturer.discount);
+							price = (value.list_price * percent);
+							value.price = price;
 							vm.model.parts.push(value);
 						});
 						vm.model.parts = sortByKey(vm.model.parts, 'part_number');
