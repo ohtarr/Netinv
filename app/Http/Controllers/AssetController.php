@@ -62,6 +62,11 @@ class AssetController extends Controller
             $query->where('parts.type', $request->get('type'));
         }
 
+        if ($request->get('manufacturer_id')) {
+            $query->join('parts', 'parts.id', '=', 'assets.part_id');
+            $query->where('parts.manufacturer_id', $request->get('manufacturer_id'));
+        }
+
         $assets = $query->paginate($paginate);
 
         return new AssetCollection($assets);

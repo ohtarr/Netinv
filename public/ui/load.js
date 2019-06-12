@@ -21,7 +21,8 @@ var loadScripts = [
     'home/index.controller.js',
 	'parts/parts.controller.js',
 	'assets/assets.controller.js',
-	'partners/partners.controller.js',
+    'partners/partners.controller.js',
+    'reports/reports.controller.js'
 ];
 
 // load up all the scripts

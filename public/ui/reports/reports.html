@@ -1,0 +1,315 @@
+<!-- Include Navbar -->
+<ng-include src="'app-content/navbar.html'"></ng-include>
+
+<!-- <div style="margin:10px"></div> -->
+<div style="margin-left:5%; margin-right:5%;">
+    <div class="well form-horizontal">
+        <legend>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        Assets : {{ vm.pages.total }}
+                    </div>
+                    <div class="col-md-8">
+                        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15"
+                            class="pagination-sm" boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page"
+                            ng-change="vm.getAssets()"></ul>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <ui-select allow-clear ng-model='vm.selected.paginate' theme="bootstrap" on-select="vm.getAssets()">
+                                <ui-select-match>
+                                    Per Page: {{vm.selected.paginate}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="item in vm.options.paginate | filter: $select.search">
+                                    <!--                                             {{part.part_number}} -->
+                                    <div ng-bind-html="item | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </legend>
+
+        <div ng-if="vm.message;" class="well">
+            <div class="row">
+                <h4>{{vm.message}}</h4>
+            </div>
+            <div style="margin:65px"></div>
+        </div>
+
+        <div class="panel panel-default" style="box-shadow: 1px 1px 5px grey;">
+            <!-- <div class="table-responsive"> -->
+            <table class="table table-striped table-condensed table-bordered table-hover w-auto">
+                <thead>
+                    <tr style="background-color: #aeb3b7;">
+                        <th>
+                            <a href="" ng-click="sortType = 'serial'; sortReverse = !sortReverse" style="color:black">
+                                Serial
+                                <span ng-show="sortType == 'serial' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'serial' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'parttype'; sortReverse = !sortReverse" style="color:black">
+                                Type
+                                <span ng-show="sortType == 'parttype' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'parttype' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'part.part_number'; sortReverse = !sortReverse" style="color:black">
+                                Part
+                                <span ng-show="sortType == 'part.part_number' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'part.part_number' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'manufacturer'; sortReverse = !sortReverse" style="color:black">
+                                Manufacturer
+                                <span ng-show="sortType == 'manufacturer' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'manufacturer' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'price'; sortReverse = !sortReverse" style="color:black">
+                                Price
+                                <span ng-show="sortType == 'price' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'price' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'location.name'; sortReverse = !sortReverse" style="color:black">
+                                Site
+                                <span ng-show="sortType == 'location.name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location.name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'location.street'; sortReverse = !sortReverse" style="color:black">
+                                Street
+                                <span ng-show="sortType == 'location.street' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location.street' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'location.city'; sortReverse = !sortReverse" style="color:black">
+                                City
+                                <span ng-show="sortType == 'location.city' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location.city' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'location.state'; sortReverse = !sortReverse" style="color:black">
+                                State
+                                <span ng-show="sortType == 'location.state' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location.state' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'location.zip'; sortReverse = !sortReverse" style="color:black">
+                                Zip
+                                <span ng-show="sortType == 'location.zip' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location.zip' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="" ng-click="sortType = 'location.country'; sortReverse = !sortReverse" style="color:black">
+                                Country
+                                <span ng-show="sortType == 'location.country' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'location.country' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
+                            <button class="btn btn-primary btn-sm" ng-click="vm.filtertoggle()">
+                                <i class="glyphicon glyphicon-filter"></i> Filter
+                            </button>
+                        </th>
+                    </tr>
+                    <tr class="bg-warning" ng-if="vm.showfilterrow">
+                        <th>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.selected.filter.serial'
+                                    placeholder="Serial #" ng-keypress="vm.eventEnter($event)">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.serial = undefined;vm.getAssets()' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.query.type' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Part Type">
+                                        {{$select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item as item in vm.options.types | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.query.type = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.part_id' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Part Number">
+                                        {{$select.selected.part_number}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.parts | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item.part_number | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.part_id = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.query.manufacturer_id' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Manufacturer">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.id as item in vm.model.partners | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.query.manufacturer_id = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                            <div class="input-group">
+                                <ui-select allow-clear ng-model='vm.selected.filter.location_id' theme="bootstrap" on-select="vm.getAssets()">
+                                    <ui-select-match placeholder="Location">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item.sys_id as item in vm.model.locations | filter: $select.search">
+                                        <!--                                             {{part.part_number}} -->
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.selected.filter.location_id = undefined;vm.getAssets()'
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th style="width:200px">
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.clearFilter();vm.getAssets()">
+                                <i class="glyphicon glyphicon-remove"></i>
+                                Clear
+                            </button>
+                            <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
+                                ng-click="vm.getAssets()">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                                Refresh
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody ng-if="!vm.loading.assets">
+                    <!-- <tr ng-repeat="asset in vm.model.assets track by $index| orderBy:sortType:sortReverse | filter:vm.search: strict"> -->
+                    <tr style="height:30px" !important; ng-repeat="asset in vm.model.assets | orderBy:sortType:sortReverse | filter:vm.search: strict">
+                        <td>
+                            {{ asset.serial }}
+                        </td>
+                        <td>
+                            {{ asset.part.type }}
+                        </td>
+                        <td>
+                            {{ asset.part.part_number }}
+                        </td>
+                        <td>
+                            {{ asset.part.manufacturer.name }}
+                        </td>
+                        <td>
+                            {{ asset.part.price }}
+                        </td>
+                        <td>
+                            {{ asset.location.name }}
+                        </td>
+                        <td>
+                            {{ asset.location.street }}
+                        </td>
+                        <td>
+                            {{ asset.location.city }}
+                        </td>
+                        <td>
+                            {{ asset.location.state }}
+                        </td>
+                        <td>
+                            {{ asset.location.zip }}
+                        </td>
+                        <td>
+                            {{ asset.location.country }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-if="vm.loading.assets && !vm.message" class="well">
+            <div class="row">
+                <div class="container loader"></div>
+            </div>
+            <div style="margin:25px"></div>
+        </div>
+        <ul uib-pagination total-items="vm.pages.total" ng-model="vm.pages.current_page" max-size="15" class="pagination-sm"
+            boundary-links="true" num-pages="vm.pages.last_page" items-per-page="vm.pages.per_page" ng-change="vm.getAssets()"></ul>
+    </div>
+</div>

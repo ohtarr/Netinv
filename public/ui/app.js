@@ -24,7 +24,7 @@
                 controller: 'Assets.Controller',
                 controllerAs: 'vm'
             })
-            .state('createasset', {
+/*             .state('createasset', {
                 url: '/assets/create',
                 templateUrl: 'assets/createasset.html',
                 controller: 'Assets.Controller',
@@ -35,14 +35,14 @@
                 templateUrl: 'assets/editasset.html',
                 controller: 'Assets.Controller',
                 controllerAs: 'vm'
-            })
+            }) */
             .state('parts', {
                 url: '/parts',
                 templateUrl: 'parts/parts.html',
                 controller: 'Parts.Controller',
                 controllerAs: 'vm'
             })
-            .state('createpart', {
+/*             .state('createpart', {
                 url: '/parts/create',
                 templateUrl: 'parts/createpart.html',
                 controller: 'Parts.Controller',
@@ -53,14 +53,14 @@
                 templateUrl: 'parts/editpart.html',
                 controller: 'Parts.Controller',
                 controllerAs: 'vm'
-            })
+            }) */
             .state('partners', {
                 url: '/partners',
                 templateUrl: 'partners/partners.html',
                 controller: 'Partners.Controller',
                 controllerAs: 'vm'
             })
-            .state('createpartner', {
+/*             .state('createpartner', {
                 url: '/partners/create',
                 templateUrl: 'partners/createpartner.html',
                 controller: 'Partners.Controller',
@@ -71,7 +71,13 @@
                 templateUrl: 'partners/editpartner.html',
                 controller: 'Partners.Controller',
                 controllerAs: 'vm'
-            });
+            }); */
+            .state('reports', {
+                url: '/reports',
+                templateUrl: 'reports/reports.html',
+                controller: 'Reports.Controller',
+                controllerAs: 'vm'
+            })
     }
 
     function run($rootScope, $http, $location, $localStorage) {

@@ -69,6 +69,14 @@
                         </th>
 
                         <th>
+                            <a href="" ng-click="sortType = 'url'; sortReverse = !sortReverse" style="color:black">
+                                Discount
+                                <span ng-show="sortType == 'url' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'url' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                        </th>
+
+                        <th>
                             <a href="" ng-click="sortType = 'description'; sortReverse = !sortReverse" style="color:black">
                                 Description
                                 <span ng-show="sortType == 'description' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
@@ -135,13 +143,19 @@
                         </th>
                         <th>
                         </th>
-                        <th>
-                        </th>
-                        <th>
 
-                        </th>
                         <th>
                         </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+
+                        <th>
+                        </th>
+
                         <th style="width:200px">
                             <button class="btn btn-default btn-sm" style="color: white; background-color:#555a5e;"
                                 ng-click="vm.clearFilter();vm.getPartners()">
@@ -168,8 +182,6 @@
                                     </button>
                                 </span>
                             </div>
-<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.name"
-                                placeholder="Name"> -->
                         </td>
                         <td>
                             <div class="input-group">
@@ -181,8 +193,17 @@
                                     </button>
                                 </span>
                             </div>
-<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.url"
-                                placeholder="URL"> -->
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newpartner.discount'
+                                    placeholder="Discount">
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newpartner.discount = undefined;' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
                         </td>
                         <td>
                             <div class="input-group">
@@ -194,8 +215,6 @@
                                     </button>
                                 </span>
                             </div>
-<!--                             <input type="text" class="form-control form-control-sm" ng-model="vm.newpartner.description"
-                                placeholder="Description"> -->
                         </td>
                         <td></td>
                         <td></td>
@@ -229,6 +248,14 @@
                                 </div>
                                 <div ng-if="vm.edit[partner.id]">
                                     <input type="text" class="form-control form-control-sm" ng-model="partner.url" placeholder="URL">
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-show="!vm.edit[partner.id] && vm.model.partners">
+                                    {{ partner.discount }}
+                                </div>
+                                <div ng-if="vm.edit[partner.id]">
+                                    <input type="text" class="form-control form-control-sm" ng-model="partner.discount" placeholder="Discount">
                                 </div>
                             </td>
                             <td>
