@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "ohtarr/netinv",
+    "description": "Network Inventory.",
+    "keywords": ["inventory", "laravel"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -9,7 +9,6 @@
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
-        "metaclassing/inarticulate": "dev-master",
         "metaclassing/php7-laravel5-enterpriseauth": "dev-master",
         "ohtarr/service-now-model": "dev-master",
         "spatie/laravel-query-builder": "^1.10",

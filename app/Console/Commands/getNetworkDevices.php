@@ -3,15 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\NetworkDeviceCisco;
-use App\NetworkDeviceAruba;
-use App\NetworkDeviceOpengear;
 use App\Asset;
 use App\Partner;
 use App\Part;
 use App\ServiceNowLocation;
 use Carbon\Carbon;
-use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use App\Log;
 
@@ -53,7 +49,7 @@ class getNetworkDevices extends Command
      */
     public function handle()
     {
-        $this->importCsv();
+        //$this->importCsv();
         $this->getCiscoDevices();
         $this->getArubaWlcs();
         $this->getArubaWaps();
@@ -64,93 +60,66 @@ class getNetworkDevices extends Command
 
     public function getCiscoDevices()
     {
-        $manufacturer = Partner::where("name","Cisco")->first();//default to Cisco for Manufacturer.
-        $this->ciscodevices = NetworkDeviceCisco::all();
-        foreach($this->ciscodevices as $device)
-        {
-            if($device->protocol = "ssh2")
-            {
-                $online = 1;
-            } else {
-                $online = null;
-            }
-            if($device->ip)
-            {
-                $ip = $device->ip;
-            }
-            if($device->name)
-            {
-                $name = $device->name;
-            }
-            $sitename = strtoupper(substr($device->name, 0, 8));
-            $serial = self::CiscoinventoryToSerial($device->inventory);
-            $array = [
-                0   =>  [
-                    2   =>  $device->model,
-                    3   =>  $serial,
-                ],
-            ];
+        $manufacturer = Partner::where("name","Cisco")->first();
+        $url = env('NETMAN_BASE_URL') . env('NETMAN_CISCO_LIST');
+        $params = [
+        ];
+        $client = new GuzzleHttpClient($params);
+        $response = $client->request("GET", $url, $params);
+        //get the body contents and decode json into an array.
+        $array = json_decode($response->getBody()->getContents(), true);
 
-            $reg = '/NAME:\s+"(\d)"\s*,.+\sPID:\s+(\S+).*SN:\s*(\S+)/';
-            if(preg_match_all($reg, $device->inventory, $hits, PREG_SET_ORDER))
+        foreach($array as $device)
+        {
+            unset($tmp);
+            $tmp['serial'] = $device['serial'];
+            if(!$device['serial'])
             {
-                unset($array);
-                $array = $hits;
+                continue;
             }
-            foreach($array as $switch)
-            {                
-                unset($tmp);
-                $serial = $switch[3];
-                if($serial)
-                {
-                    $tmp['part']['manufacturer_id'] = $manufacturer->id;
-                    $tmp['online'] = $online;
-                    $tmp['name'] = $name;
-                    $tmp['ip'] = $ip;
-                    $tmp['location'] = $sitename;
-                    $tmp['part']['part_number'] = $switch[2];
-                    $this->devicearray[$serial] = $tmp;
-                }
-            }
+            $tmp['online'] = $device['status'];
+            $tmp['ip'] = $device['ip'];
+            $tmp['name'] = $device['name'];
+            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
+            $tmp['part']['manufacturer_id'] = $manufacturer->id;
+            $tmp['part']['part_number'] = $device['model'];
+            $this->devicearray[] = $tmp;
         }
     }
 
     public function getArubaWlcs()
     {
         $manufacturer = Partner::where("name","Aruba")->first();
-        $this->arubadevices = NetworkDeviceAruba::all();
-        foreach($this->arubadevices as $device)
+        $url = env('NETMAN_BASE_URL') . env('NETMAN_WLC_LIST');
+        $params = [
+        ];
+        $client = new GuzzleHttpClient($params);
+        $response = $client->request("GET", $url, $params);
+        //get the body contents and decode json into an array.
+        $array = json_decode($response->getBody()->getContents(), true);
+
+        foreach($array as $device)
         {
             unset($tmp);
-            $serial = self::ArubainventoryToSerial($device->inventory);
-            if(!$serial)
+            $tmp['serial'] = $device['serial'];
+            if(!$device['serial'])
             {
                 continue;
             }
-            if($device->protocol = "ssh2")
-            {
-                $online = 1;
-            } else {
-                $online = null;
-            }
-            if($device->ip)
-            {
-                $ip = $device->ip;
-            }
-            if($device->name)
-            {
-                $name = $device->name;
-            }
-            $sitename = strtoupper(substr($device->name, 0, 8));
 
+            if($device['status'] = "up")
+            {
+                $tmp['online'] = 1;
+            } else {
+                $tmp['online'] = 0;
+                //continue;
+            }
+            $tmp['ip'] = $device['ip'];
+            $tmp['name'] = $device['name'];
+            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
-            $tmp['online'] = $online;
-            $tmp['serial'] = $serial;
-            $tmp['location'] = $sitename;
-            $tmp['part']['part_number'] = $device->model;
-            $tmp['ip'] = $device->ip;
-            $tmp['name'] = $device->name;
-            $this->devicearray[$serial] = $tmp;
+            $tmp['part']['part_number'] = $device['model'];
+            $this->devicearray[] = $tmp;
         }
     }
 
@@ -158,79 +127,67 @@ class getNetworkDevices extends Command
     {
         $manufacturer = Partner::where("name","Aruba")->first();
         $url = env('NETMAN_BASE_URL') . env('NETMAN_AP_LIST');
-        $cookiejar = new CookieJar(true);
         $params = [
-            'cookies' => $cookiejar,
-            'cert'    => env('NETMAN_CLIENT_CERT'),
-            ];
+        ];
         $client = new GuzzleHttpClient($params);
         $response = $client->request("GET", $url, $params);
         //get the body contents and decode json into an array.
         $array = json_decode($response->getBody()->getContents(), true);
-        //print_r($array);
-        //$array = $array["result"];
-        foreach($array as $wap)
+        foreach($array as $device)
         {
             unset($tmp);
-            $serial = $wap['serial'];
-            if(!$serial)
+            if(!$device['serial'])
             {
                 continue;
+            } else {
+                $tmp['serial'] = $device['serial'];
             }
 
-            if($wap['status'] = "Up")
+            if($device['status'] = "Up")
             {
                 $tmp['online'] = 1;
             } else {
                 //$tmp['online'] = null;
                 continue;
             }
-            $tmp['location'] = strtoupper(substr($wap['name'], 0, 8));
-            $tmp['ip'] = $wap['ip'];
-            $tmp['name'] = $wap['name'];
+            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
+            $tmp['ip'] = $device['ip'];
+            $tmp['name'] = $device['name'];
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
-            $tmp['part']['part_number'] = $wap['model'];
-            $this->devicearray[$serial] = $tmp;
+            $tmp['part']['part_number'] = $device['model'];
+            $this->devicearray[] = $tmp;
         }
     }
 
     public function getOpengearDevices()
     {
-        $manufacturer = Partner::where("name","Opengear")->first();//default to Cisco for Manufacturer.
-        $this->opengeardevices = NetworkDeviceOpengear::all();
-        foreach($this->opengeardevices as $device)
+        $manufacturer = Partner::where("name","Opengear")->first();
+        $url = env('NETMAN_BASE_URL') . env('NETMAN_OPENGEAR_LIST');
+        $params = [
+        ];
+        $client = new GuzzleHttpClient($params);
+        $response = $client->request("GET", $url, $params);
+        //get the body contents and decode json into an array.
+        $array = json_decode($response->getBody()->getContents(), true);
+        foreach($array as $device)
         {
-
-            //detect if online or not here
-            $online = 0;
-
-            if($device->ip4)
-            {
-                $ip = $device->ip4;
-            }
-            if($device->name)
-            {
-                $name = $device->name;
-            }
-            $sitename = strtoupper(substr($device->name, 0, 8));
-            $serial = $device->serialnumber;
-            $model = $device->model;
-
             unset($tmp);
-            if($serial)
+            if(!$device['serial'])
             {
-                $tmp['part']['manufacturer_id'] = $manufacturer->id;
-                $tmp['online'] = $online;
-                $tmp['name'] = $name;
-                $tmp['ip'] = $ip;
-                $tmp['location'] = $sitename;
-                $tmp['part']['part_number'] = $model;
-                $this->devicearray[$serial] = $tmp;
+                continue;
+            } else {
+                $tmp['serial'] = $device['serial'];
             }
 
+            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
+            $tmp['ip'] = $device['ip'];
+            $tmp['name'] = $device['name'];
+            $tmp['online'] = 0;
+            $tmp['part']['manufacturer_id'] = $manufacturer->id;
+            $tmp['part']['part_number'] = $device['model'];
+            $this->devicearray[] = $tmp;
         }
     }
-
 
     public function importCsv()
     {
@@ -273,16 +230,16 @@ class getNetworkDevices extends Command
     public function addAssets()
     {
         $this->locations = ServiceNowLocation::all();
-        foreach($this->devicearray as $serial => $device)
+        foreach($this->devicearray as $device)
         {
             print "*****************************\n";
-            if(!$serial)
+            if(!$device['serial'])
             {
                 print "No Serial found!  Skipping!\n";
                 continue;
             }
-            print "Device Serial : " . $serial . "\n";
-            $asset = Asset::where("serial",$serial)->withTrashed()->first();
+            print "Device Serial : " . $device['serial'] . "\n";
+            $asset = Asset::where("serial",$device['serial'])->withTrashed()->first();
             $part = Part::where("part_number",$device['part']['part_number'])->withTrashed()->first();
             $location = $this->locations->where("name",$device['location'])->first();
 
@@ -329,11 +286,11 @@ class getNetworkDevices extends Command
                 $asset->logChanges(strtoupper($device['name']), $device['ip'], strtoupper($device['location']));
             } else {
                 print "No existing Asset found....\n";
-                if($location && $serial && $part)
+                if($location && $device['serial'] && $part)
                 {
                     print "Location, Serial, and Part exist, creating a new Asset!\n";
                     $asset = new Asset;
-                    $asset->serial = $serial;
+                    $asset->serial = $device['serial'];
                     $asset->part_id = $part->id;
                     $asset->location_id = $location->sys_id;
                     if($device['online'])
@@ -348,36 +305,4 @@ class getNetworkDevices extends Command
         }
     }
 
-    public static function CiscoinventoryToSerial($show_inventory)
-    {
-        $serial = null;
-        //$reg = "/.*PID:\s(\S+).*SN:\s+(\S+)\s*$/m";
-        $reg9k = "/PID:\s+ASR-9001,.*SN:\s+(\S+)/";
-        preg_match($reg9k, $show_inventory, $hits);
-        print_r($hits);
-        if(isset($hits[1]))
-        {
-            return $hits[1];
-        }
-
-        $reg = "/PID:.*SN:\s+(\S+)/";
-        preg_match($reg, $show_inventory, $hits);
-        print_r($hits);
-        if(isset($hits[1]))
-        {
-            return $hits[1];
-        }
-    }
-
-    public static function ArubainventoryToSerial($show_inventory)
-    {
-        $serial = null;
-        $reg = "/System Serial#\s+:\s+(\S+)/";
-        if (preg_match($reg, $show_inventory, $hits))
-        {
-            //print_r($hits);
-            $serial = $hits[1];
-        }
-        return $serial;
-    }
 }
