@@ -1364,6 +1364,32 @@
                 ]
             }
         },
+        "/api/report": {
+            "get": {
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Get Report",
+                "description": "",
+                "operationId": "",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "AzureAD": []
+                    }
+                ]
+            }
+        },
         "/api/me": {
             "get": {
                 "tags": [

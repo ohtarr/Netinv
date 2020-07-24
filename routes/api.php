@@ -1160,3 +1160,24 @@ Route::apiResource('contracts', 'ContractController');
 * )
 */
 Route::apiResource('locations', 'LocationController');
+
+/**
+* @SWG\Get(
+*     path="/api/report",
+*     tags={"Report"},
+*     summary="Get Report",
+*     description="",
+*     operationId="",
+*     consumes={"application/json"},
+*     produces={"application/json"},
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+**/
+
+Route::get('report', 'ReportController@index');
