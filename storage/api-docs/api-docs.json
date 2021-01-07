@@ -229,11 +229,11 @@
                         "type": "integer"
                     },
                     {
-                        "name": "warranty_id",
+                        "name": "purchased_at",
                         "in": "formData",
-                        "description": "id of warranty",
+                        "description": "date of purchase",
                         "required": false,
-                        "type": "integer"
+                        "type": "string"
                     },
                     {
                         "name": "location_id",

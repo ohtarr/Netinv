@@ -17,7 +17,7 @@ class Asset extends Model
         'deleted_at',
     ];
 
-	protected $fillable = ['serial','part_id','vendor_id','warranty_id','location_id'];
+	protected $fillable = ['serial','part_id','vendor_id','purchased_at','warranty_id','location_id'];
 
 	public function getLocation()
 	{

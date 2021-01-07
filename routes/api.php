@@ -218,11 +218,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 *         type="integer"
 *     ),
 *     @SWG\Parameter(
-*         name="warranty_id",
+*         name="purchased_at",
 *         in="formData",
-*         description="id of warranty",
+*         description="date of purchase",
 *         required=false,
-*         type="integer"
+*         type="string"
 *     ),
 *     @SWG\Parameter(
 *         name="location_id",
