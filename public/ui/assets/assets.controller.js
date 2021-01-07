@@ -380,14 +380,14 @@ angular
 			});
 		}
 
-		// Update DID Block service called by the save button.
+		// Update Asset service called by the save button.
 		vm.update = function (asset) {
 
 			AssetsService.updateAsset(asset.id, asset).then(function (data) {
 				assetIndex = findObjectIndexByKey(vm.model.assets, "id", asset.id);
 				renderAssetAll(assetIndex);
 			}, function (error) {
-				alert('An error occurred while updating the site')
+				alert('An error occurred while updating the Asset')
 			});
 			//$state.reload();
 		}

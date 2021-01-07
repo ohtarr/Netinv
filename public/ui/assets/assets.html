@@ -85,10 +85,10 @@
                         </th>
 
                         <th>
-                            <a href="" ng-click="sortType = 'warranty_id'; sortReverse = !sortReverse" style="color:black">
-                                Warranty_id
-                                <span ng-show="sortType == 'warranty_id' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                <span ng-show="sortType == 'warranty_id' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
+                            <a href="" ng-click="sortType = 'purchased_at'; sortReverse = !sortReverse" style="color:black">
+                                Purchased At
+                                <span ng-show="sortType == 'purchased_at' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                                <span ng-show="sortType == 'purchased_at' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                             </a>
                         </th>
                         <th>
@@ -296,8 +296,20 @@
                                 data-width="100%" name="partid">
                             </select> -->
                         </td>
+<!--                         <td>
+                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.purchased_at">
+                        </td> -->
                         <td>
-                            <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.warranty_id">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" ng-model='vm.newasset.purchased_at'
+                                    placeholder="2010-01-01" >
+                                <span class="input-group-btn">
+                                    <button type="button" ng-click='vm.newasset.purchased_at = undefined' class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+<!--                                 <input type="text" class="form-control form-control-sm" ng-model="vm.newasset.serial" placeholder="Serial #"> -->
                         </td>
                         <td>
                             <div class="input-group">
@@ -373,10 +385,10 @@
                         </td>
                         <td>
                             <div ng-show="!vm.edit[asset.id]">
-                                {{ asset.warranty_id }}
+                                {{ asset.purchased_at }}
                             </div>
                             <div ng-if="vm.edit[asset.id]">
-                                <input type="text" class="form-control form-control-sm" ng-model="asset.warranty_id">
+                                <input type="text" class="form-control form-control-sm" ng-model="asset.purchased_at">
                             </div>
                         </td>
                         <td>
