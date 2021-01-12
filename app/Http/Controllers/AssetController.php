@@ -58,7 +58,8 @@ class AssetController extends Controller
 		$query->allowedIncludes($includes);
 
         if ($request->get('type')) {
-            $query->join('parts', 'parts.id', '=', 'assets.part_id');
+            $query->join('parts', 'assets.part_id', '=', 'parts.id');
+            $query->select('parts.*','assets.*');
             $query->where('parts.type', $request->get('type'));
         }
 
