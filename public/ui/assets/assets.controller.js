@@ -216,15 +216,27 @@ angular
 						//console.log(vm.model.assets);
 
 					}
+				}, function (error) {
+					alert('An error occurred while getting Assets!')
 				})
 		};
+
+		vm.getAsset = function (id) {
+ 			AssetsService.getAsset(id).then(
+				function (response) {
+					assetIndex = findObjectIndexByKey(vm.model.assets, "id", id);
+					vm.model.assets[assetIndex] = response.data.data;
+					renderAssetAll(assetIndex);
+				}, function (error) {
+					alert('An error occurred while getting the Asset with id ' + id)
+			});
+		}
 
 		function getParts() {
 			var httpParams = {};
 
 			PartsService.getParts(httpParams)
 				.then(function (res) {
-					// Check for errors and if token has expired.
 					if (res.data.message) {
 						vm.message = res.data.message;
 						return vm.message;
@@ -236,9 +248,7 @@ angular
 						});
 						vm.model.parts = sortByKey(vm.model.parts, 'part_number');
 						vm.loading.parts = false;
-						//updateAssets();
 						renderAllAssets();
-						//console.log(vm.model.parts);
 					}
 				})
 		};
@@ -289,6 +299,7 @@ angular
 		getParts();
 		getPartners();
 		getLocations();
+
 
 /* 		function getAll() {
 			AssetsService.getAssets(vm.httpParams)
@@ -382,14 +393,13 @@ angular
 
 		// Update Asset service called by the save button.
 		vm.update = function (asset) {
-
-			AssetsService.updateAsset(asset.id, asset).then(function (data) {
-				assetIndex = findObjectIndexByKey(vm.model.assets, "id", asset.id);
-				renderAssetAll(assetIndex);
-			}, function (error) {
-				alert('An error occurred while updating the Asset')
+ 			AssetsService.updateAsset(asset.id, asset).then(
+				function (response) {
+					vm.getAsset(asset.id);
+				}, function (error) {
+					alert(error.data.message);
+					vm.getAsset(asset.id);
 			});
-			//$state.reload();
 		}
 
 		// Delete Asset

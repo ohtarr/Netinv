@@ -6,9 +6,7 @@ angular
 
 		// Get Assets
 		self.getAssets = function(httpParams) {
-/* 			console.log("HTTP PARAMS:");
-			console.log(httpParams); */
-			var defer = $q.defer();
+/* 			var defer = $q.defer();
 			return $http.get(globalUrl + '/api/assets',{params: httpParams})
 				.then(function successCallback(response) {
 					//console.log(response)
@@ -20,12 +18,13 @@ angular
 			  }, function errorCallback(response) {
 					defer.resolve(response);
 					return defer.promise;
-			  });
+			  }); */
+			return $http.get(globalUrl + '/api/assets',{params: httpParams})
 		}
 
 		// Get Asset by ID
 		self.getAsset = function(id) {
-			var defer = $q.defer();
+/* 			var defer = $q.defer();
 			return $http.get(globalUrl + '/api/assets/'+id)
 				.then(function successCallback(response) {
 					defer.resolve(response);
@@ -36,7 +35,8 @@ angular
 			  }, function errorCallback(response) {
 					defer.resolve(response);
 					return defer.promise;
-			  });
+			  }); */
+			  return $http.get(globalUrl + '/api/assets/'+id)
 		}
 
 		// Create Asset
@@ -47,25 +47,46 @@ angular
 		// Update Asset by ID
 		self.updateAsset = function(id, update) {
 
-			return $http.put(globalUrl + '/api/assets/'+id, update).then(function(response) {
+/* 			return $http.put(globalUrl + '/api/assets/'+id, update).then(
+				function(response) {
+					//return response.data;
+					return response;
+				}, function(error) {
+					//alert('An error occurred while updating the Asset') ;
+					return error;
+				}
+			); */
 
-				var data = response.data;
-				return data;
+/* 			$http.put(globalUrl + '/api/assets/'+id, update).then(
+				(data) => {
+					return null, data
+				},
+				(error) => {
+					return error
+				}
+			); */
+/* 			$http.put(globalUrl + '/api/assets/'+id, update)
+				.then(function (response) {
+					return response.data;
+				})
+				.catch(function (data) {
+					// Handle error here
+				}); */
+			return $http.put(globalUrl + '/api/assets/'+id, update);
 
-			 }, function(error) {return false;});
 		}
 
 		// Delete Asset by ID
 		self.deleteAsset = function(id) {
-			console.log('Service - Deleting ID: '+ id);
+/* 			console.log('Service - Deleting ID: '+ id);
 			return $http.delete(globalUrl + '/api/assets/'+id, id).then(function(response) {
 
 				var data = response.data;
 				return data;
 
-			 });
+			 }); */
+			 return $http.delete(globalUrl + '/api/assets/'+id, id)
 		}
 
 		return self
-
 	}]);
