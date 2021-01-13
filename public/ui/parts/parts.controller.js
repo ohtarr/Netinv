@@ -195,6 +195,17 @@ angular
 				})
 		};
 
+		vm.getPart = function (id) {
+			PartsService.getPart(id).then(
+			   function (response) {
+				   partIndex = findObjectIndexByKey(vm.model.parts, "id", id);
+				   vm.model.parts[partIndex] = response.data.data;
+				   renderPartAll(partIndex);
+			   }, function (error) {
+				   alert('An error occurred while getting the Part with id ' + id)
+		   });
+	   }
+
 		function getManufacturers() {
 			vm.loading.manufacturers = true;
 			PartnersService.getPartners()
@@ -239,13 +250,21 @@ angular
 
 		// Update DID Block service called by the save button.
 		vm.update = function (part) {
+			PartsService.updatePart(part.id, part)
+			.then(
+				function (response) {
+					vm.getPart(part.id);
+				}, function (error) {
+					alert(error.data.message);
+					vm.getPart(part.id);
+			});
 
-			PartsService.updatePart(part.id, part).then(function (data) {
+/* 			PartsService.updatePart(part.id, part).then(function (data) {
 				partIndex = findObjectIndexByKey(vm.model.parts, "id", part.id);
 				renderPartAll(partIndex);
 			}, function (error) {
 				alert('An error occurred while updating the site')
-			});
+			}); */
 			//$state.reload();
 		}
 
