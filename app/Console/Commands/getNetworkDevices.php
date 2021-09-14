@@ -143,7 +143,7 @@ class getNetworkDevices extends Command
                 $tmp['serial'] = $device['serial'];
             }
 
-            if($device['status'] = "Up")
+            if($device['status'] == 1)
             {
                 $tmp['online'] = 1;
             } else {
@@ -286,13 +286,16 @@ class getNetworkDevices extends Command
                 $asset->logChanges(strtoupper($device['name']), $device['ip'], strtoupper($device['location']));
             } else {
                 print "No existing Asset found....\n";
-                if($location && $device['serial'] && $part)
+                if($device['serial'] && $part)
                 {
-                    print "Location, Serial, and Part exist, creating a new Asset!\n";
+                    print "Serial and Part exist, creating a new Asset!\n";
                     $asset = new Asset;
                     $asset->serial = $device['serial'];
                     $asset->part_id = $part->id;
-                    $asset->location_id = $location->sys_id;
+                    if($location)
+                    {
+                        $asset->location_id = $location->sys_id;
+                    }
                     if($device['online'])
                     {
                         $asset->last_online = Carbon::now();
