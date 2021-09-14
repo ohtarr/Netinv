@@ -107,7 +107,7 @@ class getNetworkDevices extends Command
                 continue;
             }
 
-            if($device['status'] == "up")
+            if($device['status'] == 1)
             {
                 $tmp['online'] = 1;
             } else {
