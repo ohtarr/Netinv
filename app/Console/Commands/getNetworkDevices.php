@@ -68,7 +68,12 @@ class getNetworkDevices extends Command
         $response = $client->request("GET", $url, $params);
         //get the body contents and decode json into an array.
         $array = json_decode($response->getBody()->getContents(), true);
-
+        
+        if(!is_array($array))
+        {
+            return null;
+        }
+        
         foreach($array as $device)
         {
             unset($tmp);
@@ -97,7 +102,12 @@ class getNetworkDevices extends Command
         $response = $client->request("GET", $url, $params);
         //get the body contents and decode json into an array.
         $array = json_decode($response->getBody()->getContents(), true);
-
+        
+        if(!is_array($array))
+        {
+            return null;
+        }
+       
         foreach($array as $device)
         {
             unset($tmp);
@@ -133,6 +143,12 @@ class getNetworkDevices extends Command
         $response = $client->request("GET", $url, $params);
         //get the body contents and decode json into an array.
         $array = json_decode($response->getBody()->getContents(), true);
+        
+        if(!is_array($array))
+        {
+            return null;
+        }
+
         foreach($array as $device)
         {
             unset($tmp);
@@ -169,6 +185,12 @@ class getNetworkDevices extends Command
         $response = $client->request("GET", $url, $params);
         //get the body contents and decode json into an array.
         $array = json_decode($response->getBody()->getContents(), true);
+
+        if(!is_array($array))
+        {
+            return null;
+        }
+        
         foreach($array as $device)
         {
             unset($tmp);
