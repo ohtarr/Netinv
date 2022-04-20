@@ -53,7 +53,12 @@ class Asset extends Model
     {
         if(!$data)
         {
-            $data = $this->getLastLog()->data;
+            $data = [];
+            $lastlog = $this->getLastLog();
+            if($lastlog)
+            {
+                $data = $lastlog->data;
+            }
         }
         $log = new Log;
         $log->asset_id = $this->id;

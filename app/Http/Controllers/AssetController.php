@@ -95,8 +95,10 @@ class AssetController extends Controller
         if ($user->cant('create', Asset::class)) {
             abort(401, 'You are not authorized');
         }
-
-		return Asset::create($request->all());
+        $asset = Asset::create($request->all());
+        $message = "User {$user->name} has added asset.";
+        $asset->addLog($message);
+        return $asset;
     }
 
     /**
