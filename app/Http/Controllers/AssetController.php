@@ -160,6 +160,8 @@ class AssetController extends Controller
         }
 
 		$asset = Asset::findOrFail($id);
+        $message = "User {$user->name} has deleted asset.";
+        $asset->addLog($message);
 		$asset->delete();
 		return new AssetResource($asset);
     }

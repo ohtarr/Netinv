@@ -49,45 +49,42 @@ class Asset extends Model
         return $this->logs->last();
     }
 
-    public function addLog($name, $ip, $loc, $message)
+    public function addLog($message, $data = null)
     {
+        if(!$data)
+        {
+            $data = $this->getLastLog()->data;
+        }
         $log = new Log;
         $log->asset_id = $this->id;
-        $log->name = $name;
-        $log->ip = $ip;
-        $log->location = $loc;
+        $log->data = $data;
         $log->message = $message;
         $log->save();
+        return $log;
     }
 
-    public function logChanges($newname, $ip, $newloc)
+    public function logChanges($data)
     {
         $messages = [];
         $lastlog = $this->getLastLog();
-        //print_r($lastlog);
         if($lastlog)
         {
-            if($lastlog->name != $newname)
+            foreach($data as $key => $value)
             {
-                $messages[] = 'Device NAME changed from "' . $lastlog->name . '" to "' . $newname . '".';
-            }
-/*             if($lastlog->ip != $newip)
-            {
-                $messages[] = 'Device IP changed from "' . $lastlog->ip . '" to "' . $newip . '".';
-            } */
-            if($lastlog->location != $newloc)
-            {
-                $messages[] = 'Device LOCATION changed from "' . $lastlog->location . '" to "' . $newloc . '".';
+                if($lastlog->data[$key] != $value)
+                {
+                    $messages[] = 'Device ' . $key . ' changed from "' . $lastlog->data[$key] . '" to "' . $value . '".';
+                }
             }
         } else {
-            $messages[] = 'Device NAME changed from "" to "' . $newname . '".';
-            //$messages[] = 'Device IP changed from "" to "' . $newip . '".';
-            $messages[] = 'Device LOCATION changed from "" to "' . $newloc . '".';
+            foreach($data as $key => $value)
+            {
+                $messages[] = 'Device ' . $key . ' changed from "" to "' . $value . '".';
+            }
         }
-        //print_r($messages);
         foreach($messages as $message)
         {
-            $this->addLog($newname, $ip, $newloc, $message);
+            $this->addLog($message, $data);
         }
     }
 

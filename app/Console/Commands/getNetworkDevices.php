@@ -83,9 +83,9 @@ class getNetworkDevices extends Command
                 continue;
             }
             $tmp['online'] = $device['status'];
-            $tmp['ip'] = $device['ip'];
-            $tmp['name'] = $device['name'];
-            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
+            $tmp['data']['ip'] = $device['ip'];
+            $tmp['data']['name'] = $device['name'];
+            $tmp['data']['location'] = strtoupper(substr($device['name'], 0, 8));
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $tmp['part']['part_number'] = $device['model'];
             $this->devicearray[] = $tmp;
@@ -124,9 +124,9 @@ class getNetworkDevices extends Command
                 $tmp['online'] = 0;
                 //continue;
             }
-            $tmp['ip'] = $device['ip'];
-            $tmp['name'] = $device['name'];
-            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
+            $tmp['data']['ip'] = $device['ip'];
+            $tmp['data']['name'] = $device['name'];
+            $tmp['data']['location'] = strtoupper(substr($device['name'], 0, 8));
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $tmp['part']['part_number'] = $device['model'];
             $this->devicearray[] = $tmp;
@@ -166,9 +166,9 @@ class getNetworkDevices extends Command
                 //$tmp['online'] = null;
                 continue;
             }
-            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
-            $tmp['ip'] = $device['ip'];
-            $tmp['name'] = $device['name'];
+            $tmp['data']['location'] = strtoupper(substr($device['name'], 0, 8));
+            //$tmp['ip'] = $device['ip'];
+            $tmp['data']['name'] = $device['name'];
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $tmp['part']['part_number'] = $device['model'];
             $this->devicearray[] = $tmp;
@@ -200,10 +200,9 @@ class getNetworkDevices extends Command
             } else {
                 $tmp['serial'] = $device['serial'];
             }
-
-            $tmp['location'] = strtoupper(substr($device['name'], 0, 8));
-            $tmp['ip'] = $device['ip'];
-            $tmp['name'] = $device['name'];
+            $tmp['data']['location'] = strtoupper(substr($device['name'], 0, 8));
+            $tmp['data']['ip'] = $device['ip'];
+            $tmp['data']['name'] = $device['name'];
             $tmp['online'] = 0;
             $tmp['part']['manufacturer_id'] = $manufacturer->id;
             $tmp['part']['part_number'] = $device['model'];
@@ -238,9 +237,9 @@ class getNetworkDevices extends Command
                         $tmp['part']['manufacturer_id'] = $manufacturer->id;
                         if($item['Site'])
                         {
-                            $tmp['location'] = $item['Site'];
+                            $tmp['data']['location'] = $item['Site'];
                         } else {
-                            $tmp['location'] = env("DEFAULT_LOCATION");  //If there is no SITE, assume it's in the DEPOT.
+                            $tmp['data']['location'] = env("DEFAULT_LOCATION");  //If there is no SITE, assume it's in the DEPOT.
                         }
                         $this->devicearray[$item['serial']] = $tmp;
                     }
@@ -263,7 +262,7 @@ class getNetworkDevices extends Command
             print "Device Serial : " . $device['serial'] . "\n";
             $asset = Asset::where("serial",$device['serial'])->withTrashed()->first();
             $part = Part::where("part_number",$device['part']['part_number'])->withTrashed()->first();
-            $location = $this->locations->where("name",$device['location'])->first();
+            $location = $this->locations->where("name",$device['data']['location'])->first();
 
             if(!$part)
             {
@@ -283,7 +282,7 @@ class getNetworkDevices extends Command
                 if($asset->trashed())
                 {
                     $message = "Device restored back to ACTIVE in the Assets database.";
-                    $asset->addLog($device['name'], $device['ip'], $device['location'], $message);
+                    $asset->addLog($message, $device['data']);
                     $asset->restore();
                 }
                 if($device['online'] == 1)
@@ -305,7 +304,7 @@ class getNetworkDevices extends Command
                     $asset->location_id = $location->sys_id;
                 }
                 $asset->save();
-                $asset->logChanges(strtoupper($device['name']), $device['ip'], strtoupper($device['location']));
+                $asset->logChanges($device['data']);
             } else {
                 print "No existing Asset found....\n";
                 if($device['serial'] && $part)
@@ -323,7 +322,7 @@ class getNetworkDevices extends Command
                         $asset->last_online = Carbon::now();
                     }
                     $asset->save();
-                    $asset->logChanges(strtoupper($device['name']), $device['ip'], strtoupper($device['location']));
+                    $asset->logChanges($device['data']);
                 }
             }
 

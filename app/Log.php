@@ -9,6 +9,10 @@ class Log extends Model
 {
 	use SoftDeletes;
 
+    protected $casts = [
+        'data'  =>  'json',
+    ];
+
 	protected $dates = [
         'created_at',
         'updated_at',
