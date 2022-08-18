@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Asset;
-use App\Http\Resources\Asset as AssetResource;
-use App\Http\Resources\AssetCollection;
-use App\Http\Requests\StoreAsset;
-use Validator;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Filter;
+use App\Asset as Model;
+use App\Http\Resources\Asset as Resource;
+use App\Http\Resources\AssetCollection as ResourceCollection;
+use App\Http\Requests\StoreAsset as StoreRequest;
+use App\Queries\AssetQuery as Query;
 
 class AssetController extends Controller
 {
@@ -27,50 +25,13 @@ class AssetController extends Controller
     public function index(Request $request)
     {
 		$user = auth()->user();
-		if ($user->cant('read', Asset::class)) {
+		if ($user->cant('read', Model::class)) {
 			abort(401, 'You are not authorized');
         }
-        
-        if($request->paginate)
-        {
-            $paginate = $request->paginate;
-        } else {
-            $paginate = env("ASSETS_PAGINATION");
-        }
 
-        $filters = [
-            'id',
-            'serial',
-            'part_id',
-            'vendor_id',
-            'warranty_id',
-            'location_id',
-        ];
-
-        $includes = [
-            'part',
-            'vendor',
-            'warranty',
-        ];
-
-		$query = QueryBuilder::for(Asset::class);
-		$query->allowedFilters($filters);
-		$query->allowedIncludes($includes);
-
-        if ($request->get('type')) {
-            $query->join('parts', 'assets.part_id', '=', 'parts.id');
-            $query->select('parts.*','assets.*');
-            $query->where('parts.type', $request->get('type'));
-        }
-
-        if ($request->get('manufacturer_id')) {
-            $query->join('parts', 'parts.id', '=', 'assets.part_id');
-            $query->where('parts.manufacturer_id', $request->get('manufacturer_id'));
-        }
-
-        $assets = $query->paginate($paginate);
-
-        return new AssetCollection($assets);
+        //Apply proper queries and retrieve a ResourceCollection object.
+        $resourceCollection = Query::apply($request);
+        return $resourceCollection;
     }
 
     /**
@@ -89,16 +50,16 @@ class AssetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAsset $request)
+    public function store(StoreRequest $request)
     {
         $user = auth()->user();
-        if ($user->cant('create', Asset::class)) {
+        if ($user->cant('create', Model::class)) {
             abort(401, 'You are not authorized');
         }
-        $asset = Asset::create($request->all());
+        $object = Model::create($request->all());
         $message = "User {$user->name} has added asset.";
-        $asset->addLog($message);
-        return $asset;
+        $object->addLog($message);
+        return $object;
     }
 
     /**
@@ -107,15 +68,14 @@ class AssetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $user = auth()->user();
-		if ($user->cant('read', Asset::class)) {
+		if ($user->cant('read', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-        $asset = Asset::findOrFail($id);
-		return new AssetResource($asset);
+        $resourceCollection = Query::apply($request,$id);
+        return new Resource($resourceCollection->collection->first());
     }
 
     /**
@@ -139,13 +99,13 @@ class AssetController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
-        if ($user->cant('update', Asset::class)) {
+        if ($user->cant('update', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-		$asset = Asset::findOrFail($id);
-		$asset->update($request->all());
-		return new AssetResource($asset);
+		$object = Model::findOrFail($id);
+		$object->update($request->all());
+		return new Resource($object);
     }
 
     /**
@@ -157,23 +117,15 @@ class AssetController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        if ($user->cant('delete', Asset::class)) {
+        if ($user->cant('delete', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-		$asset = Asset::findOrFail($id);
+		$object = Model::findOrFail($id);
         $message = "User {$user->name} has deleted asset.";
-        $asset->addLog($message);
-		$asset->delete();
-		return new AssetResource($asset);
+        $object->addLog($message);
+		$object->delete();
+		return new Resource($object);
     }
 
-	public function filter(Request $request)
-	{
-		$user = auth()->user();
-        if ($user->cant('read', Asset::class)) {
-            abort(401, 'You are not authorized');
-        }
-
-	}
 }

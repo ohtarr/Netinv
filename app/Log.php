@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Collections\LogCollection;
 
 class Log extends Model
 {
@@ -20,6 +21,12 @@ class Log extends Model
     ];
 
 	protected $guarded = [];
+
+    
+    public function newCollection(array $models = []) 
+    { 
+       return new LogCollection($models); 
+    }
 
 	public function asset()
     {

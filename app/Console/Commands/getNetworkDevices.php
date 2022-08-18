@@ -53,7 +53,7 @@ class getNetworkDevices extends Command
         $this->getCiscoDevices();
         $this->getArubaWlcs();
         $this->getArubaWaps();
-        $this->getOpengearDevices();
+        //$this->getOpengearDevices();
         $this->addAssets();
         //print_r($this->devicearray);
     }

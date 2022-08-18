@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Contract;
-use App\Http\Resources\Contract as ContractResource;
-use App\Http\Resources\ContractCollection;
-use App\Http\Requests\StoreContract;
-use Validator;
+use App\Contract as Model;
+use App\Http\Resources\ContractResource as Resource;
+use App\Http\Resources\ContractCollection as ResourceCollection;
+use App\Http\Requests\StoreContract as StoreRequest;
+use App\Queries\ContractQuery as Query;
 
 class ContractController extends Controller
 {
 
-        public function __construct()
+	public function __construct()
     {
         $this->middleware('auth:api');
     }
@@ -24,24 +24,14 @@ class ContractController extends Controller
      */
     public function index(Request $request)
     {
-                $user = auth()->user();
-                if ($user->cant('read', Contract::class)) {
-                        abort(401, 'You are not authorized');
-                }
+		$user = auth()->user();
+		if ($user->cant('read', Model::class)) {
+			abort(401, 'You are not authorized');
+        }
 
-                $params = $request->all();
-                if($params)
-                {
-                        $query = (new Contract)->newQuery();
-                        foreach($params as $key => $value)
-                        {
-                                $query->where($key,$value);
-                        }
-                        return new ContractCollection($query->get());
-                } else {
-                $models = Contract::paginate(1000);
-            return new ContractCollection($models);
-                }
+        //Apply proper queries and retrieve a ResourceCollection object.
+        $resourceCollection = Query::apply($request);
+        return $resourceCollection;
     }
 
     /**
@@ -60,14 +50,14 @@ class ContractController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreContract $request)
+    public function store(StoreRequest $request)
     {
         $user = auth()->user();
-        if ($user->cant('create', Contract::class)) {
+        if ($user->cant('create', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-                return Contract::create($request->all());
+        $object = Model::create($request->all());
+        return $object;
     }
 
     /**
@@ -76,15 +66,14 @@ class ContractController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $user = auth()->user();
-                if ($user->cant('read', Contract::class)) {
+		if ($user->cant('read', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-        $model = Contract::findOrFail($id);
-                return new ContractResource($model);
+        $resourceCollection = Query::apply($request,$id);
+        return new Resource($resourceCollection->collection->first());
     }
 
     /**
@@ -108,13 +97,13 @@ class ContractController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
-        if ($user->cant('update', Contract::class)) {
+        if ($user->cant('update', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-                $model = Contract::findOrFail($id);
-                $model->update($request->all());
-                return new ContractResource($model);
+		$object = Model::findOrFail($id);
+		$object->update($request->all());
+		return new Resource($object);
     }
 
     /**
@@ -126,21 +115,13 @@ class ContractController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        if ($user->cant('delete', Contract::class)) {
+        if ($user->cant('delete', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-                $model = Contract::findOrFail($id);
-                $model->delete();
-                return new ContractResource($model);
+		$object = Model::findOrFail($id);
+		$object->delete();
+		return new Resource($object);
     }
 
-        public function filter(Request $request)
-        {
-                $user = auth()->user();
-        if ($user->cant('read', Contract::class)) {
-            abort(401, 'You are not authorized');
-        }
-
-        }
 }

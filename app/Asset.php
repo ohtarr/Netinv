@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\ServiceNowLocation;
 use App\Log;
+use App\Collections\AssetCollection;
 
 class Asset extends Model
 {
@@ -18,6 +19,11 @@ class Asset extends Model
     ];
 
 	protected $fillable = ['serial','part_id','vendor_id','purchased_at','warranty_id','location_id'];
+
+    public function newCollection(array $models = []) 
+    { 
+       return new AssetCollection($models); 
+    }
 
 	public function getLocation()
 	{

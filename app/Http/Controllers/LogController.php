@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Part as Model;
-use App\Http\Resources\PartResource as Resource;
-use App\Http\Resources\PartCollection as ResourceCollection;
-use App\Http\Requests\StorePart as StoreRequest;
-use App\Queries\PartQuery as Query;
+use App\Log as Model;
+use App\Http\Resources\LogResource as Resource;
+use App\Http\Resources\LogResourceCollection as ResourceCollection;
+use App\Http\Requests\StoreLog as StoreRequest;
+use App\Queries\LogQuery as Query;
 
-class PartController extends Controller
+class LogController extends Controller
 {
 
 	public function __construct()

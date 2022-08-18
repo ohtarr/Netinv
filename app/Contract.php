@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\ServiceNowLocation;
+use App\Collections\ContractCollection;
 
 class Contract extends Model
 {
@@ -17,6 +18,11 @@ class Contract extends Model
     ];
 
     protected $fillable = ['cid','partner_id','description'];
+
+    public function newCollection(array $models = []) 
+    { 
+       return new ContractCollection($models); 
+    }
 
     public function partner()
     {

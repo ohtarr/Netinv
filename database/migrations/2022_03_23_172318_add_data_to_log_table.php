@@ -14,7 +14,7 @@ class AddDataToLogTable extends Migration
     public function up()
     {
         Schema::table('logs', function (Blueprint $table) {
-            $table->json('data')->nulable();
+            $table->json('data')->nullable();
         });
     }
 

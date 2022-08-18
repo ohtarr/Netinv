@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Contact;
-use App\Http\Resources\Contact as ContactResource;
-use App\Http\Resources\ContactCollection;
-use App\Http\Requests\StoreContact;
-use Validator;
+use App\Contact as Model;
+use App\Http\Resources\ContactResource as Resource;
+use App\Http\Resources\ContactCollection as ResourceCollection;
+use App\Http\Requests\StoreContact as StoreRequest;
+use App\Queries\ContactQuery as Query;
 
 class ContactController extends Controller
 {
 
-        public function __construct()
+	public function __construct()
     {
         $this->middleware('auth:api');
     }
@@ -24,24 +24,14 @@ class ContactController extends Controller
      */
     public function index(Request $request)
     {
-                $user = auth()->user();
-                if ($user->cant('read', Contact::class)) {
-                        abort(401, 'You are not authorized');
-                }
+		$user = auth()->user();
+		if ($user->cant('read', Model::class)) {
+			abort(401, 'You are not authorized');
+        }
 
-                $params = $request->all();
-                if($params)
-                {
-                        $query = (new Contact)->newQuery();
-                        foreach($params as $key => $value)
-                        {
-                                $query->where($key,$value);
-                        }
-                        return new ContactCollection($query->get());
-                } else {
-                $models = Contact::paginate(1000);
-            return new ContactCollection($models);
-                }
+        //Apply proper queries and retrieve a ResourceCollection object.
+        $resourceCollection = Query::apply($request);
+        return $resourceCollection;
     }
 
     /**
@@ -60,14 +50,14 @@ class ContactController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreContact $request)
+    public function store(StoreRequest $request)
     {
         $user = auth()->user();
-        if ($user->cant('create', Contact::class)) {
+        if ($user->cant('create', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-                return Contact::create($request->all());
+        $object = Model::create($request->all());
+        return $object;
     }
 
     /**
@@ -76,15 +66,14 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $user = auth()->user();
-                if ($user->cant('read', Contact::class)) {
+		if ($user->cant('read', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-        $model = Contact::findOrFail($id);
-                return new ContactResource($model);
+        $resourceCollection = Query::apply($request,$id);
+        return new Resource($resourceCollection->collection->first());
     }
 
     /**
@@ -108,13 +97,13 @@ class ContactController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
-        if ($user->cant('update', Contact::class)) {
+        if ($user->cant('update', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-                $model = Contact::findOrFail($id);
-                $model->update($request->all());
-                return new ContactResource($model);
+		$object = Model::findOrFail($id);
+		$object->update($request->all());
+		return new Resource($object);
     }
 
     /**
@@ -126,21 +115,13 @@ class ContactController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        if ($user->cant('delete', Contact::class)) {
+        if ($user->cant('delete', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-                $model = Contact::findOrFail($id);
-                $model->delete();
-                return new ContactResource($model);
+		$object = Model::findOrFail($id);
+		$object->delete();
+		return new Resource($object);
     }
 
-        public function filter(Request $request)
-        {
-                $user = auth()->user();
-        if ($user->cant('read', Contact::class)) {
-            abort(401, 'You are not authorized');
-        }
-
-        }
 }

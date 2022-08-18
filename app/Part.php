@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Collections\PartCollection;
 
 class Part extends Model
 {
@@ -17,6 +18,11 @@ class Part extends Model
 	
 	protected $fillable = ['type','manufacturer_id','part_number','list_price','current_price','weight'];
 
+    public function newCollection(array $models = []) 
+    { 
+       return new PartCollection($models); 
+    }
+
     public function assets()
     {
         return $this->hasMany('App\Asset');
@@ -27,8 +33,8 @@ class Part extends Model
         return $this->belongsTo('App\Partner', 'manufacturer_id', 'id');
     }
 
-    public function parttype()
+/*     public function parttype()
     {
         return $this->belongsTo('App\PartType', 'part_type_id', 'id');
-    }
+    } */
 }

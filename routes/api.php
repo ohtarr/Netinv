@@ -1181,3 +1181,80 @@ Route::apiResource('locations', 'LocationController');
 **/
 
 Route::get('report', 'ReportController@index');
+
+/**
+* @SWG\Get(
+*     path="/api/logs",
+*     tags={"Logs"},
+*     summary="Get Logs",
+*     description="",
+*     operationId="",
+*     consumes={"application/json"},
+*     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="include",
+*         in="query",
+*         description="relationships to include (Comma seperated)",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[asset_id]",
+*         in="query",
+*         description="asset_id of Log",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[message]",
+*         in="query",
+*         description="message of Log",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Parameter(
+*         name="filter[asset.serial]",
+*         in="query",
+*         description="asset.serial of Log",
+*         required=false,
+*         type="string"
+*     ),
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+**/
+/**
+* @SWG\Get(
+*     path="/api/logs/{id}",
+*     tags={"Logs"},
+*     summary="Get Log by ID",
+*     description="",
+*     operationId="",
+*     consumes={"application/x-www-form-urlencoded"},
+*     produces={"application/json"},
+*     @SWG\Parameter(
+*         name="id",
+*         in="path",
+*         description="ID of a Log",
+*         required=true,
+*         type="integer"
+*     ),
+*     @SWG\Response(
+*         response=200,
+*         description="successful operation",
+*     ),
+*     @SWG\Response(
+*         response="401",
+*         description="Unauthorized user",
+*     ),
+*     security={
+*         {"AzureAD": {}},
+*     }
+* )
+**/
+Route::apiResource('logs', 'LogController');

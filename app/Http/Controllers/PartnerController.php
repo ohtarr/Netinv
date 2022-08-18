@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Partner;
-use App\Http\Resources\Partner as PartnerResource;
-use App\Http\Resources\PartnerCollection;
-use App\Http\Requests\StorePartner;
-use Validator;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\Filter;
+use App\Partner as Model;
+use App\Http\Resources\PartnerResource as Resource;
+use App\Http\Resources\PartnerCollection as ResourceCollection;
+use App\Http\Requests\StorePartner as StoreRequest;
+use App\Queries\PartnerQuery as Query;
 
 class PartnerController extends Controller
 {
 
-        public function __construct()
+	public function __construct()
     {
         $this->middleware('auth:api');
     }
@@ -26,48 +24,14 @@ class PartnerController extends Controller
      */
     public function index(Request $request)
     {
-                $user = auth()->user();
-                if ($user->cant('read', Partner::class)) {
-                        abort(401, 'You are not authorized');
-                }
+		$user = auth()->user();
+		if ($user->cant('read', Model::class)) {
+			abort(401, 'You are not authorized');
+        }
 
-                if($request->paginate)
-                {
-                    $paginate = $request->paginate;
-                } else {
-                    $paginate = env("ASSETS_PAGINATION");
-                }
-
-                $filters = [
-                    'id',
-                    'name',
-                    'url',
-                    'description',
-                ];
-        
-                $includes = [
-                ];
-
-                $query = QueryBuilder::for(Partner::class);
-                $query->allowedFilters($filters);
-                $query->allowedIncludes($includes);
-                $partners = $query->paginate($paginate);        
-                
-                return new PartnerCollection($partners);
-
-/*                 $params = $request->all();
-                if($params)
-                {
-                        $query = (new Partner)->newQuery();
-                        foreach($params as $key => $value)
-                        {
-                                $query->where($key,$value);
-                        }
-                        return new PartnerCollection($query->get());
-                } else {
-                $models = Partner::paginate(1000);
-            return new PartnerCollection($models);
-                } */
+        //Apply proper queries and retrieve a ResourceCollection object.
+        $resourceCollection = Query::apply($request);
+        return $resourceCollection;
     }
 
     /**
@@ -86,14 +50,14 @@ class PartnerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePartner $request)
+    public function store(StoreRequest $request)
     {
         $user = auth()->user();
-        if ($user->cant('create', Partner::class)) {
+        if ($user->cant('create', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-                return Partner::create($request->all());
+        $object = Model::create($request->all());
+        return $object;
     }
 
     /**
@@ -102,15 +66,14 @@ class PartnerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $user = auth()->user();
-                if ($user->cant('read', Partner::class)) {
+		if ($user->cant('read', Model::class)) {
             abort(401, 'You are not authorized');
         }
-
-        $model = Partner::findOrFail($id);
-                return new PartnerResource($model);
+        $resourceCollection = Query::apply($request,$id);
+        return new Resource($resourceCollection->collection->first());
     }
 
     /**
@@ -134,13 +97,13 @@ class PartnerController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
-        if ($user->cant('update', Partner::class)) {
+        if ($user->cant('update', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-                $model = Partner::findOrFail($id);
-                $model->update($request->all());
-                return new PartnerResource($model);
+		$object = Model::findOrFail($id);
+		$object->update($request->all());
+		return new Resource($object);
     }
 
     /**
@@ -152,21 +115,13 @@ class PartnerController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        if ($user->cant('delete', Partner::class)) {
+        if ($user->cant('delete', Model::class)) {
             abort(401, 'You are not authorized');
         }
 
-                $model = Partner::findOrFail($id);
-                $model->delete();
-                return new PartnerResource($model);
+		$object = Model::findOrFail($id);
+		$object->delete();
+		return new Resource($object);
     }
 
-        public function filter(Request $request)
-        {
-                $user = auth()->user();
-        if ($user->cant('read', Partner::class)) {
-            abort(401, 'You are not authorized');
-        }
-
-        }
 }

@@ -60,7 +60,11 @@
         "sort-packages": true,
         "optimize-autoloader": true,
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true,
+            "symfony/thanks": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
