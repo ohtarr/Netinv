@@ -26,4 +26,12 @@ class ServiceNowLocation extends ServiceNowModel
         return $this->hasMany('App\Asset', 'location_id', 'sys_id');
     }
 
+    public static function all($columns = ['*'])
+    {
+        $instance = new static;
+        return $instance->newQuery()
+            ->where('office', '!=', "")
+            ->get();
+    }
+
 }
