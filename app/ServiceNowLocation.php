@@ -30,7 +30,7 @@ class ServiceNowLocation extends ServiceNowModel
     {
         $instance = new static;
         return $instance->newQuery()
-            ->where('office', '!=', "")
+            ->where('company', '!=', "")
             ->get();
     }
 
